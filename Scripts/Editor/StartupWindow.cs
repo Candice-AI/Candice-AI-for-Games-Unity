@@ -47,6 +47,7 @@ namespace ViridaxGameStudios.AI
                 Application.OpenURL("https://assetstore.unity.com/packages/slug/148441");
             }
             GUILayout.EndArea();
+            /*
             GUILayout.BeginArea(patreonRect);
             label = new GUIContent("Also, please consider supporting me on Patreon. Your support is what will allow me to continue creating awesome development tools, and ultimately, keep this marvellous asset free.");
             style.wordWrap = true;
@@ -61,7 +62,7 @@ namespace ViridaxGameStudios.AI
             GUILayout.Space(16f);
             
             GUILayout.EndArea();
-
+            */
             GUILayout.BeginArea(closeRect);
             shouldLoad = EditorGUILayout.Toggle("Show on startup", shouldLoad);
             if (GUILayout.Button("Close"))

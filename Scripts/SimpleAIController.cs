@@ -13,6 +13,8 @@ namespace ViridaxGameStudios.AI
         public bool followTarget = false;
         [Tooltip("If true, the agent will attempt to evade all obstacles.")]
         public bool obstacleAvoidance = false;
+        [Tooltip("How far away the agent will detect and steer away from obstacles.")]
+        public float oaDistance = 3f;
         [Tooltip("The speed the object will move at")]
         public float speed = 10f;
         public float stoppingDistance = 0;
@@ -37,14 +39,14 @@ namespace ViridaxGameStudios.AI
         int pointIncPerSec = 1;
         GameObject source;
         public bool is3D = true;
-
+        ObstacleAvoidance oa;
         void Awake()
         {
             rb = GetComponent<Rigidbody>();
         }
         void Start()
         {
-
+            oa = new ObstacleAvoidance();
             //transform.rotation = Quaternion.LookRotation(rb.velocity);
         }
         // Update is called once per frame
@@ -64,8 +66,7 @@ namespace ViridaxGameStudios.AI
                 else if (orbit == true)
                     Orbit();
                 else if (obstacleAvoidance)
-                    CandiceAIManager.ObstacleAvoidance(target.transform, transform, transform.localScale.x, speed, is3D, 10);
-                //ObstacleAvoidance(target.transform);
+                    oa.Move(target.transform, transform, transform.localScale.x, speed, is3D, oaDistance);
                 else if (followTarget)
                     Seek();
                 else

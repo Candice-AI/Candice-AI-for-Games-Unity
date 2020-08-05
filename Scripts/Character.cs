@@ -31,33 +31,17 @@ namespace ViridaxGameStudios.AI
 
 
         [Header("Base Statistics")]
-        [Range(1f,10f)]
-        [Tooltip("This is used to calculate the attack damage based on your Strength, Intelligence and Faith.")]
-        [SerializeField] public float m_StatsMultiplier = 1.75f;
-        [Range(1f, 100f)]
-        [Tooltip("")]
-        [SerializeField]
-        public int m_StatLevelUpIncrease = 5;
-        [Range(1f, 100f)]
-        [Tooltip("This directly affects the HitPoints and physical damage.")]
-        [SerializeField] public int m_Strength = 3;
-        [Range(1f, 100f)]
-        [Tooltip("This directly affects the HitPoints and mental damage.")]
-        [SerializeField] public int m_Intelligence = 3;
-        [Range(1f, 100f)]
-        [Tooltip("This directly affects the HitPoints and spiritual damage.")]
-        [SerializeField] public int m_Faith = 3;
+
+        
         [Tooltip("The faction that this character belongs to.")]
         public Faction faction;
         public bool healthLow;
         public float healthLowThreshold = 10f;
         public bool is3D = true;
         [Space(10)]
-        [Header("Additional Statistics")]
-        [Tooltip("The maximum range that the character can be in order to attack a target.")]
-        public float m_AttackRange = 3f;
+        
+
         public const float m_DefaultAttackRange = 3f;
-        public float m_DamageAngle = 90.0f;
         public bool hasAttackAnimation = true;
         public float attacksPerSecond = 1f;
         public int attackType = 0;
@@ -72,13 +56,27 @@ namespace ViridaxGameStudios.AI
         
         public bool enableHeadLook = false;
         public float headLookIntensity = 1f;
-        CharacterStats stats;
+        //CharacterStats stats;
+        public float m_StatMultiplier = 1.75f;
+        public List<CharacterStat> stats = new List<CharacterStat>();
+
+        public float currentHP = 100f;
+        public CharacterStat statHitPoints = new CharacterStat("Hit Points", 100f);
+        public CharacterStat statStrength = new CharacterStat("Strength", 10f);
+        public CharacterStat statIntelligence = new CharacterStat("Intelligence", 10f);
+        public CharacterStat statFaith = new CharacterStat("Faith", 10f);
+        public CharacterStat statAttackDamage = new CharacterStat("Attack Damage", 20f);
+        public CharacterStat statAttackRange = new CharacterStat("Attack Range", 3f);
+        public CharacterStat statDamageAngle = new CharacterStat("Damage Angle", 90f);
+        public CharacterStat statArmour = new CharacterStat("Armour", 3f);
+        public CharacterStat statMoveSpeed = new CharacterStat("Movement Speed", 3f);
+
         public int level = 0;
-        public float attackDamage = 0;
+        //public float attackDamage = 0;
         public Animator Animator { get; set; }
-        public float HitPoints { get; set; }
-        //public float MovementSpeed { get; set; }
-        public float movementSpeed = 7;
+        //public float HitPoints { get; set; }
+        //public float movementSpeed = 3;
+        public MovementType moveType;
         float rotationSpeed = 30;
         public bool IsStunned { get; set; } = false;
 
@@ -95,32 +93,59 @@ namespace ViridaxGameStudios.AI
         public bool clickToMove;
         public bool isMoving = false;
         public bool isDead = false;
-        public int pathfindSource;//Integer representing the pathfinding source.
-        public int moveType;//Integer representing a move type from of the agent.
-
+        public PathfindSource pathfindSource;
+        public bool enablePathfinding = false;
 
         //Constant variables describing the different pathfinding sources.
         public const int PATHFIND_SOURCE_CANDICE = 0;
         public const int PATHFIND_SOURCE_NAVMESH = 1;
-        [Tooltip("The points in the gameworld where you want the character to patrol. They can be anything, even empty gameObjects. Note: Ensure each patrol point is tagged as 'PatrolPoint'")]
-        public List<GameObject> patrolPoints = new List<GameObject>();
+        //[Tooltip("The points in the gameworld where you want the character to patrol. They can be anything, even empty gameObjects. Note: Ensure each patrol point is tagged as 'PatrolPoint'")]
+        
         [Tooltip("Whether or not the character should patrol each point in order of the list. False will allow the character to patrol randomly.")]
-        public bool patrolInOrder = true;
-        public bool isPatrolling = false;
-        public bool pointReached = false;//Boolean to know if the agent reached to targeted patrol point.
+        
         public GameObject rig;
         public Rigidbody[] ragdoll;
         public bool enableRagdoll = false;
         public bool enableRagdollOnDeath;
         public Camera cam;
         public bool autoAttack = true;
-        public GameObject movePoint;
+
         public GameObject headLookTarget;//The object that the AI's head will look towards.
-        public GameObject target;//The target that the AI will follow (e.g enemy, patrol point etc).
         public bool destroyOnDeath;
         public float destoyOnDeathDelay = 10f;
         public NavMeshAgent navMeshAgent;
-        public HealthBarScript healthBar; 
+        public HealthBarScript healthBar;
+
+        public GameObject mainTarget;
+        public GameObject moveTarget;
+        public Vector3 movePoint;
+        public GameObject attackTarget;
+        public Vector3 attackPoint;
+
+        public Tile currentTile;
+        public Tile collidedObject;
+        public bool isSelected = false;
+        public int movePoints = 5;
+        public float jumpHeight = 2;
+        public float jumpVelocity = 4.5f;
+        public bool turn = false;
+
+        public float halfHeight = 0;
+        public bool isPlayerControlled;
+        Coroutine followPathCoroutine;
+
+        Vector3 velocity = new Vector3();
+        Vector3 heading = new Vector3(); // direction heading
+
+        public TacticsPlayer _player;
+        public LayerMask perceptionMask;
+
+        public string idleAnimParameter = "idle";
+        public string moveAnimParameter = "move";
+        public string attackAnimParameter = "attack";
+        public string jumpAnimParameter = "jump";
+        public string runAnimParameter = "run";
+        public string deadAnimParameter = "dead";
         #endregion
 
 
@@ -132,8 +157,10 @@ namespace ViridaxGameStudios.AI
         // Start is called before the first frame update
         public virtual void Start()
         {
-            stats = new CharacterStats(m_StatsMultiplier, m_StatLevelUpIncrease, m_Strength, m_Intelligence, m_Faith, movementSpeed);
+            //stats = new CharacterStats(m_StatsMultiplier, m_StatLevelUpIncrease, m_Strength, m_Intelligence, m_Faith, movementSpeed);
+            Animator = GetComponent<Animator>();
             navMeshAgent = GetComponent<NavMeshAgent>();
+
             //Create the Finite State Machine
             fsm = new FSM("AI Controller FSM");
 
@@ -163,55 +190,56 @@ namespace ViridaxGameStudios.AI
             attackState.AddTransition("ToFollow", followState);
             patrolState.AddTransition("ToIdle", idleState);
             patrolState.AddTransition("ToFollow", followState);
-            HitPoints = stats.MaxHitPoints;
             if (healthBar != null)
-                healthBar.SetMaxHealth(stats.MaxHitPoints);
+                healthBar.SetMaxHealth(statHitPoints.value);
+            currentHP = statHitPoints.value;
+
+            Collider col = GetComponent<Collider>();
+            if(col != null)
+            {
+                halfHeight = col.bounds.extents.x * 2;
+            }
+            else
+            {
+                halfHeight = gameObject.transform.localScale.x *2;
+            }
+            fsm.Start(idleState.Name);
         }
 
-        // Update is called once per frame
-        public virtual void Update()
-        {
-            UpdateStats();
-        }
 
-        private void UpdateStats()
-        {
-            stats.AttackRange = m_AttackRange;
-            stats.DamageAngle = m_DamageAngle;
-            stats.StatsMultiplier = m_StatsMultiplier;
-            level = stats.Level;
-            attackDamage = stats.AttackDamage;
-        }
         protected void ProcessInput()
-        { 
+        {
+            fsm.Update();//Call the update method of the Finite State Machine that will also call the Update method of the corresponding State and Actions.
             if (clickToMove)
             {
                 if (Input.GetMouseButtonDown(0))
                 {
-                    Ray ray = cam.ScreenPointToRay(Input.mousePosition);
-                    RaycastHit hit;
-
-                    if (Physics.Raycast(ray, out hit))
+                    if (Input.GetMouseButtonDown(0))
                     {
-                        movePoint.GetComponent<Collider>().enabled = true;
-                        movePoint.transform.position = hit.point;
-                        target = movePoint;
-                        if (fsm.GetCurrentState.Name != followState.Name)
-                        {
-                            fsm.ChangeToState(followState);
-                        }
-                        else
-                        {
-                            navMeshAgent.SetDestination(hit.point);
-                        }
+                        Ray ray = cam.ScreenPointToRay(Input.mousePosition);
+                        RaycastHit hit;
 
-                        //
+                        if (Physics.Raycast(ray, out hit))
+                        {
+                            moveTarget = hit.collider.gameObject;
+                            movePoint = hit.point;
+                            if (fsm.GetCurrentState.Name != followState.Name)
+                            {
+                                fsm.ChangeToState(followState);
+                            }
+                            else
+                            {
+                                navMeshAgent.SetDestination(hit.point);
+                            }
+
+                            //-
+                        }
                     }
                 }
             }
             else
             {
-                float translation = (Input.GetAxis("Vertical") * movementSpeed) * Time.deltaTime;
+                float translation = (Input.GetAxis("Vertical") * statMoveSpeed.value) * Time.deltaTime;
                 float rotation = (Input.GetAxis("Horizontal") * rotationSpeed) * Time.deltaTime;
 
                 if(is3D)
@@ -268,8 +296,8 @@ namespace ViridaxGameStudios.AI
         public void StartMoveNavMesh(GameObject point)
         {
             //Move the agent using the NavMeshAgent
-            movePoint.transform.position = point.transform.position;
-            movePoint.GetComponent<SphereCollider>().enabled = true;
+            movePoint = point.transform.position;
+            //movePoint.GetComponent<SphereCollider>().enabled = true;
             navMeshAgent.isStopped = false;
             navMeshAgent.SetDestination(point.transform.position);
         }
@@ -288,24 +316,25 @@ namespace ViridaxGameStudios.AI
             //Output      : none
             //
             IsStunned = true;
-            if (HitPoints - damage <= 0)
+            if (currentHP - damage <= 0)
             {
-                HitPoints = 0;
+                currentHP = 0;
                 isDead = true;
                 //CharacterDead() method should be called after the death animation has finished playing using an Animation Event. 
                 //Alternatively, you can implement your own logic here to suit your needs.
             }
             else
             {
-                HitPoints -= damage;
-                if (HitPoints < healthLowThreshold)
+                currentHP -= damage;
+                if (currentHP < healthLowThreshold)
                     healthLow = true;
                 else
                     healthLow = false;
             }
-            healthBar.SetHealth(HitPoints);
+            if(healthBar != null)
+                healthBar.SetHealth(currentHP);
             if (CandiceConfig.enableDebug)
-                Debug.Log("Hit with: " + damage + " damage. New Health: " + HitPoints);
+                Debug.Log("Hit with: " + damage + " damage. New Health: " + currentHP);
             //if (CandiceConfig.enableDebug)
             //Debug.Log("Hit with: " + damage + " damage. New Health: " + HitPoints);
 
@@ -364,7 +393,7 @@ namespace ViridaxGameStudios.AI
             if (is3D)
             {
                 RaycastHit[] hits;
-                hits = Physics.SphereCastAll(transform.position, m_AttackRange, transform.forward);//Send a shere cast to see if it hits anything
+                hits = Physics.SphereCastAll(transform.position, statAttackRange.value, transform.forward);//Send a shere cast to see if it hits anything
                 foreach (RaycastHit hit in hits)//for each object hit by the spherecast
                 {
                     bool isHittable = false;
@@ -381,9 +410,9 @@ namespace ViridaxGameStudios.AI
                     {
                         float distance = Vector3.Distance(transform.position, hit.transform.position);
                         float angle = Vector3.Angle(hit.transform.position - transform.position, transform.forward);
-                        if (angle <= m_DamageAngle / 2 && distance <= m_AttackRange)//If the object is within the attack range and within the damage angle.
+                        if (angle <= statDamageAngle.value / 2 && distance <= statAttackRange.value)//If the object is within the attack range and within the damage angle.
                         {
-                            hit.transform.gameObject.SendMessage("ReceiveDamage", attackDamage);//send the damage to the hit object. The hit object needs to have a script with the method ReceiveDamage(float damage);
+                            hit.transform.gameObject.SendMessage("ReceiveDamage", statAttackDamage.value);//send the damage to the hit object. The hit object needs to have a script with the method ReceiveDamage(float damage);
                         }
                     }
                 }
@@ -391,7 +420,7 @@ namespace ViridaxGameStudios.AI
             else
             {
                 RaycastHit2D[] hits;
-                hits = Physics2D.CircleCastAll(new Vector2(transform.position.x, transform.position.y), m_AttackRange, transform.up);//Send a shere cast to see if it hits anything
+                hits = Physics2D.CircleCastAll(new Vector2(transform.position.x, transform.position.y), statAttackRange.value, transform.up);//Send a shere cast to see if it hits anything
                 foreach (RaycastHit2D hit in hits)//for each object hit by the spherecast
                 {
                     bool isHittable = false;
@@ -407,9 +436,9 @@ namespace ViridaxGameStudios.AI
                     if (isHittable)
                     {
                         float distance = Vector3.Distance(transform.position, hit.transform.position);
-                        if (distance <= m_AttackRange)//If the object is within the attack range and within the damage angle.
+                        if (distance <= statAttackRange.value)//If the object is within the attack range and within the damage angle.
                         {
-                            hit.transform.gameObject.SendMessage("ReceiveDamage", attackDamage);//send the damage to the hit object. The hit object needs to have a script with the method ReceiveDamage(float damage);
+                            hit.transform.gameObject.SendMessage("ReceiveDamage", statAttackDamage.value);//send the damage to the hit object. The hit object needs to have a script with the method ReceiveDamage(float damage);
                         }
                     }
                 }
@@ -440,9 +469,11 @@ namespace ViridaxGameStudios.AI
 
             //arrow.transform.position = spawnPosition.position;
             SimpleAIController ai = projectile.GetComponent<SimpleAIController>();
-            ai.target = target;
+            ai.target = attackTarget;
             ai.Fire(gameObject);
         }
+
+        
     }
     public class CharacterStates
     {
@@ -455,13 +486,6 @@ namespace ViridaxGameStudios.AI
         public const string STATE_PATROL = "PatrolState";
         public const string STATE_GUARD = "GuardState";
         public const string STATE_DEAD = "DeadState";
-    }
-
-    public class MoveType
-    {
-        public const int MOVE_SIMPLE = 0;
-        public const int MOVE_OA = 1;
-        public const int MOVE_PATHFIND = 2;
     }
 
 }

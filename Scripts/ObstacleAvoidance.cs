@@ -27,14 +27,18 @@ namespace ViridaxGameStudios.AI
                 Move2D(Target, transform, size, movementSpeed, distance);
                 return;
             }
+            bool obstacleHit = false;
+
             Vector3 dir = (Target.position - transform.position).normalized;
             RaycastHit hit;
             if (Physics.Raycast(transform.position, transform.forward, out hit, distance))
             {
                 if (hit.transform != transform && hit.transform != Target.transform)
                 {
-                    Debug.DrawLine(transform.position, hit.point, Color.red);
+                    if(CandiceConfig.enableDebug)
+                        Debug.DrawLine(transform.position, hit.point, Color.red);
                     dir += hit.normal * 50;
+                    obstacleHit = true;
                 }
             }
 
@@ -47,8 +51,10 @@ namespace ViridaxGameStudios.AI
             {
                 if (hit.transform != transform && hit.transform != Target.transform)
                 {
-                    Debug.DrawLine(left, hit.point, Color.red);
+                    if (CandiceConfig.enableDebug)
+                        Debug.DrawLine(left, hit.point, Color.red);
                     dir += hit.normal * 50;
+                    obstacleHit = true;
 
                 }
             }
@@ -57,12 +63,34 @@ namespace ViridaxGameStudios.AI
             {
                 if (hit.transform != transform && hit.transform != Target.transform)
                 {
-                    Debug.DrawLine(right, hit.point, Color.red);
+                    if (CandiceConfig.enableDebug)
+                        Debug.DrawLine(right, hit.point, Color.red);
                     dir += hit.normal * 50;
+                    obstacleHit = true;
                 }
             }
-            Quaternion rot = Quaternion.LookRotation(dir);
-            transform.rotation = Quaternion.Slerp(transform.rotation, rot, Time.deltaTime);
+            if (obstacleHit)
+            {
+                Quaternion rot = Quaternion.LookRotation(dir);
+                transform.rotation = Quaternion.Slerp(transform.rotation, rot, movementSpeed*Time.deltaTime);
+
+            }
+            else
+            {
+                if(Vector3.Distance(transform.position, Target.position) < 3)
+                {
+                    transform.LookAt(Target, Vector3.up);
+                }
+                else
+                {
+                    dir = (Target.position - transform.position).normalized;
+                    Quaternion rot = Quaternion.LookRotation(dir);
+                    transform.rotation = Quaternion.Slerp(transform.rotation, rot, movementSpeed*Time.deltaTime);
+                }
+                
+            }
+
+            
             transform.position += transform.forward * movementSpeed * Time.deltaTime;
         }
 
@@ -76,7 +104,8 @@ namespace ViridaxGameStudios.AI
                 Debug.Log("OA 2D");
                 if (hit.transform != transform && hit.transform != Target.transform)
                 {
-                    Debug.DrawLine(transform.position, hit.point, Color.red);
+                    if (CandiceConfig.enableDebug)
+                        Debug.DrawLine(transform.position, hit.point, Color.red);
                     dir += hit.normal * 50;
                 }
             }
@@ -90,7 +119,8 @@ namespace ViridaxGameStudios.AI
             {
                 if (hit.transform != transform && hit.transform != Target.transform)
                 {
-                    Debug.DrawLine(left, hit.point, Color.red);
+                    if (CandiceConfig.enableDebug)
+                        Debug.DrawLine(left, hit.point, Color.red);
                     dir += hit.normal * 50;
 
                 }
@@ -100,7 +130,8 @@ namespace ViridaxGameStudios.AI
             {
                 if (hit.transform != transform && hit.transform != Target.transform)
                 {
-                    Debug.DrawLine(right, hit.point, Color.red);
+                    if (CandiceConfig.enableDebug)
+                        Debug.DrawLine(right, hit.point, Color.red);
                     dir += hit.normal * 50;
                 }
             }
