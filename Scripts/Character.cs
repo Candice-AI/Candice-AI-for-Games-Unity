@@ -28,7 +28,7 @@ namespace ViridaxGameStudios.AI
         protected MoveAction patrolMoveAction;
         protected AttackAction attackAction;
         protected PatrolAction patrolAction;
-
+        public bool hasAnimations;
 
         [Header("Base Statistics")]
 
@@ -94,15 +94,7 @@ namespace ViridaxGameStudios.AI
         public bool isMoving = false;
         public bool isDead = false;
         public PathfindSource pathfindSource;
-        public bool enablePathfinding = false;
-
-        //Constant variables describing the different pathfinding sources.
-        public const int PATHFIND_SOURCE_CANDICE = 0;
-        public const int PATHFIND_SOURCE_NAVMESH = 1;
-        //[Tooltip("The points in the gameworld where you want the character to patrol. They can be anything, even empty gameObjects. Note: Ensure each patrol point is tagged as 'PatrolPoint'")]
-        
-        [Tooltip("Whether or not the character should patrol each point in order of the list. False will allow the character to patrol randomly.")]
-        
+     
         public GameObject rig;
         public Rigidbody[] ragdoll;
         public bool enableRagdoll = false;
@@ -132,20 +124,17 @@ namespace ViridaxGameStudios.AI
 
         public float halfHeight = 0;
         public bool isPlayerControlled;
-        Coroutine followPathCoroutine;
 
-        Vector3 velocity = new Vector3();
-        Vector3 heading = new Vector3(); // direction heading
 
         public TacticsPlayer _player;
         public LayerMask perceptionMask;
 
         public string idleAnimParameter = "idle";
-        public string moveAnimParameter = "move";
-        public string attackAnimParameter = "attack";
+        public string moveAnimParameter = "isWalking";
+        public string attackAnimParameter = "isAttacking";
         public string jumpAnimParameter = "jump";
-        public string runAnimParameter = "run";
-        public string deadAnimParameter = "dead";
+        public string runAnimParameter = "isRunning";
+        public string deadAnimParameter = "isDead";
         #endregion
 
 
@@ -254,11 +243,13 @@ namespace ViridaxGameStudios.AI
                 
                 if (translation == 0)
                 {
-                    Animator.SetBool("isRunning", false);
+                    if (hasAnimations)
+                        Animator.SetBool("isRunning", false);
                 }
                 else
                 {
-                    Animator.SetBool("isRunning", true);
+                    if (hasAnimations)
+                        Animator.SetBool("isRunning", true);
                 }
             }
 

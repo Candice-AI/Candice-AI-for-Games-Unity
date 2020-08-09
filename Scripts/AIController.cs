@@ -57,9 +57,10 @@ namespace ViridaxGameStudios.AI
 
         public bool stopBehaviorTree = false;
         Coroutine updatePathCoroutine;
-
+        Coroutine followASTARCoroutine;
+        Coroutine followSimplePathCoroutine;
         //Movement Variables
-        public float oaDistance = 10f;//Obstacle Avoidance Distance. How far the agent will detect objects to avoid.
+        public float oaDistance = 3f;//Obstacle Avoidance Distance. How far the agent will detect objects to avoid.
 
         /*
          * Pathfinding Variables
@@ -89,7 +90,7 @@ namespace ViridaxGameStudios.AI
         public Stack<Tile> tilePath = new Stack<Tile>();
         bool followingPath;
         public Waypoint waypoint;
-        public bool hasAnimations;
+        
         public float oaAOE = 0.5f;
 
         #endregion
@@ -303,8 +304,14 @@ namespace ViridaxGameStudios.AI
         public void StopFinding()
         {
             //Stop moving the agent using Candice's pathfinding module.
-            StopCoroutine(UpdatePath());
-            StopCoroutine("FollowPath");
+            if(updatePathCoroutine != null)
+                StopCoroutine(updatePathCoroutine);
+            if(followASTARCoroutine != null)
+                StopCoroutine(followASTARCoroutine);
+
+            followASTARCoroutine = null;
+            updatePathCoroutine = null;
+            path = null;
         }
 
         void onDestinationReached(AIController agent)
@@ -383,8 +390,16 @@ namespace ViridaxGameStudios.AI
             if (pathSuccessful)
             {
                 path = new Path(waypoints, transform.position, turnDist, stoppingDist);
-                StopCoroutine("FollowAStarPath");
-                StartCoroutine("FollowAStarPath");
+                if(followASTARCoroutine == null)
+                {
+                    followASTARCoroutine = StartCoroutine(FollowAStarPath());
+                }
+                else
+                {
+                    StopCoroutine(followASTARCoroutine);
+                    followASTARCoroutine = StartCoroutine(FollowAStarPath());
+                }
+                
             }
         }
 
@@ -413,7 +428,7 @@ namespace ViridaxGameStudios.AI
                 if (!isMoving)
                 {
                     StopCoroutine(updatePathCoroutine);
-                    StopCoroutine("FollowAStarPath");
+                    StopCoroutine(followASTARCoroutine);
                     updatePathCoroutine = null;
                 }
             }
@@ -422,6 +437,7 @@ namespace ViridaxGameStudios.AI
 
         IEnumerator FollowAStarPath()
         {
+            Debug.Log("Following ASTAR path: " + path.lookPoints.Length);
             bool followingPath = true;
             int pathIndex = 0;
             if (is3D)
@@ -429,50 +445,61 @@ namespace ViridaxGameStudios.AI
             float speedPercent = 1;
             while (followingPath)
             {
-
-                Vector2 pos2D = new Vector2(transform.position.x, transform.position.z);
-                while (path.turnBoundaries[pathIndex].HasCrossedLine(pos2D))
+                float distance = Vector3.Distance(transform.position, moveTarget.transform.position);
+                Debug.Log("Distance: " + distance);
+                if(distance <= m_DetectionRadius)
                 {
-                    if (pathIndex == path.finishLineIndex)
+                    Vector2 pos2D = new Vector2(transform.position.x, transform.position.z);
+                    while (path.turnBoundaries[pathIndex].HasCrossedLine(pos2D))
                     {
-                        followingPath = false;
-                        break;
-                    }
-                    else
-                    {
-                        pathIndex++;
-                        if (is3D)
-                            transform.LookAt(path.lookPoints[pathIndex]);
-                    }
-                }
-                if (followingPath)
-                {
-                    if (pathIndex >= path.slowDownIndex && stoppingDist > 0)
-                    {
-                        speedPercent = Mathf.Clamp01(path.turnBoundaries[path.finishLineIndex].DistanceFromPoint(pos2D) / stoppingDist);
-                        if (speedPercent < 0.01f)
+                        if (pathIndex == path.finishLineIndex)
                         {
                             followingPath = false;
+                            break;
+                        }
+                        else
+                        {
+                            pathIndex++;
+                            if (is3D)
+                                transform.LookAt(path.lookPoints[pathIndex]);
                         }
                     }
+                    if (followingPath)
+                    {
+                        if (pathIndex >= path.slowDownIndex && stoppingDist > 0)
+                        {
+                            speedPercent = Mathf.Clamp01(path.turnBoundaries[path.finishLineIndex].DistanceFromPoint(pos2D) / stoppingDist);
+                            if (speedPercent < 0.01f)
+                            {
+                                followingPath = false;
+                            }
+                        }
 
-                    if (is3D)
-                    {
-                        Quaternion targetRotation = Quaternion.LookRotation(path.lookPoints[pathIndex] - transform.position);
-                        transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, Time.deltaTime * turnSpeed);
-                        transform.Translate(Vector3.forward * Time.deltaTime * statMoveSpeed.value * speedPercent, Space.Self);
-                    }
-                    else
-                    {
-                        //Quaternion targetRotation = Quaternion.LookRotation(path.lookPoints[pathIndex] - transform.position);
-                        //transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, Time.deltaTime * turnSpeed);
-                        //Debug.Log(path.lookPoints[pathIndex]);
-                        //Vector3 lookPoint = path.lookPoints[pathIndex];
-                        //transform.position += path.lookPoints[pathIndex];
-                        MoveTo(path.lookPoints[pathIndex], statMoveSpeed.value, is3D);
-                        //transform.Translate( Vector3.forward * Time.deltaTime * movementSpeed * speedPercent, Space.Self);
+                        if (is3D)
+                        {
+                            Quaternion targetRotation = Quaternion.LookRotation(path.lookPoints[pathIndex] - transform.position);
+                            transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, Time.deltaTime * turnSpeed);
+                            transform.Translate(Vector3.forward * Time.deltaTime * statMoveSpeed.value * speedPercent, Space.Self);
+                            Debug.Log("Speed Percent: " + statMoveSpeed.value * speedPercent);
+                        }
+                        else
+                        {
+                            //Quaternion targetRotation = Quaternion.LookRotation(path.lookPoints[pathIndex] - transform.position);
+                            //transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, Time.deltaTime * turnSpeed);
+                            //Debug.Log(path.lookPoints[pathIndex]);
+                            //Vector3 lookPoint = path.lookPoints[pathIndex];
+                            //transform.position += path.lookPoints[pathIndex];
+                            MoveTo(path.lookPoints[pathIndex], statMoveSpeed.value, is3D);
+                            //transform.Translate( Vector3.forward * Time.deltaTime * movementSpeed * speedPercent, Space.Self);
+                        }
                     }
                 }
+                else
+                {
+                    StopFinding();
+                }
+
+                
                 yield return null;
             }
         }
@@ -606,18 +633,9 @@ namespace ViridaxGameStudios.AI
                     {
                         Animator.SetBool(moveAnimParameter, true);
                     }
-                    
-
                     //Locomotion
                     transform.LookAt(target, Vector3.up);
-                    //float angle = Vector3.Angle(transform.position, target);
-                    //transform.Rotate(Vector3.up, angle);
-                    MoveForward();
-
-                    //CalculateHeading(target);
-                    //SetHorizontalVelocity();
-                    //transform.forward = heading;
-                    //transform.position += velocity * Time.deltaTime;
+                    transform.position += transform.forward * statMoveSpeed.value * Time.deltaTime;
                 }
                 else
                 {

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 namespace ViridaxGameStudios.AI
 {
@@ -7,6 +8,7 @@ namespace ViridaxGameStudios.AI
         #region CHECK/VERIFY ACTION TASKS
         public static BehaviorStates EnemyDetected(BehaviorNode rootNode)
         {
+
             AIController agent = rootNode.aiController;
             if (agent.enemyFound)
             {
@@ -21,18 +23,7 @@ namespace ViridaxGameStudios.AI
                 return BehaviorStates.FAILURE;
         }
 
-        public static BehaviorStates MoveTarget(BehaviorNode rootNode)
-        {
-            AIController agent = rootNode.aiController;
-            agent.moveTarget = agent.mainTarget;
-            return BehaviorStates.SUCCESS;
-        }
-        public static BehaviorStates AttackTarget(BehaviorNode rootNode)
-        {
-            AIController agent = rootNode.aiController;
-            agent.attackTarget = agent.mainTarget;
-            return BehaviorStates.SUCCESS;
-        }
+       
 
         public static BehaviorStates AllyDetected(BehaviorNode rootNode)
         {
@@ -71,7 +62,7 @@ namespace ViridaxGameStudios.AI
             }
             catch (Exception e)
             {
-                Debug.LogError("No target within attack range");
+                Debug.LogError("No target within attack range: " + e.Message);
             }
             if (distance <= agent.statAttackRange.value)
                 return BehaviorStates.SUCCESS;
@@ -114,6 +105,14 @@ namespace ViridaxGameStudios.AI
                 {
                     agent.moveTarget = agent.mainTarget;
                     agent.movePoint = agent.moveTarget.transform.position;
+                    state = BehaviorStates.SUCCESS;
+                }
+                else
+                {
+                    if(CandiceConfig.enableDebug)
+                    {
+                        Debug.LogError("SetMoveTarget(): Main Target is NULL");
+                    }
                 }
             }
             catch (Exception e)
@@ -133,6 +132,14 @@ namespace ViridaxGameStudios.AI
                 if (agent.mainTarget != null)
                 {
                     agent.attackTarget = agent.mainTarget;
+                    state = BehaviorStates.SUCCESS;
+                }
+                else
+                {
+                    if (CandiceConfig.enableDebug)
+                    {
+                        Debug.LogError("SetAttackTarget(): Main Target is NULL");
+                    }
                 }
             }
             catch (Exception e)
@@ -149,7 +156,8 @@ namespace ViridaxGameStudios.AI
         public static BehaviorStates Idle(BehaviorNode rootNode)
         {
             BehaviorStates state = BehaviorStates.SUCCESS;
-            rootNode.aiController.Animator.SetTrigger(rootNode.aiController.idleAnimParameter);
+            if(rootNode.aiController.hasAnimations)
+                rootNode.aiController.Animator.SetTrigger(rootNode.aiController.idleAnimParameter);
             return state;
         }
         public static BehaviorStates InitVariables(BehaviorNode rootNode)
@@ -164,7 +172,7 @@ namespace ViridaxGameStudios.AI
             AIController agent = rootNode.aiController;
             try
             {
-                if (agent.moveType == MovementType.STATIC && agent.is3D)
+                if (agent.moveType == MovementType.STATIC && agent.is3D && agent.pathfindSource != PathfindSource.Candice && agent.pathfindSource != PathfindSource.UnityNavmesh) 
                 {
                     agent.transform.LookAt(agent.mainTarget.transform);
                 }
@@ -180,26 +188,25 @@ namespace ViridaxGameStudios.AI
         {
             AIController agent = rootNode.aiController;
             agent.isMoving = true;
-            agent.Animator.SetTrigger(agent.moveAnimParameter);
+            if(rootNode.aiController.hasAnimations)
+                agent.Animator.SetTrigger(agent.moveAnimParameter);
             //rootNode.aiController.Animator.SetFloat("characterSpeed", rootNode.aiController.movementSpeed);
             BehaviorStates state = BehaviorStates.SUCCESS;
             try
             {
-                if(!agent.enablePathfinding)
+                if(agent.pathfindSource == PathfindSource.None)
                 {
                     agent.MoveTo(agent.moveTarget.transform.position, agent.statMoveSpeed.value, agent.is3D);
                 }
-                else
+                else if(agent.pathfindSource == PathfindSource.Candice)
                 {
-                    if (agent.pathfindSource == PathfindSource.Candice)
-                    {
-                        agent.StartFinding();
-                    }
-                    else if (agent.pathfindSource == PathfindSource.UnityNavmesh)
-                    {
-                        agent.StartMoveNavMesh(agent.moveTarget);
-                    }
+                    agent.StartFinding();
                 }
+                else if (agent.pathfindSource == PathfindSource.UnityNavmesh)
+                {
+                    agent.StartMoveNavMesh(agent.moveTarget);
+                }
+
             }
             catch (Exception e)
             {
@@ -223,7 +230,11 @@ namespace ViridaxGameStudios.AI
                 if (agent.enableRagdollOnDeath)
                     agent.EnableRagdoll();
                 else
-                    agent.Animator.SetTrigger("die");
+                {
+                    if (rootNode.aiController.hasAnimations)
+                        agent.Animator.SetTrigger("die");
+                }
+                    
                 state = BehaviorStates.SUCCESS;
             }
             catch (Exception e)
@@ -246,7 +257,6 @@ namespace ViridaxGameStudios.AI
                 {
                     agent.Animator.SetTrigger(agent.attackAnimParameter);
                 }
-
                 else
                 {
                     if (agent.attackType == Character.ATTACK_TYPE_MELEE)

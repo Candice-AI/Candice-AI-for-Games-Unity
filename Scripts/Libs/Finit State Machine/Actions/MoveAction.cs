@@ -31,7 +31,7 @@ namespace ViridaxGameStudios
             aiController.isMoving = true;
             animator.SetBool("isRunning", true);
             
-            if(aiController.enablePathfinding)
+            if(aiController.pathfindSource != PathfindSource.None)
             {
                 switch (aiController.pathfindSource)
                 {
@@ -55,7 +55,7 @@ namespace ViridaxGameStudios
             aiController.isMoving = false;
             animator.SetBool("isRunning", false);
 
-            if (aiController.enablePathfinding)
+            if (aiController.pathfindSource != PathfindSource.None)
             {
                 switch (aiController.pathfindSource)
                 {
@@ -83,6 +83,7 @@ namespace ViridaxGameStudios
                 switch (aiController.moveType)
                 {
                     case MovementType.STATIC:
+                        //aiController
                         FollowTarget(aiController.moveTarget.transform);
                         break;
                     case MovementType.DYNAMIC:

@@ -164,7 +164,7 @@ namespace ViridaxGameStudios.AI
             GUILayout.BeginArea(headerRect);
 
             GUILayout.BeginVertical();
-            GUILayout.Label(" " + CandiceConfig.CONTROLLER_NAME + " Setup Assistant", guiStyle);
+            GUILayout.Label("Candice Setup Assistant", guiStyle);
             GUIContent label;
             is3D = EditorGUILayout.Toggle("Is 3D", is3D);
             hasAnims = EditorGUILayout.Toggle("Has Animations", hasAnims);

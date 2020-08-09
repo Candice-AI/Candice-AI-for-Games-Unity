@@ -33,7 +33,9 @@ namespace ViridaxGameStudios.AI
 
             GUILayout.BeginHorizontal();
             GUILayout.FlexibleSpace();
+
             GUIContent label = new GUIContent("Candice AI Manager");
+            guiStyle.normal.textColor = EditorStyles.label.normal.textColor;
             GUILayout.Label(label, guiStyle);
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();

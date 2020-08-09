@@ -53,8 +53,8 @@ namespace ViridaxGameStudios.AI
             attackSequence.SetNodes(new List<BehaviorNode> {withinAttackRange, lookAtNode, attackNode });
             isDeadNode = new BehaviorAction(DefaultBehaviors.IsDead, rootNode);
             dieNode = new BehaviorAction(DefaultBehaviors.Die, rootNode);
-            setAttack = new BehaviorAction(DefaultBehaviors.AttackTarget, rootNode);
-            setMove = new BehaviorAction(DefaultBehaviors.MoveTarget, rootNode);
+            setAttack = new BehaviorAction(DefaultBehaviors.SetAttackTarget, rootNode);
+            setMove = new BehaviorAction(DefaultBehaviors.SetMoveTarget, rootNode);
 
             attackOrChaseSelector = new Selector();
             attackOrChaseSelector.SetNodes( new List<BehaviorNode> { attackSequence, new Inverter(lookAtNode), moveNode });
@@ -85,7 +85,6 @@ namespace ViridaxGameStudios.AI
         public void Evaluate()
         {
             rootNode.Evaluate();
-
         }
 
         

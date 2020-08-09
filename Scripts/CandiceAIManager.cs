@@ -129,7 +129,7 @@ namespace ViridaxGameStudios.AI
             {
                 if(enableDebug)
                 {
-                    Debug.LogError("Cannot initialise Candice Pathfinding. Please make sure to set the Grid variable");
+                    Debug.LogError("Cannot initialise Candice Pathfinding. Please make sure to set the Grid variable.");
                 }
             }
             

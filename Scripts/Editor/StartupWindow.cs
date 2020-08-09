@@ -17,54 +17,80 @@ namespace ViridaxGameStudios.AI
         }
         private void OnGUI()
         {
-            float width = Screen.width/2 + Screen.width/ 4 + Screen.width / 32;
-            headerRect = new Rect(0, 0, width, 520f);
-            reviewRect = new Rect(0, headerRect.yMax - 100f, width, 100f);
-            patreonRect = new Rect(0, reviewRect.yMax, width, 100f);
-            closeRect = new Rect(0, patreonRect.yMax, width, 100f);
             GUIStyle style = new GUIStyle();
             GUIContent label = new GUIContent();
-            Texture2D image = (Texture2D)Resources.Load("CandiceAI");
+            GUILayout.BeginHorizontal();
+            GUILayout.FlexibleSpace();
+            Texture candiceLogo = Resources.Load<Texture2D>("CandiceLogoWithText");
+            GUILayout.Label(candiceLogo);
+            GUILayout.FlexibleSpace();
+            GUILayout.EndHorizontal();
 
-            GUILayout.BeginArea(headerRect);
-            style.fixedHeight = 400f;
-            label = new GUIContent(image);
-            GUILayout.Label(label, style);
-            GUILayout.EndArea();
-
-
-            EditorGUILayout.BeginVertical();
-            style = new GUIStyle();
+            GUILayout.Space(6);
+            style.normal.textColor = EditorStyles.label.normal.textColor;
             style.fontStyle = FontStyle.Bold;
             style.alignment = TextAnchor.MiddleCenter;
-            GUILayout.BeginArea(reviewRect);
-            label = new GUIContent("Creating this asset took a lot of effort and time. Id really appreciate it if you could leave a review for me on the Asset store.");
+            label = new GUIContent("Thanks for downloading Candice AI for Games.\nIf you like this Plugin, please leave a review on the Asset store.");
             style.wordWrap = true;
+            
+            //style.normal.textColor = Color.gray;
+            style.fontSize = 12;
             GUILayout.Label(label, style);
-
-            if (GUILayout.Button("Leave Review"))
+            GUILayout.Space(4);
+            GUILayout.BeginHorizontal();
+            GUILayout.FlexibleSpace();
+            if (GUILayout.Button(" Leave Review"))
             {
                 Application.OpenURL("https://assetstore.unity.com/packages/slug/148441");
             }
-            GUILayout.EndArea();
-            /*
-            GUILayout.BeginArea(patreonRect);
-            label = new GUIContent("Also, please consider supporting me on Patreon. Your support is what will allow me to continue creating awesome development tools, and ultimately, keep this marvellous asset free.");
-            style.wordWrap = true;
-            GUILayout.Label(label,style);
-            image = (Texture2D)Resources.Load("Patreon");
-            
-            label = new GUIContent("Become a Patron", image);
-            if (GUILayout.Button(label))
+            GUILayout.FlexibleSpace();
+            GUILayout.EndHorizontal();
+
+            GUILayout.Space(10);
+            style.fontSize = 14;
+            GUILayout.Label("Support", style);
+            GUILayout.BeginHorizontal();
+            GUILayout.FlexibleSpace();
+            Texture logoDiscord = Resources.Load<Texture2D>("discord");
+            if(GUILayout.Button(logoDiscord))
             {
-                Application.OpenURL("https://www.patreon.com/natubeast");
+                Application.OpenURL("https://discord.gg/GUtK6EH");
             }
-            GUILayout.Space(16f);
+            Texture logoFB = Resources.Load<Texture2D>("facebook");
+            if(GUILayout.Button(logoFB))
+            {
+                Application.OpenURL("https://www.facebook.com/viridaxgamestudios");
+            }
+            Texture logoEmail = Resources.Load<Texture2D>("email");
+            if(GUILayout.Button(logoEmail))
+            {
+                Application.OpenURL("mailto:support@viridaxgamestudios.co.za?subject="+CandiceConfig.APP_NAME);
+            }
+            GUILayout.FlexibleSpace();
+            GUILayout.EndHorizontal();
+
+            GUILayout.Space(6);
+            /*
+            GUILayout.Label("Documentation & Tutorials", style);
+            GUILayout.BeginHorizontal();
+            GUILayout.FlexibleSpace();
+            Texture logoWeb = Resources.Load<Texture2D>("web");
+            if(GUILayout.Button(logoWeb))
+            {
+                Application.OpenURL("");
+            }
+            Texture logoYoutube = Resources.Load<Texture2D>("youtube");
+            if(GUILayout.Button(logoYoutube))
+            {
+                Application.OpenURL("https://www.youtube.com/channel/UC4mEN2a8tXhL32W1ll_h8EQ");
+            }
+            GUILayout.FlexibleSpace();
+            GUILayout.EndHorizontal();
             
-            GUILayout.EndArea();
+            GUILayout.Space(10);
             */
-            GUILayout.BeginArea(closeRect);
-            shouldLoad = EditorGUILayout.Toggle("Show on startup", shouldLoad);
+            GUILayout.BeginHorizontal();
+            GUILayout.FlexibleSpace();
             if (GUILayout.Button("Close"))
             {
                 if (!shouldLoad)
@@ -77,9 +103,14 @@ namespace ViridaxGameStudios.AI
                 }
                 Close();
             }
-            GUILayout.EndArea();
-            EditorGUILayout.EndVertical();
+            GUILayout.FlexibleSpace();
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
+            shouldLoad = EditorGUILayout.Toggle("Show on startup", shouldLoad);
+            GUILayout.EndHorizontal();
         }
+        
     }
 }
 

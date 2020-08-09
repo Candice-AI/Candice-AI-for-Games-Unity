@@ -21,7 +21,7 @@ namespace ViridaxGameStudios.AI
         {
             EditorApplication.update -= Update;
             double time = EditorApplication.timeSinceStartup;
-            if (time < 60)
+            if (time < 40)
             {
                 object obj = LoadFromFile();
 
@@ -47,12 +47,10 @@ namespace ViridaxGameStudios.AI
         {
             if (!EditorApplication.isPlayingOrWillChangePlaymode)
             {
-                EditorApplication.Beep();
-
-                CandiceConfig.isRunning = true;
                 EditorWindow window = EditorWindow.GetWindow<StartupWindow>();
                 window.titleContent = new GUIContent(CandiceConfig.APP_NAME);
-                window.minSize = new Vector2(760, 520);
+                window.minSize = new Vector2(700, 550);
+                window.maxSize = new Vector2(700, 550);
                 window.Show();
             }
         }
@@ -97,7 +95,7 @@ namespace ViridaxGameStudios.AI
             }
             catch (Exception e)
             {
-                Debug.Log("ERROR: " + e.Message);
+                Debug.Log("CANDICE AUTORUN ERROR: " + e.Message);
             }
             return obj;
         }

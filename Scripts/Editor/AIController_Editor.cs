@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 using UnityEditorInternal;
+using System;
 
 namespace ViridaxGameStudios.AI
 {
@@ -12,19 +13,14 @@ namespace ViridaxGameStudios.AI
         #region variables
         private AIController character;
         private SerializedObject soTarget;
-        string[] arrDetectionTypes = { "Sphere", "Box" };
-        string[] arrAITypes = { "Aggressive", "Passive"};
+
         string[] arrAttackTypes = {"Melee", "Range"};
-        string[] arrTabs = { "AI Settings", "Stats", "Relationships", "Movement", "Detection", "Combat" };
-        string[] arrMoveType = {"Basic", "Obstacle Avoidance", "Pathfind"};
-        string[] arrMoveType2D = { "Basic"};
-        string[] arrPathfindSource = { "Candice", "Unity NavMesh" };
-        string[] arrPatrolType = { "Patrol Points", "Waypoints" };
-        SerializedProperty attackProjectile;
-        SerializedProperty statStrength;
-        SerializedProperty statIntelligence;
-        SerializedProperty cam;
+        string[] arrSettingsTabs = { "General", "Key Mapping", "Relationships" };
+        //string[] arrTabs = { "AI Settings", "Stats", "Detection", "Movement", "Combat", "Animation" };
+        GUIContent[] arrTabs = new GUIContent[6];
+
         private int tabIndex;
+        private int settingTabIndex;
         private int enemyTagCount;
         private int patrolPointCount;
         private int allyTagCount;
@@ -33,7 +29,6 @@ namespace ViridaxGameStudios.AI
         bool showAllyTags = false;
         bool showEnemyTags = false;
         bool showStrength = true;
-        
 
         #endregion
 
@@ -43,14 +38,16 @@ namespace ViridaxGameStudios.AI
             //Store a reference to the AI Controller script
             character = (AIController)target;
             soTarget = new SerializedObject(character);
-            attackProjectile = soTarget.FindProperty("attackProjectile");
-            statStrength = soTarget.FindProperty("statStrength");
-            statIntelligence = soTarget.FindProperty("statIntelligence");
-            cam = soTarget.FindProperty("cam");
             
             guiStyle.fontSize = 14;
             guiStyle.fontStyle = FontStyle.Bold;
 
+            arrTabs[0] = new GUIContent("Settings",(Texture2D)Resources.Load("Settings"));
+            arrTabs[1] = new GUIContent("  Stats",(Texture2D)Resources.Load("Stats"));
+            arrTabs[2] = new GUIContent("Detection", (Texture2D)Resources.Load("Detection"));
+            arrTabs[3] = new GUIContent("Movement", (Texture2D)Resources.Load("Movement"));
+            arrTabs[4] = new GUIContent("Combat", (Texture2D)Resources.Load("Combat"));
+            arrTabs[5] = new GUIContent("Animation", (Texture2D)Resources.Load("Animation"));
 
         }
 
@@ -62,15 +59,25 @@ namespace ViridaxGameStudios.AI
             GUILayout.FlexibleSpace();
             
             style.normal.textColor = Color.red;
-            Texture2D image = (Texture2D)Resources.Load("LogoScaled");
+            Texture2D image = (Texture2D)Resources.Load("CandiceLogo");
             GUIContent label = new GUIContent(image);
             GUILayout.Label(label);
 
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
+            GUILayout.BeginHorizontal();
+            GUILayout.FlexibleSpace();
+
+            label = new GUIContent("Candice AI Controller");
+            guiStyle.normal.textColor = EditorStyles.label.normal.textColor;
+            GUILayout.Label(label, guiStyle);
+            GUILayout.FlexibleSpace();
+            GUILayout.EndHorizontal();
+            GUILayout.Space(6);
             EditorGUI.BeginChangeCheck();
 
             //tabIndex = GUILayout.Toolbar(tabIndex, arrTabs);
+            
             tabIndex = GUILayout.SelectionGrid(tabIndex, arrTabs, 3);
             
             if (EditorGUI.EndChangeCheck())
@@ -90,17 +97,16 @@ namespace ViridaxGameStudios.AI
 
                     break;
                 case 2:
-                    
-                    DrawRelationshipGUI();
+                    DrawDetectionGUI();
                     break;
                 case 3:
                     DrawMovementGUI();
                     break;
                 case 4:
-                    DrawDetectionGUI();
+                    DrawCombatGUI();
                     break;
                 case 5:
-                    DrawCombatGUI();
+                    DrawAnimationGUI();
                     break;
             }
             if (EditorGUI.EndChangeCheck())
@@ -111,11 +117,51 @@ namespace ViridaxGameStudios.AI
 
         }
 
+        
+
         #region DRAW TAB REGION
         void DrawAISettingGUI()
         {
-            GUIContent label;
+            
+            EditorGUI.BeginChangeCheck();
 
+            //tabIndex = GUILayout.Toolbar(tabIndex, arrTabs);
+            settingTabIndex = GUILayout.SelectionGrid(settingTabIndex, arrSettingsTabs, 3);
+
+            if (EditorGUI.EndChangeCheck())
+            {
+                GUI.FocusControl(null);
+            }
+            GUILayout.Space(8);
+            GUILayout.BeginVertical("box");
+            EditorGUI.BeginChangeCheck();
+            switch (settingTabIndex)
+            {
+                case 0:
+                    DrawGeneralGUI();
+                    break;
+                case 1:
+                    DrawKeyMapGUI();
+
+                    break;
+                case 2:
+                    DrawRelationshipGUI();
+                    break;
+            }
+            GUILayout.EndVertical();
+            if (EditorGUI.EndChangeCheck())
+            {
+            }
+            
+            
+
+
+
+        }
+
+        private void DrawGeneralGUI()
+        {
+            GUIContent label;
             label = new GUIContent("Agent ID", "The unique ID of the agent. Automatically generated at runtime.");
             EditorGUILayout.TextField(label, character.agentID.ToString());
             label = new GUIContent("Is 3D", "Uncheck if this character is in 2D space.");
@@ -138,48 +184,7 @@ namespace ViridaxGameStudios.AI
             character.enableRagdoll = EditorGUILayout.Toggle(label, character.enableRagdoll);
             label = new GUIContent("Enable Ragdoll on Death", "Enable ragdoll when the character dies.");
             character.enableRagdollOnDeath = EditorGUILayout.Toggle(label, character.enableRagdollOnDeath);
-            
-
-
-
         }
-        void DrawStatsGUI()
-        {
-            GUIContent label = new GUIContent("Overview Stats", "");
-            GUIContent label2 = new GUIContent("", "");
-            GUILayout.Label(label, guiStyle);
-
-            label = new GUIContent("Base Hit Points", "The base hit points of the character after all modifiers are added.");
-            character.statHitPoints.baseValue = EditorGUILayout.FloatField(label, character.statHitPoints.baseValue);
-
-            label = new GUIContent("Max Hit Points", "The maximum hit points of the character after all modifiers are added.");
-            label2 = new GUIContent(character.statHitPoints.value.ToString());
-            EditorGUILayout.LabelField(label, label2);
-            label = new GUIContent("Current Hit Points", "The current hit points of the character.");
-            label2 = new GUIContent(character.currentHP.ToString());
-
-            EditorGUILayout.LabelField(label, label2);
-            EditorGUILayout.Space();
-            label = new GUIContent("Base Attack Damage", "");
-            character.statAttackDamage.baseValue = EditorGUILayout.FloatField(label, character.statAttackDamage.baseValue);
-
-            label = new GUIContent("Base Movement Speed", "");
-            character.statMoveSpeed.baseValue = EditorGUILayout.FloatField(label, character.statMoveSpeed.baseValue);
-            EditorGUILayout.Space();
-
-            //label = new GUIContent("Stat Multiplier", "This is used to calculate the attack damage based on your Strength, Intelligence and Faith. This variable can be changed during runtime.");
-            //character.m_StatMultiplier = EditorGUILayout.Slider(label, character.m_StatMultiplier, 1f, 10);
-            GUILayout.Label("Attributes", guiStyle);
-            label = new GUIContent(character.statStrength.name);
-            character.statStrength.Draw();
-            character.statIntelligence.Draw();
-            character.statFaith.Draw();
-            character.statHitPoints.Draw();
-            character.statAttackDamage.Draw();
-            character.statAttackRange.Draw();
-            character.statMoveSpeed.Draw();
-        }
-
         void DrawRelationshipGUI()
         {
             GUIContent label = new GUIContent("Faction", "The faction that this character belongs to.");
@@ -215,7 +220,7 @@ namespace ViridaxGameStudios.AI
 
                     if (character.enemyTags.Contains(tag))
                     {
-                        EditorUtility.DisplayDialog("Basic AI Controller", "Tag '" + tag + "' already added to enemy tags", "OK");
+                        EditorUtility.DisplayDialog("AI Controller", "Tag '" + tag + "' already added to enemy tags", "OK");
                     }
                     else
                     {
@@ -259,7 +264,7 @@ namespace ViridaxGameStudios.AI
 
                     if (character.allyTags.Contains(tag))
                     {
-                        EditorUtility.DisplayDialog("Basic AI Controller", "Tag '" + tag + "' already added to ally tags", "OK");
+                        EditorUtility.DisplayDialog("AI Controller", "Tag '" + tag + "' already added to ally tags", "OK");
                     }
                     else
                     {
@@ -270,6 +275,44 @@ namespace ViridaxGameStudios.AI
                 }
             }
         }
+        void DrawStatsGUI()
+        {
+            GUIContent label = new GUIContent("Overview Stats", "");
+            GUIContent label2 = new GUIContent("", "");
+            GUILayout.Label(label, guiStyle);
+
+            label = new GUIContent("Base Hit Points", "The base hit points of the character after all modifiers are added.");
+            character.statHitPoints.baseValue = EditorGUILayout.FloatField(label, character.statHitPoints.baseValue);
+
+            label = new GUIContent("Max Hit Points", "The maximum hit points of the character after all modifiers are added.");
+            label2 = new GUIContent(character.statHitPoints.value.ToString());
+            EditorGUILayout.LabelField(label, label2);
+            label = new GUIContent("Current Hit Points", "The current hit points of the character.");
+            label2 = new GUIContent(character.currentHP.ToString());
+
+            EditorGUILayout.LabelField(label, label2);
+            EditorGUILayout.Space();
+            label = new GUIContent("Base Attack Damage", "");
+            character.statAttackDamage.baseValue = EditorGUILayout.FloatField(label, character.statAttackDamage.baseValue);
+
+            label = new GUIContent("Base Movement Speed", "");
+            character.statMoveSpeed.baseValue = EditorGUILayout.FloatField(label, character.statMoveSpeed.baseValue);
+            EditorGUILayout.Space();
+
+            //label = new GUIContent("Stat Multiplier", "This is used to calculate the attack damage based on your Strength, Intelligence and Faith. This variable can be changed during runtime.");
+            //character.m_StatMultiplier = EditorGUILayout.Slider(label, character.m_StatMultiplier, 1f, 10);
+            GUILayout.Label("Attributes", guiStyle);
+            label = new GUIContent(character.statStrength.name);
+            character.statStrength.Draw();
+            character.statIntelligence.Draw();
+            character.statFaith.Draw();
+            character.statHitPoints.Draw();
+            character.statAttackDamage.Draw();
+            character.statAttackRange.Draw();
+            character.statMoveSpeed.Draw();
+        }
+
+        
         #endregion
 
         void DrawMovementGUI()
@@ -438,6 +481,18 @@ namespace ViridaxGameStudios.AI
 
 
             }
+        private void DrawAnimationGUI()
+        {
+            GUILayout.BeginHorizontal();
+            GUILayout.FlexibleSpace();
+
+            GUIContent label = new GUIContent("Under Construction");
+            guiStyle.normal.textColor = EditorStyles.label.normal.textColor;
+            GUILayout.Label(label, guiStyle);
+            GUILayout.FlexibleSpace();
+            GUILayout.EndHorizontal();
+        }
+            
         void OnSceneGUI()
         {
             if(character != null)
