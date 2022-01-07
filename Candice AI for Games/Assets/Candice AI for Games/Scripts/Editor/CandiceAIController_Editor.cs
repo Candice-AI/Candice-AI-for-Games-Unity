@@ -1,0 +1,641 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEditor;
+using UnityEditorInternal;
+using UnityEngine;
+namespace CandiceAIforGames.AI.Editors
+{
+    [CustomEditor(typeof(CandiceAIController))]
+    public class CandiceAIController_Editor : Editor
+    {
+
+        private CandiceAIController character;
+        private SerializedObject soTarget;
+        GUIContent[] arrTabs = new GUIContent[6];
+        string[] arrSettingsTabs = { "General", "Relationships" };
+        private int tabIndex;
+        private int settingTabIndex;
+        GUIStyle guiStyle = new GUIStyle();
+        private bool showTags = true;
+        bool showAllyTags = true;
+        bool showEnemyTags = true;
+        private int tagCount = 0;
+        private int enemyTagCount;
+        private int allyTagCount;
+        void OnEnable()
+        {
+            //Store a reference to the AI Controller script
+            character = (CandiceAIController)target;
+            soTarget = new SerializedObject(character);
+            guiStyle.fontSize = 14;
+            guiStyle.fontStyle = FontStyle.Bold;
+
+            arrTabs[0] = new GUIContent("Settings", (Texture2D)Resources.Load("Settings"));
+            arrTabs[1] = new GUIContent("  Stats", (Texture2D)Resources.Load("Stats"));
+            arrTabs[2] = new GUIContent("Detection", (Texture2D)Resources.Load("Detection"));
+            arrTabs[3] = new GUIContent("Movement", (Texture2D)Resources.Load("Movement"));
+            arrTabs[4] = new GUIContent("Combat", (Texture2D)Resources.Load("Combat"));
+            arrTabs[5] = new GUIContent("Animation", (Texture2D)Resources.Load("Animation"));
+
+        }
+
+        public override void OnInspectorGUI()
+        {
+            //base.OnInspectorGUI();
+            GUIStyle style = new GUIStyle();
+            GUILayout.BeginHorizontal();
+            GUILayout.FlexibleSpace();
+
+            style.normal.textColor = Color.red;
+            Texture2D image = (Texture2D)Resources.Load("CandiceLogo");
+            GUIContent label = new GUIContent(image);
+            GUILayout.Label(label);
+
+            GUILayout.FlexibleSpace();
+            GUILayout.EndHorizontal();
+            GUILayout.BeginHorizontal();
+            GUILayout.FlexibleSpace();
+
+            label = new GUIContent("Candice AI Controller");
+            guiStyle.normal.textColor = EditorStyles.label.normal.textColor;
+            GUILayout.Label(label, guiStyle);
+            GUILayout.FlexibleSpace();
+            GUILayout.EndHorizontal();
+            GUILayout.Space(6);
+            EditorGUI.BeginChangeCheck();
+
+            //tabIndex = GUILayout.Toolbar(tabIndex, arrTabs);
+
+            tabIndex = GUILayout.SelectionGrid(tabIndex, arrTabs, 3);
+
+            if (EditorGUI.EndChangeCheck())
+            {
+                GUI.FocusControl(null);
+            }
+            GUILayout.Space(8);
+            GUILayout.BeginVertical("box");
+            EditorGUI.BeginChangeCheck();
+            switch (tabIndex)
+            {
+                case 0:
+                    DrawAISettingGUI();
+                    break;
+                case 1:
+                    //DrawStatsGUI();
+
+                    break;
+                case 2:
+                    DrawDetectionGUI();
+                    break;
+                case 3:
+                    DrawMovementGUI();
+                    break;
+                case 4:
+                    DrawCombatGUI();
+                    break;
+                case 5:
+                    DrawAnimationGUI();
+                    break;
+            }
+            if (EditorGUI.EndChangeCheck())
+            {
+
+            }
+
+            GUILayout.EndVertical();
+
+        }
+
+        void DrawAISettingGUI()
+        {
+
+            EditorGUI.BeginChangeCheck();
+
+            //tabIndex = GUILayout.Toolbar(tabIndex, arrTabs);
+            settingTabIndex = GUILayout.SelectionGrid(settingTabIndex, arrSettingsTabs, 2);
+
+            if (EditorGUI.EndChangeCheck())
+            {
+                GUI.FocusControl(null);
+            }
+            GUILayout.Space(8);
+            GUILayout.BeginVertical("box");
+            EditorGUI.BeginChangeCheck();
+            switch (settingTabIndex)
+            {
+                case 0:
+                    DrawGeneralGUI();
+                    break;
+                case 1:
+                    DrawRelationshipGUI();
+                    break;
+            }
+            GUILayout.EndVertical();
+            if (EditorGUI.EndChangeCheck())
+            {
+            }
+
+
+
+
+
+        }
+
+        private void DrawGeneralGUI()
+        {
+            GUIContent label;
+            label = new GUIContent("Agent ID", "The unique ID of the agent. Automatically generated at runtime.");
+            EditorGUILayout.TextField(label, character.AgentID.ToString());
+            label = new GUIContent("Max Hit Points", ".");
+            character.MaxHitPoints = EditorGUILayout.FloatField(label, character.MaxHitPoints);
+            label = new GUIContent("Current Hit Points", "");
+            character.HitPoints = EditorGUILayout.FloatField(label, character.HitPoints);
+            label = new GUIContent("Is 3D", "Uncheck if this character is in 2D space.");
+            character.Is3D = EditorGUILayout.Toggle(label, character.Is3D);
+            label = new GUIContent("Health Bar", "");
+            //character.healthBar = (HealthBarScript)EditorGUILayout.ObjectField(label, character.healthBar, typeof(HealthBarScript), true);
+            label = new GUIContent("Behavior Tree", "");
+            //character._behaviorTree = (BehaviorTree)EditorGUILayout.ObjectField(label, character._behaviorTree, typeof(BehaviorTree), true);
+            label = new GUIContent("Stop Behavior Tree", "Stops the current active behavior tree from executing.");
+            //character._stopBehaviorTree = EditorGUILayout.Toggle(label, character._stopBehaviorTree);
+            //label = new GUIContent("Is Player Controlled", "Whether or not this AI is controlled by the player.");
+            //character.isPlayerControlled = EditorGUILayout.Toggle(label, character.isPlayerControlled);
+            label = new GUIContent("Camera", "The Main Camera GameObject.");
+            character.MainCamera = (Camera)EditorGUILayout.ObjectField(label, character.MainCamera, typeof(Camera), true);
+            label = new GUIContent("Rig", "The rig that contains all the bones of the character. This is a prerequisite for enabling ragdoll.");
+            character.Rig = (GameObject)EditorGUILayout.ObjectField(label, character.Rig, typeof(GameObject), true);
+            label = new GUIContent("Enable ragdoll", "Enable ragdoll from the start.");
+            character.EnableRagdoll = EditorGUILayout.Toggle(label, character.EnableRagdoll);
+            //label = new GUIContent("Enable Ragdoll on Death", "Enable ragdoll when the character dies.");
+            //character.enableRagdollOnDeath = EditorGUILayout.Toggle(label, character.enableRagdollOnDeath);
+        }
+        void DrawRelationshipGUI()
+        {
+            GUIContent label = new GUIContent("Faction", "The faction that this character belongs to.");
+            //character.faction = (Faction)EditorGUILayout.ObjectField(label, character.faction, typeof(Faction), true);
+            label = new GUIContent("Allies:", "All the Tags that the character will consider as an ally. NOTE: The default reaction is to follow.");
+            EditorGUILayout.LabelField(label, guiStyle);
+            showAllyTags = EditorGUILayout.Foldout(showAllyTags, label);
+            if (showAllyTags)
+            {
+                allyTagCount = character.AllyTags.Count;
+                allyTagCount = EditorGUILayout.IntField("Size: ", allyTagCount);
+
+                if (allyTagCount != character.AllyTags.Count)
+                {
+                    int i = 0;
+                    while (allyTagCount > character.AllyTags.Count)
+                    {
+                        character.AllyTags.Add("Ally" + i);
+                        i++;
+                    }
+                    while (allyTagCount < character.AllyTags.Count)
+                    {
+                        character.AllyTags.RemoveAt(character.AllyTags.Count - 1);
+                    }
+                }
+
+                for (int i = 0; i < character.AllyTags.Count; i++)
+                {
+                    EditorGUILayout.BeginHorizontal();
+                    EditorGUILayout.LabelField("Element " + i);
+                    string tag = "";
+                    tag = EditorGUILayout.TagField(character.AllyTags[i]);
+
+                    if (character.EnemyTags.Contains(tag))
+                    {
+                        EditorUtility.DisplayDialog("AI Controller", "Tag '" + tag + "' already added to enemy tags", "OK");
+                    }
+                    else
+                    {
+                        character.AllyTags[i] = tag;
+                    }
+                    EditorGUILayout.EndHorizontal();
+                    EditorGUILayout.Space();
+                }
+            }
+            //Enemy Relationships
+            EditorGUILayout.Space();
+            EditorGUILayout.Space();
+            label = new GUIContent("Enemies", "All the Tags that the character will consider as an enemy. NOTE: The default reaction is to attack.");
+            EditorGUILayout.LabelField(label, guiStyle);
+            showEnemyTags = EditorGUILayout.Foldout(showEnemyTags, label);
+            if (showEnemyTags)
+            {
+                enemyTagCount = character.EnemyTags.Count;
+                enemyTagCount = EditorGUILayout.IntField("Size", enemyTagCount);
+
+                if (enemyTagCount != character.EnemyTags.Count)
+                {
+                    int i = 0;
+                    while (enemyTagCount > character.EnemyTags.Count)
+                    {
+                        character.EnemyTags.Add("Enemy" + i);
+                        i++;
+                    }
+                    while (enemyTagCount < character.EnemyTags.Count)
+                    {
+                        character.EnemyTags.RemoveAt(character.EnemyTags.Count - 1);
+                    }
+                }
+
+                for (int i = 0; i < character.EnemyTags.Count; i++)
+                {
+                    EditorGUILayout.BeginHorizontal();
+                    EditorGUILayout.LabelField("Element " + i);
+                    string tag = "";
+                    tag = EditorGUILayout.TagField(character.EnemyTags[i]);
+
+                    if (character.AllyTags.Contains(tag))
+                    {
+                        EditorUtility.DisplayDialog("AI Controller", "Tag '" + tag + "' already added to ally tags", "OK");
+                    }
+                    else
+                    {
+                        character.EnemyTags[i] = tag;
+                    }
+                    EditorGUILayout.EndHorizontal();
+                    EditorGUILayout.Space();
+                }
+            }
+        }
+
+        void DrawDetectionGUI()
+        {
+            //do this last!  it will loop over the properties on your object and apply any it needs to, no if necessary!
+
+
+
+
+            GUIContent label;
+            GUILayout.Label("Detection Settings", guiStyle);
+
+            label = new GUIContent("Sensor Type", "The sensor type this agent will use. Note: Sphere sensor also works with 2D.");
+            character.SensorType = (SensorType)EditorGUILayout.EnumPopup(label, character.SensorType);
+
+            label = new GUIContent("Perception Mask", "Layers that the agent must ignore");
+            LayerMask tempMask = EditorGUILayout.MaskField(label, InternalEditorUtility.LayerMaskToConcatenatedLayersMask(character.PerceptionMask), InternalEditorUtility.layers);
+            character.PerceptionMask = InternalEditorUtility.ConcatenatedLayersMaskToLayerMask(tempMask);
+            label = new GUIContent("Detection Radius", "The radius which the character can detect other objects.");
+            character.DetectionRadius = EditorGUILayout.FloatField(label, character.DetectionRadius);
+            label = new GUIContent("Detection Height", "The height at which the agent can detect objects.");
+            character.DetectionHeight = EditorGUILayout.FloatField(label, character.DetectionHeight);
+            label = new GUIContent("Line of Sight", "The angle, in degrees, in front of the agent where the it will be able to see objects.");
+            character.LineOfSight = EditorGUILayout.FloatField(label, character.LineOfSight);
+
+            label = new GUIContent("Detection Tags:", "All the Tags that the agent will detect.");
+            EditorGUILayout.LabelField(label, guiStyle);
+            showTags = EditorGUILayout.Foldout(showTags, label);
+
+            if (showTags)
+            {
+                tagCount = character.ObjectTags.Count;
+                tagCount = EditorGUILayout.IntField("Size: ", tagCount);
+
+                if (tagCount != character.ObjectTags.Count)
+                {
+                    int i = 0;
+                    while (tagCount > character.ObjectTags.Count)
+                    {
+                        character.ObjectTags.Add("Tag " + i);
+                        i++;
+                    }
+                    while (tagCount < character.ObjectTags.Count)
+                    {
+                        character.ObjectTags.RemoveAt(character.ObjectTags.Count - 1);
+                    }
+                }
+                for (int i = 0; i < character.ObjectTags.Count; i++)
+                {
+                    EditorGUILayout.BeginHorizontal();
+                    EditorGUILayout.LabelField("Element " + i);
+                    string tag = "";
+                    tag = EditorGUILayout.TagField(character.ObjectTags[i]);
+
+                    if (character.ObjectTags.Contains(tag))
+                    {
+                        //EditorUtility.DisplayDialog("AI Controller", "Tag '" + tag + "' already added to object tags list", "OK");
+                    }
+                    else
+                    {
+                        character.ObjectTags[i] = tag;
+                    }
+                    EditorGUILayout.EndHorizontal();
+                    EditorGUILayout.Space();
+                }
+
+
+
+            }
+
+            GUILayout.Label("Obstacle Avoidance Settings", guiStyle);
+            label = new GUIContent("OA Distance", "The maximum distance that the agent will start to avoid detected objects.");
+            character.ObstacleAvoidaceDistance = EditorGUILayout.FloatField(label, character.ObstacleAvoidaceDistance);
+            label = new GUIContent("OA AOE", "The Area Of Effect around the agent that must not touch obstacles");
+            character.ObstacleAvoidanceAOE = EditorGUILayout.FloatField(label, character.ObstacleAvoidanceAOE);
+
+            
+        }
+
+        void DrawMovementGUI()
+        {
+            //Detection and Head Look Settings
+            GUILayout.Label("General Movement Settings", guiStyle);
+            GUIContent label;
+            EditorGUILayout.ObjectField("Move Target", character.MoveTarget, typeof(GameObject), true);
+            EditorGUILayout.ObjectField("Main Target", character.MainTarget, typeof(GameObject), true);
+            label = new GUIContent("Base Movement Speed", "The base speed at which the agent will move at.");
+            character.MoveSpeed = EditorGUILayout.FloatField(label, character.MoveSpeed);
+            //label = new GUIContent("Base Rotation Speed", "The base speed at which the agent rotate to face its target.");
+            //character.rotationSpeed = EditorGUILayout.FloatField(label, character.rotationSpeed);
+            GUILayout.Space(16);
+            //label = new GUIContent("Movement Type", "Choose the movement type that this AI agent will use.");
+            //character.moveType = (MovementType)EditorGUILayout.EnumPopup(label, character.moveType);
+            //label = new GUIContent("Pathfind Source", "Choose the pathfind source that this AI agent will use.");
+            //character.pathfindSource = (PathfindSource)EditorGUILayout.EnumPopup(label, character.pathfindSource);
+            /*if (character.pathfindSource == PathfindSource.Candice)
+            {
+                GUILayout.BeginHorizontal();
+                GUILayout.FlexibleSpace();
+                GUILayout.BeginVertical("box");
+                GUILayout.BeginHorizontal();
+                GUILayout.FlexibleSpace();
+                GUILayout.Label("Candice Pathfind Settings", EditorStyles.boldLabel);
+                GUILayout.FlexibleSpace();
+                GUILayout.EndHorizontal();
+                label = new GUIContent("Turn Speed", "The speed the agent will turn between waypoints by when pathfinding.");
+                character._turnSpeed = EditorGUILayout.FloatField(label, character._turnSpeed);
+                label = new GUIContent("Turn Distance", "The ditance the agent will start to turn while moving to the next node.");
+                character._turnDist = EditorGUILayout.FloatField(label, character._turnDist);
+                label = new GUIContent("Stopping Distance", "How far away the agent will start to come to a halt.");
+                character._stoppingDist = EditorGUILayout.FloatField(label, character._stoppingDist);
+                label = new GUIContent("Minimum Path Update Time", "Minimum time it will take for the agent before attempting to request a new updated path from Candice.");
+                character._minPathUpdateTime = EditorGUILayout.FloatField(label, character._minPathUpdateTime);
+                label = new GUIContent("Path Update Move Threshold", "Minimum distance the target can move by before requesting a new Updated path from Candice.");
+                character._pathUpdateMoveThreshold = EditorGUILayout.FloatField(label, character._pathUpdateMoveThreshold);
+                GUILayout.EndVertical();
+                GUILayout.FlexibleSpace();
+                GUILayout.EndHorizontal();
+            }*/
+
+            GUILayout.Space(16);
+            GUILayout.Label("Head Look Settings", guiStyle);
+            label = new GUIContent("Enable Head Look:", "Allow the agent to dynamically look at objects.");
+            character.EnableHeadLook = EditorGUILayout.Toggle(label, character.EnableHeadLook);
+            label = new GUIContent("Head Look target: ");
+            character.HeadLookTarget = (GameObject)EditorGUILayout.ObjectField(label, character.HeadLookTarget, typeof(GameObject), true);
+            label = new GUIContent("Head Look Intensity:", "How quickly the agent will turn their head to look at objects.");
+            character.HeadLookIntensity = EditorGUILayout.Slider(label, character.HeadLookIntensity, 0f, 1f);
+
+            //Patrol Settings
+            EditorGUILayout.Space();
+            EditorGUILayout.Space();
+            //GUIContent label = new GUIContent("Patrol Settings");
+
+            //EditorGUILayout.LabelField();
+            /*EditorGUILayout.LabelField("Patrol/Waypoint Settings", guiStyle);
+            label = new GUIContent("Patrol Type", "");
+            character._patrolType = (PatrolType)EditorGUILayout.EnumPopup(label, character._patrolType);
+            character._isPatrolling = EditorGUILayout.Toggle("Is Patrolling", character._isPatrolling);
+            label = new GUIContent("Patrol In Order:", "Whether or not the character should patrol each point in order of the list. False will allow the character to patrol randomly.");
+            if (character._patrolType == PatrolType.PatrolPoints)
+            {
+                character._patrolInOrder = EditorGUILayout.Toggle(label, character._patrolInOrder);
+                label = new GUIContent("Patrol Points:", "The points in the gameworld where you want the character to patrol. They can be anything, even empty gameObjects. Note: Ensure each patrol point is tagged as 'PatrolPoint'");
+
+                patrolPointCount = character._patrolPoints.Count;
+                showPatrolPoints = EditorGUILayout.Foldout(showPatrolPoints, label);
+                if (showPatrolPoints)
+                {
+                    label = new GUIContent("Size:");
+                    patrolPointCount = EditorGUILayout.IntField(label, patrolPointCount);
+
+                    if (patrolPointCount != character._patrolPoints.Count)
+                    {
+                        while (patrolPointCount > character._patrolPoints.Count)
+                        {
+                            character._patrolPoints.Add(null);
+                        }
+                        while (patrolPointCount < character._patrolPoints.Count)
+                        {
+                            character._patrolPoints.RemoveAt(character._patrolPoints.Count - 1);
+                        }
+                    }
+                    //EditorGUILayout.Space();
+                    for (int i = 0; i < character._patrolPoints.Count; i++)
+                    {
+                        EditorGUILayout.BeginHorizontal();
+                        EditorGUILayout.LabelField("Element " + i);
+                        character._patrolPoints[i] = (GameObject)EditorGUILayout.ObjectField(character._patrolPoints[i], typeof(GameObject), true);
+                        EditorGUILayout.EndHorizontal();
+                        //EditorGUILayout.Space();
+                    }
+                }
+            }
+            else if (character._patrolType == PatrolType.Waypoints)
+            {
+                label = new GUIContent("Waypoint:", "The first Waypoint that the agent will follow.");
+
+                character._waypoint = (Waypoint)EditorGUILayout.ObjectField(label, character._waypoint, typeof(Waypoint), true);
+            }*/
+
+            /*
+            */
+        }
+
+        void DrawCombatGUI()
+        {
+            GUILayout.Label("Attack Settings", guiStyle);
+            GUIContent label = new GUIContent("Attack Type", "");
+            character.AttackType = (AttackType)EditorGUILayout.EnumPopup(label, character.AttackType);
+            label = new GUIContent("Attack Range", "The range that the AI will start attacking enemies.");
+            character.AttackRange = EditorGUILayout.FloatField(label, character.AttackRange);
+            label = new GUIContent("Attack Projectile", "The projectile that the agent will fire.");
+            character.Projectile = (GameObject)EditorGUILayout.ObjectField(label, character.Projectile, typeof(GameObject), true);
+
+            label = new GUIContent("Projectile Spawn Position", "The point where the projectile will spawn. e.g the hand for a spell, or the bow for an arrow.");
+            character.ProjectileSpawnPos = (Transform)EditorGUILayout.ObjectField(label, character.ProjectileSpawnPos, typeof(Transform), true);
+
+            //character.m_DamageAngle = EditorGUILayout.Slider("Damage Angle:", character.m_DamageAngle, 0, 360f);
+            label = new GUIContent("Has Attack Animation", "Whether or not this agent has an attack animation.");
+            character.HasAttackAnimation = EditorGUILayout.Toggle(label, character.HasAttackAnimation);
+            label = new GUIContent("Attack Speed", "How many attacks per second the agent will deal");
+            character.AttackSpeed = EditorGUILayout.FloatField(label, character.AttackSpeed);
+            //label = new GUIContent("Auto Attack", "");
+            //character.autoAttack = EditorGUILayout.Toggle(label, character.autoAttack);
+            //label = new GUIContent("Click To Attack", "If true, the agent will only attack when a valid object is clicked on. Only works if the agent is Player Controlled.");
+            //character.clickToAttack = EditorGUILayout.Toggle(label, character.clickToAttack);
+
+
+
+
+        }
+
+        private void DrawAnimationGUI()
+        {
+            /*
+            GUILayout.BeginHorizontal();
+            GUILayout.FlexibleSpace();
+
+            GUIContent label = new GUIContent("Under Construction");
+            guiStyle.normal.textColor = EditorStyles.label.normal.textColor;
+            GUILayout.Label(label, guiStyle);
+            GUILayout.FlexibleSpace();
+            GUILayout.EndHorizontal();
+            */
+
+            GUIContent label;
+            label = new GUIContent("Has Animations", "Whether or not this agent has any animations (e.g move, jump, attack...)");
+            character.HasAnimations = EditorGUILayout.Toggle(label, character.HasAnimations);
+
+            label = new GUIContent("Animation Type", "Code Based: The agent will directly play the animations within the animator controller, by using their names.\nTransition Based: The agent will use the transitions within the animator controller to change states between different animations.");
+            character.AnimationType = (AnimationType)EditorGUILayout.EnumPopup(label, character.AnimationType);
+            if (character.HasAnimations)
+            {
+                label = new GUIContent("Animation Transitions", "The names of the animation transitions within the animator controller. Note: only applicable if the Animation type is TransitionBased.");
+                GUILayout.Label(label, guiStyle);
+                label = new GUIContent("Idle Transition Parameter", "");
+                character.IdleTransitionParameter = EditorGUILayout.TextField(label, character.IdleTransitionParameter);
+                label = new GUIContent("Move Transition Parameter", "");
+                character.MoveTransitionParameter = EditorGUILayout.TextField(label, character.MoveTransitionParameter);
+                label = new GUIContent("Run Transition Parameter", "");
+                character.RunTransitionParameter = EditorGUILayout.TextField(label, character.RunTransitionParameter);
+                label = new GUIContent("Jump Transition Parameter", "");
+                character.JumpTransitionParameter = EditorGUILayout.TextField(label, character.JumpTransitionParameter);
+                label = new GUIContent("Attack Transition Parameter", "");
+                character.AttackTransitionParameter = EditorGUILayout.TextField(label, character.AttackTransitionParameter);
+                label = new GUIContent("Dead Transition Parameter", "");
+                character.DeadTransitionParameter = EditorGUILayout.TextField(label, character.DeadTransitionParameter);
+                GUILayout.Space(8);
+                label = new GUIContent("Animation Names", "The names of the animations within the animator controller. Note: Only applicable if the Animation type is CodeBased and the Animation Rig Type is Legacy.");
+                GUILayout.Label(label, guiStyle);
+                label = new GUIContent("Idle Anim Parameter", "");
+                character.IdleAnimationName = EditorGUILayout.TextField(label, character.IdleAnimationName);
+                label = new GUIContent("Move Anim Parameter", "");
+                character.MoveAnimationName = EditorGUILayout.TextField(label, character.MoveAnimationName);
+                label = new GUIContent("Run Anim Parameter", "");
+                character.RunAnimationName = EditorGUILayout.TextField(label, character.RunAnimationName);
+                label = new GUIContent("Jump Anim Parameter", "");
+                character.JumpAnimationName = EditorGUILayout.TextField(label, character.JumpAnimationName);
+                label = new GUIContent("Attack Anim Parameter", "");
+                character.AttackAnimationName = EditorGUILayout.TextField(label, character.AttackAnimationName);
+                label = new GUIContent("Dead Anim Parameter", "");
+                character.DeadAnimationName = EditorGUILayout.TextField(label, character.DeadAnimationName);
+            }
+
+        }
+
+        void OnSceneGUI()
+        {
+            if (character != null)
+            {
+                //Call the necessary methods to draw the discs and handles on the editor
+                if (character.Is3D)
+                {
+                    Color color = Color.cyan;
+                    color.a = 0.25f;
+                    character.DetectionRadius = DrawDiscs(color, character.transform.position, Vector3.up, -character.transform.forward, character.DetectionRadius, "Detection Radius", float.MaxValue);
+                    color = Color.blue;
+                    color.a = 0.25f;
+                    character.LineOfSight = DrawArcs(color, character.transform.position, Vector3.up, character.transform.forward, character.transform.forward, character.LineOfSight, character.DetectionRadius, "Line of Sight");
+                    color = Color.magenta;
+                    color.a = 0.15f;
+                    character.AttackRange = DrawDiscs(color, character.transform.position, Vector3.up, -character.transform.right, character.AttackRange, "Attack Range", character.DetectionRadius);
+                    color = new Color(1f, 0f, 0f, 0.75f);//Red
+                    character.DamageAngle = DrawArcs(color, character.transform.position, Vector3.up, character.transform.forward, character.transform.right, character.DamageAngle, character.AttackRange, "Damage Angle");
+
+                }
+                else
+                {
+                    Color color = new Color(1f, 0f, 0f, 0.15f);//Red
+                    character.DetectionRadius = DrawDiscs(color, character.transform.position, Vector3.forward, character.transform.up, character.DetectionRadius, "Detection Radius", float.MaxValue);
+                    color = new Color(0f, 0f, 1f, 0.35f);//Blue
+                    character.AttackRange = DrawDiscs(color, character.transform.position, Vector3.forward, character.transform.right, character.AttackRange, "Attack Range", character.DetectionRadius);
+                    color = new Color(1f, 0f, 0f, 0.75f);//Red
+                    character.DamageAngle = DrawArcs(color, character.transform.position, Vector3.forward, character.transform.up, character.transform.up, character.DamageAngle, character.AttackRange, "Damage Angle");
+                    color = new Color(0f, 1f, 0f, 0.35f);//Green
+                    character.LineOfSight = DrawArcs(color, character.transform.position, Vector3.forward, character.transform.up, character.transform.forward, character.LineOfSight, character.DetectionRadius, "Line of Sight");
+                }
+
+            }
+
+        }
+
+        protected float DrawDiscs(Color color, Vector3 center, Vector3 normal, Vector3 direction, float radius, float maxValue)
+        {
+            //
+            //Method Name : void DrawDiscs(Color color, Vector3 center, Vector3 normal, Vector3 direction, ref float radius)
+            //Purpose     : This method draws the necessary discs and slider handles in the editor to adjust the attack range and detection radius.
+            //Re-use      : none
+            //Input       : Color color, Vector3 center, Vector3 normal, Vector3 direction, ref float radius
+            //Output      : none
+            //
+            //Draw the disc that will represent the detection radius
+            Handles.color = color;
+            Handles.DrawSolidDisc(center, normal, character.DetectionRadius);
+            Handles.color = new Color(1f, 1f, 0f, 0.75f);
+            Handles.DrawWireDisc(center, normal, radius);
+
+            //Create Slider handles to adjust detection radius properties
+            color.a = 0.5f;
+            Handles.color = color;
+            radius = Handles.ScaleSlider(radius, character.transform.position, direction, Quaternion.identity, radius, 1f);
+            radius = Mathf.Clamp(radius, 1f, maxValue);
+            return radius;
+
+
+        }
+
+        protected float DrawDiscs(Color color, Vector3 center, Vector3 normal, Vector3 direction, float radius, string label, float maxValue)
+        {
+            //
+            //Method Name : void DrawDiscs(Color color, Vector3 center, Vector3 normal, Vector3 direction, ref float radius, string label)
+            //Purpose     : Overloaded method of DrawDiscs(Color color, Vector3 center, Vector3 normal, Vector3 direction, ref float radius)
+            //              that adds the necessary labels. 
+            //Re-use      : DrawDiscs(Color color, Vector3 center, Vector3 normal, Vector3 direction, ref float radius)
+            //Input       : Color color, Vector3 center, Vector3 normal, Vector3 direction, ref float radius, string label
+            //Output      : none
+            //
+
+            radius = DrawDiscs(color, center, normal, direction, radius, maxValue);
+            GUIStyle labelStyle = new GUIStyle();
+            labelStyle.fontSize = 12;
+            labelStyle.normal.textColor = new Color(color.r, color.g, color.b, 1);
+            labelStyle.alignment = TextAnchor.UpperCenter;
+            Handles.Label(character.transform.position + (direction * radius), label, labelStyle);
+            return radius;
+        }
+
+        protected float DrawArcs(Color color, Vector3 center, Vector3 normal, Vector3 direction, Vector3 sliderDirection, float angle, float radius, string label)
+        {
+            //
+            //Method Name : void DrawDiscs(Color color, Vector3 center, Vector3 normal, Vector3 direction, ref float radius)
+            //Purpose     : This method draws the necessary discs and slider handles in the editor to adjust the attack range and detection radius.
+            //Re-use      : none
+            //Input       : Color color, Vector3 center, Vector3 normal, Vector3 direction, ref float radius
+            //Output      : none
+            //
+            //Draw the disc that will represent the detection radius
+
+            Handles.color = color;
+            Vector3 newDirection = character.transform.forward - (character.transform.right);
+            Handles.DrawSolidArc(center, normal, direction, angle / 2, radius);
+            Handles.DrawSolidArc(center, normal, direction, -angle / 2, radius);
+            Handles.color = new Color(1f, 1f, 0f, 0.75f);
+            Handles.DrawWireArc(center, normal, newDirection, angle, radius);
+
+            //Create Slider handles to adjust detection radius properties
+            color.a = 0.5f;
+            Handles.color = color;
+            angle = Handles.ScaleSlider(angle, character.transform.position, sliderDirection, Quaternion.identity, radius, 1f);
+            angle = Mathf.Clamp(angle, 1f, 360);
+
+            GUIStyle labelStyle = new GUIStyle();
+            labelStyle.fontSize = 12;
+            labelStyle.normal.textColor = new Color(color.r, color.g, color.b, 1);
+            labelStyle.alignment = TextAnchor.UpperCenter;
+            Handles.Label(character.transform.position + (sliderDirection * radius), label, labelStyle);
+            return angle;
+        }
+    }
+}
