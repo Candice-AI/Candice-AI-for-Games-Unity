@@ -7,7 +7,6 @@ namespace CandiceAIforGames.AI.Pathfinding
 {
     public class CandiceGrid : MonoBehaviour
     {
-        public bool displayGridGizmos;
         public LayerMask unwalkableMask;//The layer that the agent cannot walk on.
         public Vector2 gridWorldSize;//The size of the grid
         public float nodeRadius = 1f;//The size of each node
@@ -198,7 +197,7 @@ namespace CandiceAIforGames.AI.Pathfinding
         {
 
             Gizmos.DrawWireCube(transform.position, new Vector3(gridWorldSize.x, 1, gridWorldSize.y));
-            if (grid != null && displayGridGizmos)
+            if (grid != null)
             {
                 foreach (Node n in grid)
                 {

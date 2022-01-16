@@ -16,6 +16,7 @@ namespace CandiceAIforGames.AI
             }
             catch (Exception ex)
             {
+                Debug.LogError(ex.Message);
                 return CandiceBehaviorStates.FAILURE;
             }
 
@@ -30,6 +31,7 @@ namespace CandiceAIforGames.AI
             }
             catch (Exception ex)
             {
+                Debug.LogError(ex.Message);
                 return CandiceBehaviorStates.FAILURE;
             }
 
@@ -46,6 +48,7 @@ namespace CandiceAIforGames.AI
             }
             catch (Exception ex)
             {
+                Debug.LogError(ex.Message);
                 return CandiceBehaviorStates.FAILURE;
             }
 
@@ -137,6 +140,7 @@ namespace CandiceAIforGames.AI
             }
             catch(Exception ex)
             {
+                Debug.LogError(ex.Message);
                 return CandiceBehaviorStates.FAILURE;
             }
                 
@@ -151,10 +155,30 @@ namespace CandiceAIforGames.AI
             else
                 return CandiceBehaviorStates.FAILURE;
         }
-        public static CandiceBehaviorStates Attack(CandiceBehaviorNode rootNode)
+        public static CandiceBehaviorStates AttackMelee(CandiceBehaviorNode rootNode)
         {
             CandiceAIController agent = rootNode.aiController;
-            agent.Attack();
+            agent.AttackMelee();
+            return CandiceBehaviorStates.SUCCESS;
+        }
+        public static CandiceBehaviorStates AttackRange(CandiceBehaviorNode rootNode)
+        {
+            CandiceAIController agent = rootNode.aiController;
+            agent.AttackRanged();
+            return CandiceBehaviorStates.SUCCESS;
+        }
+
+        public static CandiceBehaviorStates Flee(CandiceBehaviorNode rootNode)
+        {
+            CandiceAIController agent = rootNode.aiController;
+            agent.Flee();
+            return CandiceBehaviorStates.SUCCESS;
+        }
+
+        public static CandiceBehaviorStates Wander(CandiceBehaviorNode rootNode)
+        {
+            CandiceAIController agent = rootNode.aiController;
+            agent.Wander();
             return CandiceBehaviorStates.SUCCESS;
         }
 

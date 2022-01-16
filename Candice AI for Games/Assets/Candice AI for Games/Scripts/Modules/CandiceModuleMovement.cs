@@ -15,6 +15,10 @@ namespace CandiceAIforGames.AI
         {
             transform.LookAt(aiController.LookPoint);
         }
+        public void LookAway(Transform transform, CandiceAIController aiController)
+        {
+            transform.LookAt(-aiController.MainTarget.transform.forward);
+        }
     }
 }
 

@@ -92,6 +92,7 @@ namespace CandiceAIforGames.AI
                         }
                         catch (Exception e)
                         {
+                            Debug.LogError(e.Message);
                             isRegistered = false;
                         }
                         rr.callback(isRegistered, agentCount);
@@ -121,6 +122,7 @@ namespace CandiceAIforGames.AI
                         }
                         catch (Exception e)
                         {
+                            Debug.LogError(e.Message);
                             isRegistered = false;
                         }
                         rr.callback(isRegistered, agentCount);
@@ -172,6 +174,10 @@ namespace CandiceAIforGames.AI
                 Debug.LogError("Cannot initialise Candice Pathfinding. Please make sure to set the Grid variable.");
             }
 
+        }
+        public bool IsPointWalkable(Vector3 point)
+        {
+            return grid.isWalkable(point);
         }
 
         public void RegisterAgent(GameObject agent, Action<bool, int> callback)

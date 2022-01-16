@@ -65,17 +65,19 @@ namespace CandiceAIforGames.AI
             }
             attackCompleteCallback(true);
         }
-        public IEnumerator DealTimedDamage(float time, float damage, float attackRange, float damageAngle, List<string> tags)
+        public IEnumerator DealTimedDamage(float time, float damage, float attackRange, float damageAngle, List<string> tags, Action _attackCompleteCallback)
         {
             yield return new WaitForSecondsRealtime(time);
             DealDamage(damage, attackRange, damageAngle, tags);
+            _attackCompleteCallback();
         }
-        public IEnumerator DealTimedDamage2D(float time, float damage, float attackRange, float damageAngle, List<string> tags)
+        public IEnumerator DealTimedDamage2D(float time, float damage, float attackRange, float damageAngle, List<string> tags, Action _attackCompleteCallback)
         {
             yield return new WaitForSecondsRealtime(time);
             DealDamage2D(damage, attackRange, damageAngle, tags);
+            _attackCompleteCallback();
         }
-        public void FireProjectile(GameObject attackTarget, GameObject attackProjectile,Vector3 spawnPosition)
+        public IEnumerator FireProjectile(GameObject attackTarget, GameObject attackProjectile,Vector3 spawnPosition,float time, Action _attackCompleteCallback)
         {
             //
             //Method Name : void AttackRange()
@@ -84,16 +86,14 @@ namespace CandiceAIforGames.AI
             //Input       : none
             //Output      : none
             //
-            if (attackTarget == null)
-                return;
-
-            GameObject projectile = UnityEngine.Object.Instantiate(attackProjectile, spawnPosition, Quaternion.identity);
-
-            //arrow.transform.position = spawnPosition.position;
-            //SimpleAIController ai = projectile.GetComponent<SimpleAIController>();
-            //ai.target = attackTarget;
-            //ai.Fire(gameObject);
-
+            yield return new WaitForSecondsRealtime(time);
+            if (attackTarget != null)
+            {
+                GameObject projectile = UnityEngine.Object.Instantiate(attackProjectile, spawnPosition, Quaternion.identity);
+                CandiceProjectile ai = projectile.GetComponent<CandiceProjectile>();
+                ai.Fire(attackTarget);
+            }
+            _attackCompleteCallback();
         }
 
         public float ReceiveDamage(float damage,float currentHP)

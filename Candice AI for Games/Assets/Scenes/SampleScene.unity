@@ -576,7 +576,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 238aad8c27f48ff42bf4d0d1fa669283, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  displayGridGizmos: 1
   unwalkableMask:
     serializedVersion: 2
     m_Bits: 512
@@ -601,7 +600,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9821bcf281bd7de4dbb502db6c646805, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  drawGridGizmos: 1
+  drawGridGizmos: 0
   drawAllAgentPaths: 0
   grid: {fileID: 452795788}
   agentCount: 0
@@ -787,7 +786,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 753400378}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -15.1, y: 1, z: 32.8}
+  m_LocalPosition: {x: -1.96, y: 1, z: -5.31}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -818,20 +817,8 @@ MonoBehaviour:
   players: []
   player: {fileID: 0}
   mainTarget: {fileID: 0}
-  hasAnimations: 0
-  animationType: 0
-  idleAnimationName: idle
-  moveAnimationName: walk
-  runAnimationName: run
-  attackAnimationName: attack
-  jumpAnimationName: jump
-  deadAnimationName: dead
-  currentAnimation: none
-  moveTransitionParameter: walk
-  runTransitionParameter: run
-  attackTransitionParameter: attack
-  jumpTransitionParameter: jump
-  deadTransitionParameter: die
+  fleeTarget: {fileID: 0}
+  wanderTarget: {fileID: 0}
   detectionRadius: 3
   lineOfSight: 3
   detectionHeight: 3
@@ -867,7 +854,7 @@ MonoBehaviour:
   drawAgentPath: 0
   attackTarget: {fileID: 0}
   attackDamage: 3
-  attackSpeed: 1
+  attacksPerSecond: 1
   attackRange: 1
   damageAngle: 45
   attackType: 0
@@ -1239,6 +1226,36 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1320518948
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1320518949}
+  m_Layer: 0
+  m_Name: SpawnPos
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1320518949
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1320518948}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.5, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1808766949}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1808766942
 GameObject:
   m_ObjectHideFlags: 0
@@ -1298,21 +1315,9 @@ MonoBehaviour:
   players: []
   player: {fileID: 0}
   mainTarget: {fileID: 0}
-  hasAnimations: 0
-  animationType: 1
-  idleAnimationName: idle
-  moveAnimationName: walk
-  runAnimationName: run
-  attackAnimationName: attack
-  jumpAnimationName: jump
-  deadAnimationName: dead
-  currentAnimation: none
-  moveTransitionParameter: walk
-  runTransitionParameter: run
-  attackTransitionParameter: attack
-  jumpTransitionParameter: jump
-  deadTransitionParameter: die
-  detectionRadius: 37.91976
+  fleeTarget: {fileID: 0}
+  wanderTarget: {fileID: 0}
+  detectionRadius: 48.989777
   lineOfSight: 97.53598
   detectionHeight: 7
   sensorType: 0
@@ -1322,10 +1327,6 @@ MonoBehaviour:
   enemyDetected: 0
   objectTags:
   - Player
-  - Tag 1
-  - Tag 2
-  - Tag 3
-  - Tag 4
   enemyTags:
   - Player
   allyTags: []
@@ -1353,12 +1354,13 @@ MonoBehaviour:
   drawAgentPath: 0
   attackTarget: {fileID: 0}
   attackDamage: 3
-  attackSpeed: 0.5
-  attackRange: 1
+  attacksPerSecond: 0.5
+  attackRange: 12.19
   damageAngle: 83.33053
-  attackType: 0
-  projectile: {fileID: 0}
-  projectileSpawnPos: {fileID: 0}
+  attackType: 1
+  projectile: {fileID: 5529631860578062924, guid: fff7ff3fd706deb45bee7cf9c2d8754e,
+    type: 3}
+  projectileSpawnPos: {fileID: 1320518949}
   hasAttackAnimation: 0
   isAttacking: 0
 --- !u!54 &1808766945
@@ -1444,9 +1446,10 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1808766942}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.06, z: -15}
+  m_LocalPosition: {x: 0, y: 1.06, z: -40.19}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
+  m_Children:
+  - {fileID: 1320518949}
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

@@ -80,6 +80,10 @@ namespace CandiceAIforGames.AI
         private GameObject player;
         [SerializeField]
         private GameObject mainTarget;
+        [SerializeField]
+        private GameObject fleeTarget;
+        [SerializeField]
+        private GameObject wanderTarget;
 
         /*
          * Detection Variables
@@ -147,7 +151,6 @@ namespace CandiceAIforGames.AI
         public float _stoppingDist;//How far away from the target the agent will start to slow down and stop.
         bool _followingPath;//Whether or not the agent is following a path.
         private bool switchWanderTarget = true;
-        private bool switchFleeTarget = true;
 
         [SerializeField]
         private bool isCalculatingPath = false;
@@ -169,7 +172,7 @@ namespace CandiceAIforGames.AI
         [SerializeField]
         private float attackDamage = 3f;
         [SerializeField]
-        private float attackSpeed = 1f;
+        private float attacksPerSecond = 1f;
         [SerializeField]
         private float attackRange = 1f;
         [SerializeField]
@@ -218,7 +221,8 @@ namespace CandiceAIforGames.AI
         public float DetectionHeight { get => detectionHeight; set => detectionHeight = value; }
         public bool Is3D { get => is3D; set => is3D = value; }
         public float AttackDamage { get => attackDamage; set => attackDamage = value; }
-        public float AttackSpeed { get => attackSpeed; set => attackSpeed = value; }
+        public float AttackSpeed { get => 1f / attacksPerSecond;}
+        public float AttacksPerSecond { get => attacksPerSecond; set => attacksPerSecond = value; }
         public LayerMask PerceptionMask { get => perceptionMask; set => perceptionMask = value; }
         public float ObstacleAvoidaceDistance { get => obstacleAvoidaceDistance; set => obstacleAvoidaceDistance = value; }
         public float ObstacleAvoidanceAOE { get => obstacleAvoidanceAOE; set => obstacleAvoidanceAOE = value; }
@@ -292,11 +296,18 @@ namespace CandiceAIforGames.AI
 
         }
         #endregion
+        /// <summary>
+        /// Use the detection module to scan for objects.
+        /// </summary>
         public void ScanForObjects()
         {
             CandiceDetectionRequest req = new CandiceDetectionRequest(sensorType, objectTags, DetectionRadius, DetectionHeight, LineOfSight, Is3D);
             detectionModule.ScanForObjects(req);
         }
+
+        /// <summary>
+        /// Use the detection module's obstacle avoidance to evade nearby obstacles.
+        /// </summary>
         public void AvoidObstacles()
         {
             
@@ -310,6 +321,10 @@ namespace CandiceAIforGames.AI
             }
             detectionModule.AvoidObstacles(MainTarget.transform,transform,halfHeight + obstacleAvoidanceAOE,MoveSpeed,true,ObstacleAvoidaceDistance);
         }
+        /// <summary>
+        /// Send a path calculation request to Candice and then follow it.
+        /// </summary>
+        /// <returns></returns>
         public bool CandicePathfind()
         {
             
@@ -394,7 +409,7 @@ namespace CandiceAIforGames.AI
             }
         }
 
-        public void Attack()
+        public void AttackMelee()
         {
             if (hasAttackAnimation && !IsAttacking)
             {
@@ -404,9 +419,98 @@ namespace CandiceAIforGames.AI
             else if (!IsAttacking)
             {
                 IsAttacking = true;
-                StartCoroutine(combatModule.DealTimedDamage(1f / AttackSpeed, AttackDamage, AttackRange, DamageAngle, enemyTags));
+                StartCoroutine(combatModule.DealTimedDamage(AttackSpeed, AttackDamage, AttackRange, DamageAngle, enemyTags,onAttackComplete));
+            }
+        }
+        public void onAttackComplete()
+        {
+            IsAttacking = false;
+        }
+        public void AttackRanged()
+        {
+            if (hasAttackAnimation && !IsAttacking)
+            {
+                //Play attack animation which will call the FireProjectile() function
+                IsAttacking = true;
+            }
+            else if (!IsAttacking)
+            {
+                IsAttacking = true;
+                StartCoroutine(combatModule.FireProjectile(AttackTarget,Projectile,ProjectileSpawnPos.position,AttackSpeed,onAttackComplete));
+            }
+        }
+        public void Wander()
+        {
+            // does nothing except pick a new destination to go to
+            if (wanderTarget == null)
+            {
+                wanderTarget = new GameObject("WanderTarget: " + AgentID);
+                FindTarget(wanderTarget);
+            }
+
+            float distance = Vector3.Distance(wanderTarget.transform.position, transform.position);
+            if (distance < 5f)
+            {
+                switchWanderTarget = true;
+            }
+            if (switchWanderTarget)
+            {
+                FindTarget(wanderTarget);
+
+                mainTarget = wanderTarget;
+                movePoint = mainTarget.transform.position;
+                movePoint.y = 1;
+                switchWanderTarget = false;
+            }
+            else
+            {
 
             }
+
+            // don't need to change direction every frame seeing as you walk in a straight line only
+            //transform.LookAt(wayPoint);
+            //Debug.Log(wayPoint + " and " + (transform.position - wayPoint).magnitude);
+        }
+        public void Flee()
+        {
+
+            Vector3 moveDirection = transform.position - MainTarget.transform.position;
+
+            LookPoint = moveDirection;
+            MovePoint = moveDirection;
+
+        }
+        private void FindTarget(GameObject target)
+        {
+            do
+            {
+                target.transform.position = new Vector3(UnityEngine.Random.Range(transform.position.x - DetectionRadius, transform.position.x + DetectionRadius), 1, UnityEngine.Random.Range(transform.position.z - DetectionRadius, transform.position.z + DetectionRadius));
+            }
+            while (!VerifyPoint(target.transform.position));
+        }
+
+        private bool VerifyPoint(Vector3 point)
+        {
+            //This method verifies if the chosen wander/flee point is within the game map and is on a walkable region
+            bool isValid = false;
+            CandiceGrid grid = CandiceAIManager.getInstance().grid;
+            Vector3 worldBottomLeft = grid.worldBottomLeft;
+
+            if (point.x > worldBottomLeft.x && point.x < worldBottomLeft.x + grid.gridWorldSize.x)
+            {
+                if (point.z > worldBottomLeft.z && point.z < worldBottomLeft.z + grid.gridWorldSize.x)
+                {
+                    isValid = true;
+                }
+            }
+
+            if (!CandiceAIManager.getInstance().IsPointWalkable(point))
+            {
+                isValid = false;
+            }
+
+
+            return isValid;
         }
         public void ReceiveDamage(float damage)
         {

@@ -338,24 +338,6 @@ namespace CandiceAIforGames.AI.Editors
             //label = new GUIContent("Base Rotation Speed", "The base speed at which the agent rotate to face its target.");
             //character.rotationSpeed = EditorGUILayout.FloatField(label, character.rotationSpeed);
             GUILayout.Space(16);
-            //label = new GUIContent("Movement Type", "Choose the movement type that this AI agent will use.");
-            //character.moveType = (MovementType)EditorGUILayout.EnumPopup(label, character.moveType);
-            //label = new GUIContent("Pathfind Source", "Choose the pathfind source that this AI agent will use.");
-            //character.pathfindSource = (PathfindSource)EditorGUILayout.EnumPopup(label, character.pathfindSource);
-            
-
-            GUILayout.Space(16);
-            GUILayout.Label("Head Look Settings", guiStyle);
-            label = new GUIContent("Enable Head Look:", "Allow the agent to dynamically look at objects.");
-            character.EnableHeadLook = EditorGUILayout.Toggle(label, character.EnableHeadLook);
-            label = new GUIContent("Head Look target: ");
-            character.HeadLookTarget = (GameObject)EditorGUILayout.ObjectField(label, character.HeadLookTarget, typeof(GameObject), true);
-            label = new GUIContent("Head Look Intensity:", "How quickly the agent will turn their head to look at objects.");
-            character.HeadLookIntensity = EditorGUILayout.Slider(label, character.HeadLookIntensity, 0f, 1f);
-
-            //Patrol Settings
-            EditorGUILayout.Space();
-            EditorGUILayout.Space();
 
             GUILayout.BeginHorizontal();
             GUILayout.FlexibleSpace();
@@ -435,8 +417,7 @@ namespace CandiceAIforGames.AI.Editors
         void DrawCombatGUI()
         {
             GUILayout.Label("Attack Settings", guiStyle);
-            GUIContent label = new GUIContent("Attack Type", "");
-            character.AttackType = (AttackType)EditorGUILayout.EnumPopup(label, character.AttackType);
+            GUIContent label;
             label = new GUIContent("Attack Range", "The range that the AI will start attacking enemies.");
             character.AttackRange = EditorGUILayout.FloatField(label, character.AttackRange);
             label = new GUIContent("Attack Projectile", "The projectile that the agent will fire.");
@@ -448,8 +429,8 @@ namespace CandiceAIforGames.AI.Editors
             //character.m_DamageAngle = EditorGUILayout.Slider("Damage Angle:", character.m_DamageAngle, 0, 360f);
             label = new GUIContent("Has Attack Animation", "Whether or not this agent has an attack animation.");
             character.HasAttackAnimation = EditorGUILayout.Toggle(label, character.HasAttackAnimation);
-            label = new GUIContent("Attack Speed", "How many attacks per second the agent will deal");
-            character.AttackSpeed = EditorGUILayout.FloatField(label, character.AttackSpeed);
+            label = new GUIContent("Attacks Per Second", "How many attacks per second the agent will deal");
+            character.AttacksPerSecond = EditorGUILayout.FloatField(label, character.AttacksPerSecond);
             //label = new GUIContent("Auto Attack", "");
             //character.autoAttack = EditorGUILayout.Toggle(label, character.autoAttack);
             //label = new GUIContent("Click To Attack", "If true, the agent will only attack when a valid object is clicked on. Only works if the agent is Player Controlled.");
