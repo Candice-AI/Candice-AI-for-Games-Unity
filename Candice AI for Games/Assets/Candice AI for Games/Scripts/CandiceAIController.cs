@@ -1,4 +1,7 @@
-﻿using CandiceAIforGames.AI;
+﻿
+using CandiceAIforGames.AI;
+using CandiceAIforGames.AI.Pathfinding;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -33,7 +36,6 @@ namespace CandiceAIforGames.AI
     public enum SensorType
     {
         Sphere,
-        Box,
     }
     public enum AnimationType
     {
@@ -48,12 +50,15 @@ namespace CandiceAIforGames.AI
         /*
          * General Variables
          */
+        Collider col;
         [SerializeField]
         private int agentID;
         [SerializeField]
         private float maxHitPoints = 100f;
         [SerializeField]
         private float hitPoints = 100f;
+        [SerializeField]
+        private float halfHeight = 100f;
         [SerializeField]
         private bool is3D = true;
 
@@ -75,36 +80,6 @@ namespace CandiceAIforGames.AI
         private GameObject player;
         [SerializeField]
         private GameObject mainTarget;
-        [SerializeField]
-        private bool hasAnimations;
-        [SerializeField]
-        private AnimationType animationType = AnimationType.TransitionBased;
-        [SerializeField]
-        private string idleAnimationName = "idle";
-        [SerializeField]
-        private string moveAnimationName = "walk";
-        [SerializeField]
-        private string runAnimationName = "run";
-        [SerializeField]
-        private string attackAnimationName = "attack";
-        [SerializeField]
-        private string jumpAnimationName = "jump";
-        [SerializeField]
-        private string deadAnimationName = "dead";
-        [SerializeField]
-        private string currentAnimation = "none";
-
-        private string idleTransitionParameter = "idle";
-        [SerializeField]
-        private string moveTransitionParameter = "walk";
-        [SerializeField]
-        private string runTransitionParameter = "run";
-        [SerializeField]
-        private string attackTransitionParameter = "attack";
-        [SerializeField]
-        private string jumpTransitionParameter = "jump";
-        [SerializeField]
-        private string deadTransitionParameter = "die";
 
         /*
          * Detection Variables
@@ -116,7 +91,7 @@ namespace CandiceAIforGames.AI
         [SerializeField]
         private float detectionHeight = 3f;
         [SerializeField]
-        private SensorType sensorType = SensorType.Box;
+        private SensorType sensorType = SensorType.Sphere;
         [SerializeField]
         private bool objectDetected = false;
         [SerializeField]
@@ -136,13 +111,15 @@ namespace CandiceAIforGames.AI
         [SerializeField]
         private float obstacleAvoidaceDistance = 3f;
         [SerializeField]
-        private float obstacleAvoidanceAOE = 3f;
+        private float obstacleAvoidanceAOE = 0.5f;
+        [SerializeField]
+        private Vector3 lookPoint;
 
         /*
          * Movement Variables
          */
         [SerializeField]
-        private GameObject moveTarget;
+        private Vector3 movePoint;
         [SerializeField]
         private float moveSpeed = 7f;
         [SerializeField]
@@ -153,6 +130,36 @@ namespace CandiceAIforGames.AI
         private GameObject headLookTarget;
         [SerializeField]
         private float headLookIntensity = 1f;
+
+        /*
+         * Pathfinding Variables
+         */
+        Path _path;//The path that the Agent will use to follow.
+        [SerializeField]
+        public float _minPathUpdateTime = .2f;//Minimum time it will take for the agent before attempting to request a new updated path from Candice.
+        [SerializeField]
+        public float _pathUpdateMoveThreshold = .5f;// Minimum distance the target can move by before requesting a new Updated path from Candice.
+        [SerializeField]
+        public float _turnSpeed;//The speed the agent will turn between waypoints by when pathfinding.
+        [SerializeField]
+        public float _turnDist;//The ditance the agent will start to turn while moving to the next node.
+        [SerializeField]
+        public float _stoppingDist;//How far away from the target the agent will start to slow down and stop.
+        bool _followingPath;//Whether or not the agent is following a path.
+        private bool switchWanderTarget = true;
+        private bool switchFleeTarget = true;
+
+        [SerializeField]
+        private bool isCalculatingPath = false;
+        [SerializeField]
+        private bool isFollowingPath = false;
+        [SerializeField]
+        float sqrMoveThreshold;
+        [SerializeField]
+        int pathIndex = 0;
+        [SerializeField]
+        private bool drawAgentPath = false;
+        Vector3 targetPosOld;
 
         /*
          * Combat Variables
@@ -223,26 +230,11 @@ namespace CandiceAIforGames.AI
         public GameObject HeadLookTarget { get => headLookTarget; set => headLookTarget = value; }
         public float HeadLookIntensity { get => headLookIntensity; set => headLookIntensity = value; }
         public GameObject AttackTarget { get => attackTarget; set => attackTarget = value; }
-        public GameObject MoveTarget { get => moveTarget; set => moveTarget = value; }
+        public Vector3 MovePoint { get => movePoint; set => movePoint = value; }
         public AttackType AttackType { get => attackType; set => attackType = value; }
         public GameObject Projectile { get => projectile; set => projectile = value; }
         public Transform ProjectileSpawnPos { get => projectileSpawnPos; set => projectileSpawnPos = value; }
         public bool HasAttackAnimation { get => hasAttackAnimation; set => hasAttackAnimation = value; }
-        public bool HasAnimations { get => hasAnimations; set => hasAnimations = value; }
-        public AnimationType AnimationType { get => animationType; set => animationType = value; }
-        public string IdleAnimationName { get => idleAnimationName; set => idleAnimationName = value; }
-        public string MoveAnimationName { get => moveAnimationName; set => moveAnimationName = value; }
-        public string RunAnimationName { get => runAnimationName; set => runAnimationName = value; }
-        public string AttackAnimationName { get => attackAnimationName; set => attackAnimationName = value; }
-        public string JumpAnimationName { get => jumpAnimationName; set => jumpAnimationName = value; }
-        public string DeadAnimationName { get => deadAnimationName; set => deadAnimationName = value; }
-        public string CurrentAnimation { get => currentAnimation; set => currentAnimation = value; }
-        public string IdleTransitionParameter { get => idleTransitionParameter; set => idleTransitionParameter = value; }
-        public string MoveTransitionParameter { get => moveTransitionParameter; set => moveTransitionParameter = value; }
-        public string RunTransitionParameter { get => runTransitionParameter; set => runTransitionParameter = value; }
-        public string AttackTransitionParameter { get => attackTransitionParameter; set => attackTransitionParameter = value; }
-        public string JumpTransitionParameter { get => jumpTransitionParameter; set => jumpTransitionParameter = value; }
-        public string DeadTransitionParameter { get => deadTransitionParameter; set => deadTransitionParameter = value; }
         public float DamageAngle { get => damageAngle; set => damageAngle = value; }
         public bool IsAttacking { get => isAttacking; set => isAttacking = value; }
         public Camera MainCamera { get => mainCamera; set => mainCamera = value; }
@@ -250,12 +242,29 @@ namespace CandiceAIforGames.AI
         public bool EnableRagdoll { get => enableRagdoll; set => enableRagdoll = value; }
         public float MaxHitPoints { get => maxHitPoints; set => maxHitPoints = value; }
         public float HitPoints { get => hitPoints; set => hitPoints = value; }
+        public bool IsCalculatingPath { get => isCalculatingPath; set => isCalculatingPath = value; }
+        public bool IsFollowingPath { get => isFollowingPath; set => isFollowingPath = value; }
+        public Vector3 LookPoint { get => lookPoint; set => lookPoint = value; }
+        public bool DrawAgentPath { get => drawAgentPath; set => drawAgentPath = value; }
+
+        CandiceAIManager candice;
 
         #endregion
         // Start is called before the first frame update
         void Start()
         {
-            UnityEditor.Undo.RecordObject(this, "Description");
+            //Check if there is a Candice AI Manager Component in the scene.
+            candice = FindObjectOfType<CandiceAIManager>();
+            if (candice == null)
+            {
+                Debug.LogError("You need to attach a Candice AI Manager Component to an Empty GameObject.");
+            }
+            else
+            {
+                CandiceAIManager.getInstance().RegisterAgent(gameObject, onRegistrationComplete);
+            }
+            col = GetComponent<Collider>();
+            //UnityEditor.Undo.RecordObject(this, "Description");
             combatModule = new CandiceModuleCombat(transform,onAttackComplete,"Agent" + AgentID + "-CandiceModuleCombat");
             movementModule = new CandiceModuleMovement("Agent" + AgentID + "-CandiceModuleMovement");
             detectionModule = new CandiceModuleDetection(gameObject.transform,onObjectFound, "Agent" + AgentID + "-CandiceModuleDetection");
@@ -266,10 +275,123 @@ namespace CandiceAIforGames.AI
         {
 
         }
+        #region Helper Methods 
+        /// <summary>
+        /// Callback function when the agent is successfully registered with Candice.
+        /// </summary>
+        /// <param name="isRegistered">Whether or not the registration was successful.</param>
+        /// <param name="agentId">The unique agent ID returned from Candice.</param>
+        private void onRegistrationComplete(bool isRegistered, int agentId)
+        {
+
+            if (isRegistered)
+            {
+                AgentID = agentId;
+                Debug.Log("Agent " + AgentID + " successfully registered with Candice.");
+            }
+
+        }
+        #endregion
         public void ScanForObjects()
         {
             CandiceDetectionRequest req = new CandiceDetectionRequest(sensorType, objectTags, DetectionRadius, DetectionHeight, LineOfSight, Is3D);
             detectionModule.ScanForObjects(req);
+        }
+        public void AvoidObstacles()
+        {
+            
+            if (col != null)
+            {
+                halfHeight = col.bounds.extents.x * 2;
+            }
+            else
+            {
+                halfHeight = gameObject.transform.localScale.x * 2;
+            }
+            detectionModule.AvoidObstacles(MainTarget.transform,transform,halfHeight + obstacleAvoidanceAOE,MoveSpeed,true,ObstacleAvoidaceDistance);
+        }
+        public bool CandicePathfind()
+        {
+            
+            if (!IsCalculatingPath && !IsFollowingPath)
+            {
+                CalculateAStarPath();
+            }
+            else if(IsFollowingPath)
+            {
+                if ((MovePoint - targetPosOld).sqrMagnitude > sqrMoveThreshold)
+                {
+                    CalculateAStarPath();
+                }
+                else
+                {
+                    FollowAStarPath();
+                }
+            }
+            return IsFollowingPath;
+        }
+        private void CalculateAStarPath()
+        {
+            Debug.Log("Calculate");
+            sqrMoveThreshold = _pathUpdateMoveThreshold * _pathUpdateMoveThreshold;
+            CandiceAIManager.getInstance().RequestASTARPath(new PathRequest(transform.position, MovePoint, OnPathFound));
+            targetPosOld = MovePoint;
+            IsCalculatingPath = true;
+        }
+        private void SetLookPointY(Vector3 lookPoint)
+        {
+            LookPoint = new Vector3(lookPoint.x, transform.position.y, lookPoint.z);
+        }
+        private void FollowAStarPath()
+        {
+            if (Is3D)
+                SetLookPointY(_path.lookPoints[pathIndex]);
+            //MovePoint = _path.lookPoints[pathIndex];
+            //transform.LookAt(new Vector3(_path.lookPoints[pathIndex].x, transform.position.y, _path.lookPoints[pathIndex].z));
+            float speedPercent = 1;
+            Vector2 pos2D = new Vector2(transform.position.x, transform.position.z);
+            if (_path.turnBoundaries[pathIndex].HasCrossedLine(pos2D))
+            {
+                if (pathIndex == _path.finishLineIndex)
+                {
+                    IsFollowingPath = false;
+                    //onDestinationReached(this);
+                }
+                else
+                {
+                    pathIndex++;
+                    if (Is3D)
+                        SetLookPointY(_path.lookPoints[pathIndex]);
+                    //MovePoint = _path.lookPoints[pathIndex];
+                    //transform.LookAt(new Vector3(_path.lookPoints[pathIndex].x,transform.position.y, _path.lookPoints[pathIndex].z));
+                }
+            }
+            if (IsFollowingPath)
+            {
+                if (pathIndex >= _path.slowDownIndex && _stoppingDist > 0)
+                {
+                    speedPercent = Mathf.Clamp01(_path.turnBoundaries[_path.finishLineIndex].DistanceFromPoint(pos2D) / _stoppingDist);
+                    if (speedPercent < 0.01f)
+                    {
+                        IsFollowingPath = false;
+                    }
+                }
+            }
+        }
+
+        public void OnPathFound(Vector3[] waypoints, bool pathSuccessful)
+        {
+            if (pathSuccessful)
+            {
+                _path = new Path(waypoints, transform.position, _turnDist, _stoppingDist);
+                IsCalculatingPath = false;
+                IsFollowingPath = true;
+                pathIndex = 0;
+            }
+            else
+            {
+                //Debug.LogError("Failed to find path");
+            }
         }
 
         public void Attack()
@@ -290,9 +412,31 @@ namespace CandiceAIforGames.AI
         {
             HitPoints = combatModule.ReceiveDamage(damage, HitPoints);
         }
+        public bool WithinAttackRange()
+        {
+            float distance = float.MaxValue;
+            try
+            {
+                distance = Vector3.Distance(transform.position, AttackTarget.transform.position);
+            }
+            catch (Exception e)
+            {
+                Debug.LogError("DefaultBehaviors.WithinAttackRange: No target within attack range: " + e.Message);
+            }
+            if (distance <= AttackRange)
+            {
+                LookPoint = AttackTarget.transform.position;
+                return true;
+            }
+            else
+                return false;
+        }
 
         void onObjectFound(CandiceDetectionResults results)
         {
+            /*This is where you put your detection logic. 
+             * The code below is only a sample to get you started.
+             */
             AllyDetected = false;
             EnemyDetected = false;
             PlayerDetected = false;
@@ -303,6 +447,8 @@ namespace CandiceAIforGames.AI
                     EnemyDetected = true;
                     Enemies.AddRange(results.objects[key]);
                     MainTarget = Enemies[0];
+                    MovePoint = MainTarget.transform.position;
+                    LookPoint = MainTarget.transform.position;
                     AttackTarget = Enemies[0];
                 }
                 if (AllyTags.Contains(key))
@@ -322,6 +468,31 @@ namespace CandiceAIforGames.AI
         void onAttackComplete(bool success)
         {
             IsAttacking = false;
+        }
+
+        public void OnDrawGizmos()
+        {
+            if(candice != null && (candice.DrawAllAgentPaths || DrawAgentPath))
+            {
+                if (_path != null)
+                {
+                    _path.DrawWithGizmos();
+                }
+
+                if (_path != null)
+                {
+                    for (int i = 0; i < _path.lookPoints.Length; i++)
+                    {
+                        Gizmos.color = Color.white;
+                        if (i != 0)
+                        {
+                            Gizmos.DrawLine(_path.lookPoints[i - 1], _path.lookPoints[i]);
+                        }
+
+                    }
+                }
+            }
+            
         }
     }
 }

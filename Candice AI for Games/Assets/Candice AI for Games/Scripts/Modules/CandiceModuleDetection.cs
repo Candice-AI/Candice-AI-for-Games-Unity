@@ -37,10 +37,6 @@ namespace CandiceAIforGames.AI
             {
                 hitColliders = Physics.OverlapSphere(center, radius);
             }
-            else if (type == SensorType.Box)
-            {
-                hitColliders = Physics.OverlapBox(center, halfExtents);
-            }
 
             Dictionary<string, List<GameObject>> detectedObjects = new Dictionary<string, List<GameObject>>();
             //Loop though each object
@@ -72,11 +68,6 @@ namespace CandiceAIforGames.AI
             {
                 hitColliders = Physics2D.OverlapCircleAll(center, radius);
             }
-            else if (type == SensorType.Box)
-            {
-                hitColliders = Physics2D.OverlapBoxAll(center, new Vector2(radius, radius), 360f);
-            }
-
             Dictionary<string, List<GameObject>> detectedObjects = new Dictionary<string, List<GameObject>>();
             //Loop through each object
             foreach (Collider2D collider in hitColliders)
@@ -89,6 +80,135 @@ namespace CandiceAIforGames.AI
 
             }
             objectDetectedCallback(new CandiceDetectionResults(detectedObjects));
+        }
+        public void AvoidObstacles(Transform Target, Transform transform, float size, float movementSpeed, bool is3D, float distance)
+        {
+            //
+            //Method Name : void Move(Transform Target, Transform transform, float size)
+            //Purpose     : This method moves the agent while avoiding immediate obstacles.
+            //Re-use      : none
+            //Input       : Transform Target, Transform transform, float size
+            //Output      : void
+            //
+
+            if (!is3D)
+            {
+                AvoidObstacles2D(Target, transform, size, movementSpeed, distance);
+                return;
+            }
+            bool obstacleHit = false;
+            Vector3 dir = (transform.forward).normalized;
+            RaycastHit hit;
+            if (Physics.Raycast(transform.position, transform.forward, out hit, distance))
+            {
+                if (hit.transform != transform && hit.transform != Target.transform)
+                {
+                    Debug.DrawLine(transform.position, hit.point, Color.red);
+                    dir += hit.normal * 50;
+                    obstacleHit = true;
+                }
+            }
+
+            Vector3 left = transform.position;
+            Vector3 right = transform.position;
+
+            left.x -= size;
+            right.x += size;
+            if (Physics.Raycast(left, transform.forward, out hit, distance))
+            {
+                if (hit.transform != transform && hit.transform != Target.transform)
+                {
+                    Debug.DrawLine(left, hit.point, Color.red);
+                    dir += hit.normal * 50;
+                    obstacleHit = true;
+
+                }
+            }
+
+            if (Physics.Raycast(right, transform.forward, out hit, distance))
+            {
+                if (hit.transform != transform && hit.transform != Target.transform)
+                {
+                    Debug.DrawLine(right, hit.point, Color.red);
+                    dir += hit.normal * 50;
+                    obstacleHit = true;
+                }
+            }
+            if (obstacleHit)
+            {
+                Quaternion rot = Quaternion.LookRotation(dir);
+                transform.rotation = Quaternion.Slerp(transform.rotation, rot, movementSpeed * Time.deltaTime);
+
+            }
+            else
+            {
+                dir = (Target.position - transform.position).normalized;
+                Quaternion rot = Quaternion.LookRotation(dir);
+                transform.rotation = Quaternion.Slerp(transform.rotation, rot, movementSpeed * Time.deltaTime);
+
+            }
+
+
+            //transform.position += transform.forward * movementSpeed * Time.deltaTime;
+        }
+        private bool compareObjToTags(GameObject obj, List<string> tags)
+        {
+            bool hasMatch = false;
+
+            for (int i = 0; i < tags.Count; i++)
+            {
+                if(obj.tag.Equals(tags[i]))
+                {
+                    hasMatch = true;
+                    i = tags.Count;
+                }
+            }
+
+            return hasMatch;
+        }
+
+        public void AvoidObstacles2D(Transform Target, Transform transform, float size, float movementSpeed, float distance)
+        {
+            Vector2 dir = (Target.position - transform.position).normalized;
+            RaycastHit2D hit;
+            if ((hit = Physics2D.Raycast(transform.position, transform.forward, distance)))
+            {
+                Debug.Log("OA 2D");
+                if (hit.transform != transform && hit.transform != Target.transform)
+                {
+                    Debug.DrawLine(transform.position, hit.point, Color.red);
+                    dir += hit.normal * 50;
+                }
+            }
+
+            Vector3 left = transform.position;
+            Vector3 right = transform.position;
+
+            left.x -= size;
+            right.x += size;
+            if ((hit = Physics2D.Raycast(left, transform.forward, distance)))
+            {
+                if (hit.transform != transform && hit.transform != Target.transform)
+                {
+                    Debug.DrawLine(left, hit.point, Color.red);
+                    dir += hit.normal * 50;
+
+                }
+            }
+
+            if ((hit = Physics2D.Raycast(right, transform.forward, distance)))
+            {
+                if (hit.transform != transform && hit.transform != Target.transform)
+                {
+                    Debug.DrawLine(right, hit.point, Color.red);
+                    dir += hit.normal * 50;
+                }
+            }
+            //Quaternion rot = Quaternion.LookRotation(dir);
+            //transform.rotation = Quaternion.Slerp(transform.rotation, rot, Time.deltaTime);
+            //transform.position += new Vector3(dir.x, dir.y) * movementSpeed * Time.deltaTime;
+
+
         }
         public void CompareTags(GameObject go,CandiceDetectionRequest request,ref Dictionary<string, List<GameObject>> detectedObjects)
         {

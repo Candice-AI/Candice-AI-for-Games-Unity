@@ -2,11 +2,16 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 namespace CandiceAIforGames.AI
 {
     public class CandiceAIManager : MonoBehaviour
     {
+        [SerializeField]
+        private bool drawGridGizmos = true;
+        [SerializeField]
+        private bool drawAllAgentPaths = true;
         //public static CandiceAIManager getInstance;
         private static CandiceAIManager instance;
         private Queue<PathResult> results = new Queue<PathResult>();//Data strucure containing a collection of all paths requested by all AI Agents/Controllers
@@ -25,6 +30,9 @@ namespace CandiceAIforGames.AI
         public const int NODE_TYPE_SEQUENCE = 1;
         public const int NODE_TYPE_INVERTER = 2;
         public const int NODE_TYPE_ACTION = 3;
+
+        public bool DrawGridGizmos { get => drawGridGizmos; set => drawGridGizmos = value; }
+        public bool DrawAllAgentPaths { get => drawAllAgentPaths; set => drawAllAgentPaths = value; }
 
         #region Events
         public event Action<GameObject, GameObject> OnPlayerDetected = delegate { };
@@ -53,13 +61,159 @@ namespace CandiceAIforGames.AI
         // Start is called before the first frame update
         void Start()
         {
-
+            //Process all agent pathfinding requests
+            if (results.Count > 0)
+            {
+                int itemsInQueue = results.Count;
+                lock (results)
+                {
+                    for (int i = 0; i < itemsInQueue; i++)
+                    {
+                        PathResult result = results.Dequeue();
+                        result.callback(result.path, result.success);
+                    }
+                }
+            }
+            //Process all agent registration requests
+            if (registrationQueue.Count > 0)
+            {
+                int itemsInQueue = registrationQueue.Count;
+                lock (registrationQueue)
+                {
+                    for (int i = 0; i < itemsInQueue; i++)
+                    {
+                        RegistrationRequest rr = registrationQueue.Dequeue();
+                        bool isRegistered;
+                        try
+                        {
+                            agentCount++;
+                            agents.Add(agentCount, rr.agent);
+                            isRegistered = true;
+                        }
+                        catch (Exception e)
+                        {
+                            isRegistered = false;
+                        }
+                        rr.callback(isRegistered, agentCount);
+                    }
+                }
+            }
         }
 
         // Update is called once per frame
         void Update()
         {
+            //Process all agent registration requests
+            if (registrationQueue.Count > 0)
+            {
+                int itemsInQueue = registrationQueue.Count;
+                lock (registrationQueue)
+                {
+                    for (int i = 0; i < itemsInQueue; i++)
+                    {
+                        RegistrationRequest rr = registrationQueue.Dequeue();
+                        bool isRegistered;
+                        try
+                        {
+                            agentCount++;
+                            agents.Add(agentCount, rr.agent);
+                            isRegistered = true;
+                        }
+                        catch (Exception e)
+                        {
+                            isRegistered = false;
+                        }
+                        rr.callback(isRegistered, agentCount);
+                    }
+                }
+            }
+            //Process all agent pathfinding requests
+            if (results.Count > 0)
+            {
+                int itemsInQueue = results.Count;
+                lock (results)
+                {
+                    for (int i = 0; i < itemsInQueue; i++)
+                    {
+                        PathResult result = results.Dequeue();
+                        result.callback(result.path, result.success);
+                    }
+                }
+            }
+            
+        }
+        private void Awake()
+        {
+            Initialise();
+        }
+        public static CandiceAIManager getInstance()
+        {
+            if (instance == null)
+            {
+                instance = new CandiceAIManager();
 
+            }
+            return instance;
+        }
+        private void Initialise()
+        {
+            //CandiceConfig.enableDebug = enableDebug;
+            instance = this;
+            if (grid == null)
+            {
+                grid = GetComponent<CandiceGrid>();
+            }
+            if (grid != null)
+            {
+                pathFinding = new CandicePathFinding(grid);
+            }
+            else
+            {
+                Debug.LogError("Cannot initialise Candice Pathfinding. Please make sure to set the Grid variable.");
+            }
+
+        }
+
+        public void RegisterAgent(GameObject agent, Action<bool, int> callback)
+        {
+            getInstance().registrationQueue.Enqueue(new RegistrationRequest(agent, callback));
+        }
+
+        #region A* Pathfinding
+        //This method is called by the AI agents in order to receive a path to their goal, using the Pathfinding module.
+        public void RequestASTARPath(PathRequest request)
+        {
+            ThreadStart threadStart = delegate
+            {
+                Debug.Log("Getting Path");
+                getInstance().pathFinding.FindASTARPath(request, getInstance().FinishedProcessingPath);
+            };
+            threadStart.Invoke();
+        }
+        /*public static void RequestBFSPath(Tile tile, Action<Stack<Tile>> callback)
+        {
+            ThreadStart threadStart = delegate
+            {
+                getInstance().pathFinding.FindBFSPath(tile, callback);
+            };
+            threadStart.Invoke();
+        }*/
+        public void FinishedProcessingPath(PathResult result)
+        {
+            lock (results)
+            {
+                //Add the result to the queue.
+                results.Enqueue(result);
+            }
+
+        }
+        #endregion
+
+        private void OnDrawGizmos()
+        {
+
+            if (DrawGridGizmos)
+                grid.DrawGrid();
         }
     }
     public struct PathResult

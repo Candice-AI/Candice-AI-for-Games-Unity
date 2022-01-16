@@ -8,12 +8,12 @@ namespace CandiceAIforGames.AI
         public CandiceModuleMovement(string moduleName = "CandiceModuleMovement") : base(moduleName) { }
         public void MoveForward(Transform transform, CandiceAIController aiController)
         {
-            transform.position += transform.forward * 7 * Time.deltaTime;
+            transform.position += transform.forward * aiController.MoveSpeed * Time.deltaTime;
         }
 
         public void LookAt(Transform transform, CandiceAIController aiController)
         {
-            transform.LookAt(aiController.MainTarget.transform);
+            transform.LookAt(aiController.LookPoint);
         }
     }
 }

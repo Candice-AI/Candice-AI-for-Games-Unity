@@ -11,7 +11,8 @@ namespace CandiceAIforGames.AI.Editors
 
         private CandiceAIController character;
         private SerializedObject soTarget;
-        GUIContent[] arrTabs = new GUIContent[6];
+        GUIContent[] arrTabs = new GUIContent[4];
+        GUIContent[] arrTabsSettings = new GUIContent[2];
         string[] arrSettingsTabs = { "General", "Relationships" };
         private int tabIndex;
         private int settingTabIndex;
@@ -31,11 +32,12 @@ namespace CandiceAIforGames.AI.Editors
             guiStyle.fontStyle = FontStyle.Bold;
 
             arrTabs[0] = new GUIContent("Settings", (Texture2D)Resources.Load("Settings"));
-            arrTabs[1] = new GUIContent("  Stats", (Texture2D)Resources.Load("Stats"));
-            arrTabs[2] = new GUIContent("Detection", (Texture2D)Resources.Load("Detection"));
-            arrTabs[3] = new GUIContent("Movement", (Texture2D)Resources.Load("Movement"));
-            arrTabs[4] = new GUIContent("Combat", (Texture2D)Resources.Load("Combat"));
-            arrTabs[5] = new GUIContent("Animation", (Texture2D)Resources.Load("Animation"));
+            arrTabs[1] = new GUIContent("Detection", (Texture2D)Resources.Load("Detection"));
+            arrTabs[2] = new GUIContent("Movement", (Texture2D)Resources.Load("Movement"));
+            arrTabs[3] = new GUIContent("Combat", (Texture2D)Resources.Load("Combat"));
+
+            arrTabsSettings[0] = new GUIContent("General");
+            arrTabsSettings[1] = new GUIContent("Relationships");
 
         }
 
@@ -66,7 +68,7 @@ namespace CandiceAIforGames.AI.Editors
 
             //tabIndex = GUILayout.Toolbar(tabIndex, arrTabs);
 
-            tabIndex = GUILayout.SelectionGrid(tabIndex, arrTabs, 3);
+            tabIndex = GUILayout.SelectionGrid(tabIndex, arrTabs, 4);
 
             if (EditorGUI.EndChangeCheck())
             {
@@ -81,20 +83,14 @@ namespace CandiceAIforGames.AI.Editors
                     DrawAISettingGUI();
                     break;
                 case 1:
-                    //DrawStatsGUI();
+                    DrawDetectionGUI();
 
                     break;
                 case 2:
-                    DrawDetectionGUI();
-                    break;
-                case 3:
                     DrawMovementGUI();
                     break;
-                case 4:
+                case 3:
                     DrawCombatGUI();
-                    break;
-                case 5:
-                    DrawAnimationGUI();
                     break;
             }
             if (EditorGUI.EndChangeCheck())
@@ -112,7 +108,7 @@ namespace CandiceAIforGames.AI.Editors
             EditorGUI.BeginChangeCheck();
 
             //tabIndex = GUILayout.Toolbar(tabIndex, arrTabs);
-            settingTabIndex = GUILayout.SelectionGrid(settingTabIndex, arrSettingsTabs, 2);
+            settingTabIndex = GUILayout.SelectionGrid(settingTabIndex, arrTabsSettings, 2);
 
             if (EditorGUI.EndChangeCheck())
             {
@@ -158,16 +154,9 @@ namespace CandiceAIforGames.AI.Editors
             //character._behaviorTree = (BehaviorTree)EditorGUILayout.ObjectField(label, character._behaviorTree, typeof(BehaviorTree), true);
             label = new GUIContent("Stop Behavior Tree", "Stops the current active behavior tree from executing.");
             //character._stopBehaviorTree = EditorGUILayout.Toggle(label, character._stopBehaviorTree);
-            //label = new GUIContent("Is Player Controlled", "Whether or not this AI is controlled by the player.");
-            //character.isPlayerControlled = EditorGUILayout.Toggle(label, character.isPlayerControlled);
-            label = new GUIContent("Camera", "The Main Camera GameObject.");
-            character.MainCamera = (Camera)EditorGUILayout.ObjectField(label, character.MainCamera, typeof(Camera), true);
-            label = new GUIContent("Rig", "The rig that contains all the bones of the character. This is a prerequisite for enabling ragdoll.");
-            character.Rig = (GameObject)EditorGUILayout.ObjectField(label, character.Rig, typeof(GameObject), true);
-            label = new GUIContent("Enable ragdoll", "Enable ragdoll from the start.");
-            character.EnableRagdoll = EditorGUILayout.Toggle(label, character.EnableRagdoll);
-            //label = new GUIContent("Enable Ragdoll on Death", "Enable ragdoll when the character dies.");
-            //character.enableRagdollOnDeath = EditorGUILayout.Toggle(label, character.enableRagdollOnDeath);
+            EditorGUILayout.Vector3Field("Move Point", character.MovePoint);
+            EditorGUILayout.ObjectField("Main Target", character.MainTarget, typeof(GameObject), true);
+            EditorGUILayout.ObjectField("Attack Target", character.AttackTarget, typeof(GameObject), true);
         }
         void DrawRelationshipGUI()
         {
@@ -342,7 +331,7 @@ namespace CandiceAIforGames.AI.Editors
             //Detection and Head Look Settings
             GUILayout.Label("General Movement Settings", guiStyle);
             GUIContent label;
-            EditorGUILayout.ObjectField("Move Target", character.MoveTarget, typeof(GameObject), true);
+            EditorGUILayout.Vector3Field("Move Target", character.MovePoint);
             EditorGUILayout.ObjectField("Main Target", character.MainTarget, typeof(GameObject), true);
             label = new GUIContent("Base Movement Speed", "The base speed at which the agent will move at.");
             character.MoveSpeed = EditorGUILayout.FloatField(label, character.MoveSpeed);
@@ -353,30 +342,7 @@ namespace CandiceAIforGames.AI.Editors
             //character.moveType = (MovementType)EditorGUILayout.EnumPopup(label, character.moveType);
             //label = new GUIContent("Pathfind Source", "Choose the pathfind source that this AI agent will use.");
             //character.pathfindSource = (PathfindSource)EditorGUILayout.EnumPopup(label, character.pathfindSource);
-            /*if (character.pathfindSource == PathfindSource.Candice)
-            {
-                GUILayout.BeginHorizontal();
-                GUILayout.FlexibleSpace();
-                GUILayout.BeginVertical("box");
-                GUILayout.BeginHorizontal();
-                GUILayout.FlexibleSpace();
-                GUILayout.Label("Candice Pathfind Settings", EditorStyles.boldLabel);
-                GUILayout.FlexibleSpace();
-                GUILayout.EndHorizontal();
-                label = new GUIContent("Turn Speed", "The speed the agent will turn between waypoints by when pathfinding.");
-                character._turnSpeed = EditorGUILayout.FloatField(label, character._turnSpeed);
-                label = new GUIContent("Turn Distance", "The ditance the agent will start to turn while moving to the next node.");
-                character._turnDist = EditorGUILayout.FloatField(label, character._turnDist);
-                label = new GUIContent("Stopping Distance", "How far away the agent will start to come to a halt.");
-                character._stoppingDist = EditorGUILayout.FloatField(label, character._stoppingDist);
-                label = new GUIContent("Minimum Path Update Time", "Minimum time it will take for the agent before attempting to request a new updated path from Candice.");
-                character._minPathUpdateTime = EditorGUILayout.FloatField(label, character._minPathUpdateTime);
-                label = new GUIContent("Path Update Move Threshold", "Minimum distance the target can move by before requesting a new Updated path from Candice.");
-                character._pathUpdateMoveThreshold = EditorGUILayout.FloatField(label, character._pathUpdateMoveThreshold);
-                GUILayout.EndVertical();
-                GUILayout.FlexibleSpace();
-                GUILayout.EndHorizontal();
-            }*/
+            
 
             GUILayout.Space(16);
             GUILayout.Label("Head Look Settings", guiStyle);
@@ -390,6 +356,29 @@ namespace CandiceAIforGames.AI.Editors
             //Patrol Settings
             EditorGUILayout.Space();
             EditorGUILayout.Space();
+
+            GUILayout.BeginHorizontal();
+            GUILayout.FlexibleSpace();
+            GUILayout.BeginVertical("box");
+            GUILayout.BeginHorizontal();
+            GUILayout.FlexibleSpace();
+            GUILayout.Label("Candice Pathfind Settings", EditorStyles.boldLabel);
+            GUILayout.FlexibleSpace();
+            GUILayout.EndHorizontal();
+            label = new GUIContent("Turn Speed", "The speed the agent will turn between waypoints by when pathfinding.");
+            character._turnSpeed = EditorGUILayout.FloatField(label, character._turnSpeed);
+            label = new GUIContent("Turn Distance", "The ditance the agent will start to turn while moving to the next node.");
+            character._turnDist = EditorGUILayout.FloatField(label, character._turnDist);
+            label = new GUIContent("Stopping Distance", "How far away the agent will start to come to a halt.");
+            character._stoppingDist = EditorGUILayout.FloatField(label, character._stoppingDist);
+            label = new GUIContent("Minimum Path Update Time", "Minimum time it will take for the agent before attempting to request a new updated path from Candice.");
+            character._minPathUpdateTime = EditorGUILayout.FloatField(label, character._minPathUpdateTime);
+            label = new GUIContent("Path Update Move Threshold", "Minimum distance the target can move by before requesting a new Updated path from Candice.");
+            character._pathUpdateMoveThreshold = EditorGUILayout.FloatField(label, character._pathUpdateMoveThreshold);
+            character.DrawAgentPath = EditorGUILayout.Toggle("Draw Agent Path", character.DrawAgentPath);
+            GUILayout.EndVertical();
+            GUILayout.FlexibleSpace();
+            GUILayout.EndHorizontal();
             //GUIContent label = new GUIContent("Patrol Settings");
 
             //EditorGUILayout.LabelField();
@@ -471,60 +460,7 @@ namespace CandiceAIforGames.AI.Editors
 
         }
 
-        private void DrawAnimationGUI()
-        {
-            /*
-            GUILayout.BeginHorizontal();
-            GUILayout.FlexibleSpace();
-
-            GUIContent label = new GUIContent("Under Construction");
-            guiStyle.normal.textColor = EditorStyles.label.normal.textColor;
-            GUILayout.Label(label, guiStyle);
-            GUILayout.FlexibleSpace();
-            GUILayout.EndHorizontal();
-            */
-
-            GUIContent label;
-            label = new GUIContent("Has Animations", "Whether or not this agent has any animations (e.g move, jump, attack...)");
-            character.HasAnimations = EditorGUILayout.Toggle(label, character.HasAnimations);
-
-            label = new GUIContent("Animation Type", "Code Based: The agent will directly play the animations within the animator controller, by using their names.\nTransition Based: The agent will use the transitions within the animator controller to change states between different animations.");
-            character.AnimationType = (AnimationType)EditorGUILayout.EnumPopup(label, character.AnimationType);
-            if (character.HasAnimations)
-            {
-                label = new GUIContent("Animation Transitions", "The names of the animation transitions within the animator controller. Note: only applicable if the Animation type is TransitionBased.");
-                GUILayout.Label(label, guiStyle);
-                label = new GUIContent("Idle Transition Parameter", "");
-                character.IdleTransitionParameter = EditorGUILayout.TextField(label, character.IdleTransitionParameter);
-                label = new GUIContent("Move Transition Parameter", "");
-                character.MoveTransitionParameter = EditorGUILayout.TextField(label, character.MoveTransitionParameter);
-                label = new GUIContent("Run Transition Parameter", "");
-                character.RunTransitionParameter = EditorGUILayout.TextField(label, character.RunTransitionParameter);
-                label = new GUIContent("Jump Transition Parameter", "");
-                character.JumpTransitionParameter = EditorGUILayout.TextField(label, character.JumpTransitionParameter);
-                label = new GUIContent("Attack Transition Parameter", "");
-                character.AttackTransitionParameter = EditorGUILayout.TextField(label, character.AttackTransitionParameter);
-                label = new GUIContent("Dead Transition Parameter", "");
-                character.DeadTransitionParameter = EditorGUILayout.TextField(label, character.DeadTransitionParameter);
-                GUILayout.Space(8);
-                label = new GUIContent("Animation Names", "The names of the animations within the animator controller. Note: Only applicable if the Animation type is CodeBased and the Animation Rig Type is Legacy.");
-                GUILayout.Label(label, guiStyle);
-                label = new GUIContent("Idle Anim Parameter", "");
-                character.IdleAnimationName = EditorGUILayout.TextField(label, character.IdleAnimationName);
-                label = new GUIContent("Move Anim Parameter", "");
-                character.MoveAnimationName = EditorGUILayout.TextField(label, character.MoveAnimationName);
-                label = new GUIContent("Run Anim Parameter", "");
-                character.RunAnimationName = EditorGUILayout.TextField(label, character.RunAnimationName);
-                label = new GUIContent("Jump Anim Parameter", "");
-                character.JumpAnimationName = EditorGUILayout.TextField(label, character.JumpAnimationName);
-                label = new GUIContent("Attack Anim Parameter", "");
-                character.AttackAnimationName = EditorGUILayout.TextField(label, character.AttackAnimationName);
-                label = new GUIContent("Dead Anim Parameter", "");
-                character.DeadAnimationName = EditorGUILayout.TextField(label, character.DeadAnimationName);
-            }
-
-        }
-
+        
         void OnSceneGUI()
         {
             if (character != null)
