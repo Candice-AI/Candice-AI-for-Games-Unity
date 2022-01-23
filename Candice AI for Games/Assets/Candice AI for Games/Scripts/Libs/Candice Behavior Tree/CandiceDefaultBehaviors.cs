@@ -182,6 +182,80 @@ namespace CandiceAIforGames.AI
             return CandiceBehaviorStates.SUCCESS;
         }
 
+        public static CandiceBehaviorStates SetMovePoint(CandiceBehaviorNode rootNode)
+        {
+            CandiceBehaviorStates state = CandiceBehaviorStates.FAILURE;
+            CandiceAIController agent = rootNode.aiController;
+            try
+            {
+                if (agent.MainTarget != null)
+                {
+                    agent.MovePoint = agent.MainTarget.transform.position;
+                    state = CandiceBehaviorStates.SUCCESS;
+                }
+                else
+                {
+                    Debug.LogError("CandiceDefaultBehaviors.SetMoveTarget: Main Target is NULL");
+                }
+            }
+            catch (Exception e)
+            {
+                state = CandiceBehaviorStates.FAILURE;
+                Debug.LogError("CandiceDefaultBehaviors.SetMovePoint: " + e.Message);
+
+            }
+            return state;
+        }
+        public static CandiceBehaviorStates SetAttackTarget(CandiceBehaviorNode rootNode)
+        {
+            CandiceBehaviorStates state = CandiceBehaviorStates.FAILURE;
+            CandiceAIController agent = rootNode.aiController;
+            try
+            {
+                if (agent.MainTarget != null)
+                {
+                    agent.AttackTarget = agent.MainTarget;
+                    state = CandiceBehaviorStates.SUCCESS;
+                }
+                else
+                {
+                    Debug.LogError("CandiceDefaultBehaviors.SetAttackTarget: Main Target is NULL");
+                }
+            }
+            catch (Exception e)
+            {
+                state = CandiceBehaviorStates.FAILURE;
+                Debug.LogError("CandiceDefaultBehaviors.SetAttackTarget: " + e.Message);
+            }
+            return state;
+        }
+
+        public static CandiceBehaviorStates RotateTo(CandiceBehaviorNode rootNode)
+        {
+            CandiceBehaviorStates state = CandiceBehaviorStates.SUCCESS;
+            try
+            {
+                float desiredAngle = 180;
+                int direction = 1;
+                float angle = Vector3.Angle((rootNode.aiController.MainTarget.transform.position - rootNode.aiController.transform.position), rootNode.aiController.transform.right);
+                if (angle > 90)
+                    angle = 360 - angle;
+                if (angle > desiredAngle)
+                    direction = -1;
+
+                float rotation = (direction * rootNode.aiController.RotationSpeed) * Time.deltaTime;
+                rootNode.aiController.transform.Rotate(0, rotation, 0);
+            }
+            catch (Exception e)
+            {
+                state = CandiceBehaviorStates.FAILURE;
+                Debug.LogError("CandiceDefaultBehaviors.RotateTo: " + e.Message);
+
+            }
+
+            return state;
+        }
+
     }
 
 }

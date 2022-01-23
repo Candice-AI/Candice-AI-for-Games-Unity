@@ -15,8 +15,6 @@ namespace CandiceAIforGames.AI
             this.transform = transform;
             objectDetectedCallback = _objectDetectedCallback;
             Utils.Utils.LogClassInitialisation(this);
-
-
         }
 
         public void ScanForObjects(CandiceDetectionRequest request)
@@ -45,8 +43,12 @@ namespace CandiceAIforGames.AI
                 GameObject go = collider.gameObject;
                 float distance = Vector3.Distance(center, go.transform.position);
                 float angle = Vector3.Angle(go.transform.position - center, transform.forward);
-                //Check if the object is in the enemy tag list
-                CompareTags(go, request, ref detectedObjects);
+                if (angle <= lineOfSight / 2)
+                {
+                    CompareTags(go, request.detectionTags, ref detectedObjects);
+                }
+                
+                
 
             }
             objectDetectedCallback(new CandiceDetectionResults(detectedObjects));
@@ -74,14 +76,17 @@ namespace CandiceAIforGames.AI
             {
                 GameObject go = collider.gameObject;
                 float distance = Vector3.Distance(center, go.transform.position);
-                //float angle = Vector3.Angle(go.transform.position - aiController.transform.position, aiController.transform.forward);
+                float angle = Vector2.Angle((new Vector2(go.transform.position.x, go.transform.position.y) - center2D), transform.forward);
                 //Check if the object is in the enemy tag list
-                CompareTags(go, request,ref detectedObjects);
+                if (angle <= lineOfSight / 2)
+                {
+                    CompareTags(go, request.detectionTags, ref detectedObjects);
+                }
 
             }
             objectDetectedCallback(new CandiceDetectionResults(detectedObjects));
         }
-        public void AvoidObstacles(Transform Target, Transform transform, float size, float movementSpeed, bool is3D, float distance)
+        public void AvoidObstacles(Transform Target, Transform transform, float size, float movementSpeed, bool is3D, float distance,int lines)
         {
             //
             //Method Name : void Move(Transform Target, Transform transform, float size)
@@ -99,46 +104,42 @@ namespace CandiceAIforGames.AI
             bool obstacleHit = false;
             Vector3 dir = (transform.forward).normalized;
             RaycastHit hit;
-            if (Physics.Raycast(transform.position, transform.forward, out hit, distance))
+
+            Vector3 center = transform.position;
+
+            Vector3[] oaPoints = new Vector3[lines];
+            float step = size / lines;
+            float currentPos = transform.position.x - size;
+
+            for(int i = 0; i < lines;i++)
             {
-                if (hit.transform != transform && hit.transform != Target.transform)
-                {
-                    Debug.DrawLine(transform.position, hit.point, Color.red);
-                    dir += hit.normal * 50;
-                    obstacleHit = true;
-                }
+                oaPoints[i] = transform.position;
+
+                oaPoints[i].x = currentPos;
+                currentPos += step*2;
             }
-
-            Vector3 left = transform.position;
-            Vector3 right = transform.position;
-
-            left.x -= size;
-            right.x += size;
-            if (Physics.Raycast(left, transform.forward, out hit, distance))
+            for (int i = 0; i < oaPoints.Length;i++)
             {
-                if (hit.transform != transform && hit.transform != Target.transform)
+                Vector3 point = oaPoints[i];
+                if (i >= oaPoints.Length / 2 && i <= oaPoints.Length / 2 + 1)
                 {
-                    Debug.DrawLine(left, hit.point, Color.red);
-                    dir += hit.normal * 50;
-                    obstacleHit = true;
-
+                    distance = distance * 1.5f;
                 }
-            }
-
-            if (Physics.Raycast(right, transform.forward, out hit, distance))
-            {
-                if (hit.transform != transform && hit.transform != Target.transform)
+                if (Physics.Raycast(point, transform.forward, out hit, distance))
                 {
-                    Debug.DrawLine(right, hit.point, Color.red);
-                    dir += hit.normal * 50;
-                    obstacleHit = true;
+                    if (hit.transform != transform && hit.transform != Target.transform)
+                    {
+                        Debug.DrawLine(point, hit.point, Color.red);
+                        dir += hit.normal * 90;
+
+                        obstacleHit = true;
+                    }
                 }
             }
             if (obstacleHit)
             {
                 Quaternion rot = Quaternion.LookRotation(dir);
                 transform.rotation = Quaternion.Slerp(transform.rotation, rot, movementSpeed * Time.deltaTime);
-
             }
             else
             {
@@ -147,12 +148,13 @@ namespace CandiceAIforGames.AI
                 transform.rotation = Quaternion.Slerp(transform.rotation, rot, movementSpeed * Time.deltaTime);
 
             }
-
-
-            //transform.position += transform.forward * movementSpeed * Time.deltaTime;
+            
         }
+
+
         private bool compareObjToTags(GameObject obj, List<string> tags)
         {
+            //Check if the object is in the tag list
             bool hasMatch = false;
 
             for (int i = 0; i < tags.Count; i++)
@@ -210,10 +212,9 @@ namespace CandiceAIforGames.AI
 
 
         }
-        public void CompareTags(GameObject go,CandiceDetectionRequest request,ref Dictionary<string, List<GameObject>> detectedObjects)
+        public void CompareTags(GameObject go, List<string> detectionTags, ref Dictionary<string, List<GameObject>> detectedObjects)
         {
             objects = new List<GameObject>();
-            List<string> detectionTags = request.detectionTags;
 
             if (detectionTags.Contains(go.tag))
             {

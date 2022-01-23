@@ -91,6 +91,8 @@ namespace CandiceAIforGames.AI
         [SerializeField]
         private float detectionRadius = 3f;
         [SerializeField]
+        private int detectionLines = 10;
+        [SerializeField]
         private float lineOfSight = 3f;
         [SerializeField]
         private float detectionHeight = 3f;
@@ -126,6 +128,8 @@ namespace CandiceAIforGames.AI
         private Vector3 movePoint;
         [SerializeField]
         private float moveSpeed = 7f;
+        [SerializeField]
+        private float rotationSpeed = 12f;
         [SerializeField]
         private bool isMoving = false;
         [SerializeField]
@@ -250,6 +254,8 @@ namespace CandiceAIforGames.AI
         public bool IsFollowingPath { get => isFollowingPath; set => isFollowingPath = value; }
         public Vector3 LookPoint { get => lookPoint; set => lookPoint = value; }
         public bool DrawAgentPath { get => drawAgentPath; set => drawAgentPath = value; }
+        public float RotationSpeed { get => rotationSpeed; set => rotationSpeed = value; }
+        public int DetectionLines { get => detectionLines; set => detectionLines = value; }
 
         CandiceAIManager candice;
 
@@ -319,7 +325,7 @@ namespace CandiceAIforGames.AI
             {
                 halfHeight = gameObject.transform.localScale.x * 2;
             }
-            detectionModule.AvoidObstacles(MainTarget.transform,transform,halfHeight + obstacleAvoidanceAOE,MoveSpeed,true,ObstacleAvoidaceDistance);
+            detectionModule.AvoidObstacles(MainTarget.transform,transform,halfHeight + obstacleAvoidanceAOE,RotationSpeed,true,ObstacleAvoidaceDistance,DetectionLines);
         }
         /// <summary>
         /// Send a path calculation request to Candice and then follow it.
@@ -441,7 +447,9 @@ namespace CandiceAIforGames.AI
         }
         public void Wander()
         {
-            // does nothing except pick a new destination to go to
+            /* Does nothing except pick a new destination to go to
+             * Requires a CandiceGrid component attached to the Candice AI Manager instance.
+             */
             if (wanderTarget == null)
             {
                 wanderTarget = new GameObject("WanderTarget: " + AgentID);

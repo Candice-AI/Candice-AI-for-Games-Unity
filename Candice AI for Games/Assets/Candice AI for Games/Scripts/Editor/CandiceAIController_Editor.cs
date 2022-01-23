@@ -267,6 +267,8 @@ namespace CandiceAIforGames.AI.Editors
             character.PerceptionMask = InternalEditorUtility.ConcatenatedLayersMaskToLayerMask(tempMask);
             label = new GUIContent("Detection Radius", "The radius which the character can detect other objects.");
             character.DetectionRadius = EditorGUILayout.FloatField(label, character.DetectionRadius);
+            label = new GUIContent("Detection Lines", "The amount of raycast lines the agent will emit in order to detect obstacles, evenly distrubuted from the center.");
+            character.DetectionLines = EditorGUILayout.IntField(label, character.DetectionLines);
             label = new GUIContent("Detection Height", "The height at which the agent can detect objects.");
             character.DetectionHeight = EditorGUILayout.FloatField(label, character.DetectionHeight);
             label = new GUIContent("Line of Sight", "The angle, in degrees, in front of the agent where the it will be able to see objects.");
@@ -335,8 +337,8 @@ namespace CandiceAIforGames.AI.Editors
             EditorGUILayout.ObjectField("Main Target", character.MainTarget, typeof(GameObject), true);
             label = new GUIContent("Base Movement Speed", "The base speed at which the agent will move at.");
             character.MoveSpeed = EditorGUILayout.FloatField(label, character.MoveSpeed);
-            //label = new GUIContent("Base Rotation Speed", "The base speed at which the agent rotate to face its target.");
-            //character.rotationSpeed = EditorGUILayout.FloatField(label, character.rotationSpeed);
+            label = new GUIContent("Base Rotation Speed", "The base speed at which the agent rotate to face its target.");
+            character.RotationSpeed = EditorGUILayout.FloatField(label, character.RotationSpeed);
             GUILayout.Space(16);
 
             GUILayout.BeginHorizontal();
