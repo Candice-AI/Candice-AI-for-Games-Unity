@@ -48,7 +48,7 @@ MonoBehaviour:
   m_MinSize: {x: 683, y: 498}
   m_MaxSize: {x: 14004, y: 14048}
   vertical: 0
-  controlID: 88
+  controlID: 116
 --- !u!114 &3
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -221,7 +221,7 @@ MonoBehaviour:
   m_MinSize: {x: 406, y: 498}
   m_MaxSize: {x: 10002, y: 14048}
   vertical: 1
-  controlID: 69
+  controlID: 36
 --- !u!114 &10
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -246,7 +246,7 @@ MonoBehaviour:
   m_MinSize: {x: 406, y: 224}
   m_MaxSize: {x: 8006, y: 4024}
   vertical: 0
-  controlID: 70
+  controlID: 37
 --- !u!114 &11
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -329,7 +329,7 @@ MonoBehaviour:
   m_PersistentViewDataDictionary: {fileID: 0}
   m_LockTracker:
     m_IsLocked: 0
-  m_LastSelectedObjectID: 10648
+  m_LastSelectedObjectID: 12380
 --- !u!114 &14
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -438,15 +438,15 @@ MonoBehaviour:
   m_LastFolders:
   - Assets/Candice AI for Games/Scripts
   m_LastFoldersGridSize: -1
-  m_LastProjectPath: C:\Users\miken\Documents\GitHub\Candice AI for Games\Candice-AI-for-Games-Unity\Candice
+  m_LastProjectPath: C:\Users\miken\Documents\GitHub\Candice AI for Games\Candice
     AI for Games
   m_LockTracker:
     m_IsLocked: 0
   m_FolderTreeState:
     scrollPos: {x: 0, y: 0}
-    m_SelectedIDs: 32280000
-    m_LastClickedID: 10290
-    m_ExpandedIDs: 00000000ac260000ce2600003c270000322800003e28000000ca9a3b
+    m_SelectedIDs: bc2e0000
+    m_LastClickedID: 11964
+    m_ExpandedIDs: 000000002a2d0000522d0000be2d0000bc2e0000c82e000000ca9a3b
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -474,7 +474,7 @@ MonoBehaviour:
     scrollPos: {x: 0, y: 0}
     m_SelectedIDs: 
     m_LastClickedID: 0
-    m_ExpandedIDs: 00000000ac260000ce2600003c270000322800003e280000
+    m_ExpandedIDs: 000000002a2d0000522d0000be2d0000bc2e0000c82e0000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -595,7 +595,7 @@ MonoBehaviour:
       scrollPos: {x: 0, y: 0}
       m_SelectedIDs: 
       m_LastClickedID: 0
-      m_ExpandedIDs: b6fbffff
+      m_ExpandedIDs: 3af8ffff
       m_RenameOverlay:
         m_UserAcceptedRename: 0
         m_Name: 
@@ -650,9 +650,9 @@ MonoBehaviour:
   m_isRotationLocked: 0
   m_AudioPlay: 0
   m_Position:
-    m_Target: {x: -31.531025, y: 0, z: 15.936828}
+    m_Target: {x: -29.924232, y: 17.783855, z: 5.577674}
     speed: 2
-    m_Value: {x: -31.531025, y: 0, z: 15.936828}
+    m_Value: {x: -29.924232, y: 17.783855, z: 5.577674}
   m_RenderMode: 0
   m_CameraMode:
     drawMode: 0
@@ -680,13 +680,13 @@ MonoBehaviour:
       speed: 2
       m_Value: 0
   m_Rotation:
-    m_Target: {x: -0.27785677, y: -0.7147032, z: 0.38888144, w: -0.5106526}
+    m_Target: {x: -0.14383407, y: -0.7249426, z: 0.15930769, w: -0.6545159}
     speed: 2
-    m_Value: {x: -0.2778568, y: -0.71470326, z: 0.38888147, w: -0.51065266}
+    m_Value: {x: -0.14383407, y: -0.7249426, z: 0.15930769, w: -0.6545159}
   m_Size:
-    m_Target: 74.84574
+    m_Target: 84.65626
     speed: 2
-    m_Value: 74.84574
+    m_Value: 84.65626
   m_Ortho:
     m_Target: 0
     speed: 2

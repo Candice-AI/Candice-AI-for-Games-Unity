@@ -318,16 +318,16 @@ namespace CandiceAIforGames.AI
         /// </summary>
         public void AvoidObstacles()
         {
-            
+            float height = 0.0f;
             if (col != null)
             {
-                HalfHeight = col.bounds.extents.x * 2;
+                height = col.bounds.extents.x * 2;
             }
             else
             {
-                HalfHeight = gameObject.transform.localScale.x * 2;
+                height = gameObject.transform.localScale.x * 2;
             }
-            detectionModule.AvoidObstacles(MainTarget.transform,transform,HalfHeight + obstacleAvoidanceAOE,RotationSpeed,true,ObstacleAvoidaceDistance,DetectionLines);
+            detectionModule.AvoidObstacles(MainTarget.transform,transform, height + obstacleAvoidanceAOE,RotationSpeed,true,ObstacleAvoidaceDistance,DetectionLines);
         }
         /// <summary>
         /// Send a path calculation request to Candice and then follow it.
