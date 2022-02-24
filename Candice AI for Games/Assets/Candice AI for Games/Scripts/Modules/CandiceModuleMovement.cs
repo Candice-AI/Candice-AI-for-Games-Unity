@@ -11,6 +11,17 @@ namespace CandiceAIforGames.AI
         {
             transform.position += transform.forward * aiController.MoveSpeed * Time.deltaTime;
         }
+        public void MoveForwardWithSlopeAlignment(Transform transform, CandiceAIController aiController)
+        {
+            var ray = new Ray(transform.position, Vector3.down);
+            Vector3 velocity = transform.forward ;
+            if (Physics.Raycast(ray, out RaycastHit hitInfo, aiController.HalfHeight + 0.2f))
+            {
+                var slopeRotation = Quaternion.FromToRotation(Vector3.up, hitInfo.normal);
+                velocity = slopeRotation * velocity;
+            }
+            transform.position += velocity * aiController.MoveSpeed * Time.deltaTime;
+        }
 
         public void LookAt(Transform transform, CandiceAIController aiController)
         {

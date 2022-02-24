@@ -256,6 +256,7 @@ namespace CandiceAIforGames.AI
         public bool DrawAgentPath { get => drawAgentPath; set => drawAgentPath = value; }
         public float RotationSpeed { get => rotationSpeed; set => rotationSpeed = value; }
         public int DetectionLines { get => detectionLines; set => detectionLines = value; }
+        public float HalfHeight { get => halfHeight; set => halfHeight = value; }
 
         CandiceAIManager candice;
 
@@ -278,6 +279,7 @@ namespace CandiceAIforGames.AI
             combatModule = new CandiceModuleCombat(transform,onAttackComplete,"Agent" + AgentID + "-CandiceModuleCombat");
             movementModule = new CandiceModuleMovement("Agent" + AgentID + "-CandiceModuleMovement");
             detectionModule = new CandiceModuleDetection(gameObject.transform,onObjectFound, "Agent" + AgentID + "-CandiceModuleDetection");
+            HalfHeight = col.bounds.extents.y;
         }
 
         // Update is called once per frame
@@ -319,13 +321,13 @@ namespace CandiceAIforGames.AI
             
             if (col != null)
             {
-                halfHeight = col.bounds.extents.x * 2;
+                HalfHeight = col.bounds.extents.x * 2;
             }
             else
             {
-                halfHeight = gameObject.transform.localScale.x * 2;
+                HalfHeight = gameObject.transform.localScale.x * 2;
             }
-            detectionModule.AvoidObstacles(MainTarget.transform,transform,halfHeight + obstacleAvoidanceAOE,RotationSpeed,true,ObstacleAvoidaceDistance,DetectionLines);
+            detectionModule.AvoidObstacles(MainTarget.transform,transform,HalfHeight + obstacleAvoidanceAOE,RotationSpeed,true,ObstacleAvoidaceDistance,DetectionLines);
         }
         /// <summary>
         /// Send a path calculation request to Candice and then follow it.

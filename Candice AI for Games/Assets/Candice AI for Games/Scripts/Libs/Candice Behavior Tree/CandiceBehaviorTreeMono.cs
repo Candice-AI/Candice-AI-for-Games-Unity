@@ -98,7 +98,7 @@ namespace CandiceAIforGames.AI
             attackSequence = new CandiceBehaviorSequence();
             attackSequence.SetNodes(new List<CandiceBehaviorNode> { withinAttackRange, lookAtNode, attackNode });
             followSequence = new CandiceBehaviorSequence();
-            followSequence.SetNodes(new List<CandiceBehaviorNode> { AvoidObstaclesNode, moveNode });
+            followSequence.SetNodes(new List<CandiceBehaviorNode> { /*AvoidObstaclesNode*/ lookAtNode, moveNode });
             attackOrChaseSelector = new CandiceBehaviorSelector();
             attackOrChaseSelector.SetNodes(new List<CandiceBehaviorNode> { attackSequence, followSequence });
             rootNode.SetNodes(new List<CandiceBehaviorNode> { ScanForObjectsNode, canSeeEnemyNode, attackOrChaseSelector });

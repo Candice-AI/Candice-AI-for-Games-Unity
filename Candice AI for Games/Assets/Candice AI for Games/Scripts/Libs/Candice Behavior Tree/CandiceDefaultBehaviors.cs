@@ -87,6 +87,40 @@ namespace CandiceAIforGames.AI
 
             return state;
         }
+        public static CandiceBehaviorStates MoveForwardWithSlopeAlignment(CandiceBehaviorNode rootNode)
+        {
+            CandiceAIController agent = rootNode.aiController;
+            agent.IsMoving = true;
+
+            /*if (rootNode.aiController.hasAnimations)
+            {
+                if (rootNode.aiController.animationType == AnimationType.CodeBased)
+                {
+                    if (!agent.currentAnimation.Equals(agent.moveAnimationName))
+                    {
+                        agent.currentAnimation = agent.moveAnimationName;
+                        agent.Animator.Play(agent.moveAnimationName);
+                    }
+                }
+                else
+                    agent.Animator.SetBool(agent.moveTransitionParameter, true);
+            }*/
+
+            //rootNode.aiController.Animator.SetFloat("characterSpeed", rootNode.aiController.movementSpeed);
+            CandiceBehaviorStates state = CandiceBehaviorStates.SUCCESS;
+            try
+            {
+                agent.movementModule.MoveForwardWithSlopeAlignment(agent.transform, agent);
+
+            }
+            catch (Exception e)
+            {
+                state = CandiceBehaviorStates.FAILURE;
+                Debug.LogError("DefaultBehaviors.MoveTo: " + e.Message);
+            }
+
+            return state;
+        }
         public static CandiceBehaviorStates ObjectDetected(CandiceBehaviorNode rootNode)
         {
 
