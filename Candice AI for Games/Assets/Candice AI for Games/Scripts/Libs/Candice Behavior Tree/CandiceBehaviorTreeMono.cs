@@ -91,14 +91,14 @@ namespace CandiceAIforGames.AI
             lookAtNode = new CandiceBehaviorAction(CandiceDefaultBehaviors.LookAt, rootNode);
             attackNode = new CandiceBehaviorAction(CandiceDefaultBehaviors.AttackMelee, rootNode);
             rangeAttackNode = new CandiceBehaviorAction(CandiceDefaultBehaviors.AttackRange, rootNode);
-            moveNode = new CandiceBehaviorAction(CandiceDefaultBehaviors.MoveForward, rootNode);
+            moveNode = new CandiceBehaviorAction(CandiceDefaultBehaviors.MoveForwardWithSlopeAlignment, rootNode);
             withinAttackRange = new CandiceBehaviorAction(CandiceDefaultBehaviors.WithinAttackRange, rootNode);
 
 
             attackSequence = new CandiceBehaviorSequence();
             attackSequence.SetNodes(new List<CandiceBehaviorNode> { withinAttackRange, lookAtNode, attackNode });
             followSequence = new CandiceBehaviorSequence();
-            followSequence.SetNodes(new List<CandiceBehaviorNode> { /*AvoidObstaclesNode*/ lookAtNode, moveNode });
+            followSequence.SetNodes(new List<CandiceBehaviorNode> { CandicePathfindNode,lookAtNode, moveNode });
             attackOrChaseSelector = new CandiceBehaviorSelector();
             attackOrChaseSelector.SetNodes(new List<CandiceBehaviorNode> { attackSequence, followSequence });
             rootNode.SetNodes(new List<CandiceBehaviorNode> { ScanForObjectsNode, canSeeEnemyNode, attackOrChaseSelector });
