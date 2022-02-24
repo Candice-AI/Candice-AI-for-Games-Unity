@@ -859,7 +859,7 @@ GameObject:
   - component: {fileID: 552081738}
   - component: {fileID: 552081737}
   - component: {fileID: 552081736}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Quad
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1285,7 +1285,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 753400378}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 3.7, y: 0.49, z: 43.8}
+  m_LocalPosition: {x: -27.7, y: 0.49, z: 43.8}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -1896,7 +1896,7 @@ GameObject:
   - component: {fileID: 1362280675}
   - component: {fileID: 1362280674}
   - component: {fileID: 1362280673}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Quad (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1992,7 +1992,7 @@ GameObject:
   - component: {fileID: 1543803422}
   - component: {fileID: 1543803421}
   - component: {fileID: 1543803420}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Quad (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2137,7 +2137,7 @@ MonoBehaviour:
   mainTarget: {fileID: 0}
   fleeTarget: {fileID: 0}
   wanderTarget: {fileID: 0}
-  detectionRadius: 87.29526
+  detectionRadius: 106.80291
   detectionLines: 5
   lineOfSight: 360
   detectionHeight: 7
@@ -2153,7 +2153,7 @@ MonoBehaviour:
   allyTags: []
   perceptionMask:
     serializedVersion: 2
-    m_Bits: 311
+    m_Bits: 512
   obstacleAvoidaceDistance: 2
   obstacleAvoidanceAOE: 1.5
   lookPoint: {x: 0, y: 0, z: 0}
@@ -2271,14 +2271,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1808766942}
-  m_LocalRotation: {x: -0, y: 0.13521962, z: -0, w: 0.99081564}
-  m_LocalPosition: {x: -4, y: 2.8, z: -40.7}
+  m_LocalRotation: {x: -0, y: 0.00044914678, z: -0, w: 0.9999999}
+  m_LocalPosition: {x: 18.7, y: 2.8, z: -42.3}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1320518949}
   m_Father: {fileID: 0}
   m_RootOrder: 4
-  m_LocalEulerAnglesHint: {x: 0, y: 15.543001, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0.051, z: 0}
 --- !u!1 &1980989746
 GameObject:
   m_ObjectHideFlags: 0

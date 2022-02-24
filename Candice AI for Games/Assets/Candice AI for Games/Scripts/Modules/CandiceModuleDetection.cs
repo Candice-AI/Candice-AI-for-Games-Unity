@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CandiceAIforGames.AI.Pathfinding;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -86,7 +87,7 @@ namespace CandiceAIforGames.AI
             }
             objectDetectedCallback(new CandiceDetectionResults(detectedObjects));
         }
-        public void AvoidObstacles(Transform Target, Transform transform, float size, float movementSpeed, bool is3D, float distance,int lines)
+        public void AvoidObstacles(Transform Target, Transform transform, float size, float movementSpeed, bool is3D, float distance,int lines, LayerMask perceptionMask)
         {
             //
             //Method Name : void Move(Transform Target, Transform transform, float size)
@@ -129,10 +130,26 @@ namespace CandiceAIforGames.AI
                 {
                     if (hit.transform != transform && hit.transform != Target.transform)
                     {
-                        Debug.DrawLine(point, hit.point, Color.red);
-                        dir += hit.normal * 90;
+                        if (HasLayer(perceptionMask, hit.transform.gameObject.layer))
+                        {
+                            Debug.DrawLine(point, hit.point, Color.red);
+                            dir += hit.normal * 90;
 
-                        obstacleHit = true;
+                            obstacleHit = true;
+                        }
+                        /*foreach (LayerMask region in walkableRegions)
+                        {
+                            int id = Convert.ToInt32(Mathf.Log(region.value, 2));
+
+                            if(id == hit.transform.gameObject.layer)
+                            {
+                                Debug.DrawLine(point, hit.point, Color.red);
+                                dir += hit.normal * 90;
+
+                                obstacleHit = true;
+                            }
+                        }*/
+
                     }
                 }
             }
@@ -149,6 +166,16 @@ namespace CandiceAIforGames.AI
 
             }
             
+        }
+
+        public static bool HasLayer(LayerMask layerMask, int layer)
+        {
+            if (layerMask == (layerMask | (1 << layer)))
+            {
+                return true;
+            }
+
+            return false;
         }
 
 

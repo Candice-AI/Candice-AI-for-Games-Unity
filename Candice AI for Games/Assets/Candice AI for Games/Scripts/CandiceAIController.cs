@@ -327,7 +327,7 @@ namespace CandiceAIforGames.AI
             {
                 HalfHeight = gameObject.transform.localScale.x * 2;
             }
-            detectionModule.AvoidObstacles(MainTarget.transform,transform,HalfHeight + obstacleAvoidanceAOE,RotationSpeed,true,ObstacleAvoidaceDistance,DetectionLines);
+            detectionModule.AvoidObstacles(MainTarget.transform,transform,HalfHeight + obstacleAvoidanceAOE,RotationSpeed,true,ObstacleAvoidaceDistance,DetectionLines,PerceptionMask);
         }
         /// <summary>
         /// Send a path calculation request to Candice and then follow it.
