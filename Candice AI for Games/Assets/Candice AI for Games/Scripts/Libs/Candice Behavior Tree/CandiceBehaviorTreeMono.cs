@@ -13,6 +13,7 @@ namespace CandiceAIforGames.AI
         private CandiceBehaviorAction CandicePathfindNode;
         private CandiceBehaviorAction canSeeEnemyNode;
         private CandiceBehaviorAction lookAtNode;
+        private CandiceBehaviorAction rotateToNode;
         private CandiceBehaviorSelector attackOrChaseSelector;
         private CandiceBehaviorSequence attackSequence;
         private CandiceBehaviorAction withinAttackRange;
@@ -40,7 +41,6 @@ namespace CandiceAIforGames.AI
         private CandiceBehaviorAction setAttack;
         private CandiceBehaviorAction setMove;
 
-        private CandiceBehaviorAction rotateToNode;
         private CandiceBehaviorAction isPatrollingNode;
         private CandiceBehaviorAction patrolNode;
 
@@ -63,6 +63,7 @@ namespace CandiceAIforGames.AI
             /*
              * Uncomment to test out the different behaviours.
              * Remember, you can only have one of these functions running at a time.
+             * Enjoy, Cheers :-D
              */
             AggressiveAIMelee();
             //AggressiveAIRanged();
@@ -89,6 +90,7 @@ namespace CandiceAIforGames.AI
             CandicePathfindNode = new CandiceBehaviorAction(CandiceDefaultBehaviors.CandicePathfind, rootNode);
             canSeeEnemyNode = new CandiceBehaviorAction(CandiceDefaultBehaviors.EnemyDetected, rootNode);
             lookAtNode = new CandiceBehaviorAction(CandiceDefaultBehaviors.LookAt, rootNode);
+            rotateToNode = new CandiceBehaviorAction(CandiceDefaultBehaviors.RotateTo, rootNode);
             attackNode = new CandiceBehaviorAction(CandiceDefaultBehaviors.AttackMelee, rootNode);
             rangeAttackNode = new CandiceBehaviorAction(CandiceDefaultBehaviors.AttackRange, rootNode);
             moveNode = new CandiceBehaviorAction(CandiceDefaultBehaviors.MoveForwardWithSlopeAlignment, rootNode);
@@ -98,7 +100,7 @@ namespace CandiceAIforGames.AI
             attackSequence = new CandiceBehaviorSequence();
             attackSequence.SetNodes(new List<CandiceBehaviorNode> { withinAttackRange, lookAtNode, attackNode });
             followSequence = new CandiceBehaviorSequence();
-            followSequence.SetNodes(new List<CandiceBehaviorNode> { /*AvoidObstaclesNode*/ lookAtNode, moveNode });
+            followSequence.SetNodes(new List<CandiceBehaviorNode> { rotateToNode, AvoidObstaclesNode, moveNode });
             attackOrChaseSelector = new CandiceBehaviorSelector();
             attackOrChaseSelector.SetNodes(new List<CandiceBehaviorNode> { attackSequence, followSequence });
             rootNode.SetNodes(new List<CandiceBehaviorNode> { ScanForObjectsNode, canSeeEnemyNode, attackOrChaseSelector });
