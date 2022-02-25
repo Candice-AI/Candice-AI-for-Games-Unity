@@ -48,7 +48,7 @@ MonoBehaviour:
   m_MinSize: {x: 679, y: 492}
   m_MaxSize: {x: 14002, y: 14042}
   vertical: 0
-  controlID: 65
+  controlID: 134
 --- !u!114 &3
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -95,8 +95,8 @@ MonoBehaviour:
     y: 0
     width: 294
     height: 589
-  m_MinSize: {x: 200, y: 200}
-  m_MaxSize: {x: 4000, y: 4000}
+  m_MinSize: {x: 201, y: 221}
+  m_MaxSize: {x: 4001, y: 4021}
   m_ActualView: {fileID: 17}
   m_Panes:
   - {fileID: 17}
@@ -152,7 +152,7 @@ MonoBehaviour:
     y: 0
     width: 1920
     height: 997
-  m_MinSize: {x: 875, y: 542}
+  m_MinSize: {x: 875, y: 300}
   m_MaxSize: {x: 10000, y: 10000}
 --- !u!114 &7
 MonoBehaviour:
@@ -221,7 +221,7 @@ MonoBehaviour:
   m_MinSize: {x: 403, y: 492}
   m_MaxSize: {x: 10001, y: 14042}
   vertical: 1
-  controlID: 71
+  controlID: 59
 --- !u!114 &10
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -246,7 +246,7 @@ MonoBehaviour:
   m_MinSize: {x: 403, y: 221}
   m_MaxSize: {x: 8003, y: 4021}
   vertical: 0
-  controlID: 18
+  controlID: 60
 --- !u!114 &11
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -266,8 +266,8 @@ MonoBehaviour:
     y: 0
     width: 936
     height: 589
-  m_MinSize: {x: 200, y: 200}
-  m_MaxSize: {x: 4000, y: 4000}
+  m_MinSize: {x: 202, y: 221}
+  m_MaxSize: {x: 4002, y: 4021}
   m_ActualView: {fileID: 18}
   m_Panes:
   - {fileID: 18}
@@ -433,11 +433,11 @@ MonoBehaviour:
     m_SkipHidden: 0
     m_SearchArea: 1
     m_Folders:
-    - Assets
+    - Assets/Candice AI for Games/Scripts/Editor
   m_ViewMode: 1
   m_StartGridSize: 64
   m_LastFolders:
-  - Assets
+  - Assets/Candice AI for Games/Scripts/Editor
   m_LastFoldersGridSize: -1
   m_LastProjectPath: C:\Users\miken\Documents\GitHub\Candice AI for Games\Candice
     AI for Games
@@ -445,9 +445,9 @@ MonoBehaviour:
     m_IsLocked: 0
   m_FolderTreeState:
     scrollPos: {x: 0, y: 0}
-    m_SelectedIDs: e25a0000
-    m_LastClickedID: 23266
-    m_ExpandedIDs: 00000000e25a0000e45a0000e65a0000e85a0000ea5a000000ca9a3b
+    m_SelectedIDs: 863f0000
+    m_LastClickedID: 16262
+    m_ExpandedIDs: 00000000723f0000743f0000763f0000783f00007a3f000000ca9a3b
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -475,7 +475,7 @@ MonoBehaviour:
     scrollPos: {x: 0, y: 0}
     m_SelectedIDs: 
     m_LastClickedID: 0
-    m_ExpandedIDs: 00000000e25a0000e45a0000e65a0000e85a0000ea5a0000
+    m_ExpandedIDs: 00000000723f0000743f0000763f0000783f00007a3f0000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -600,7 +600,7 @@ MonoBehaviour:
       scrollPos: {x: 0, y: 0}
       m_SelectedIDs: 
       m_LastClickedID: 0
-      m_ExpandedIDs: 1cd0ffff
+      m_ExpandedIDs: 62fbffff
       m_RenameOverlay:
         m_UserAcceptedRename: 0
         m_Name: 
@@ -660,9 +660,9 @@ MonoBehaviour:
   m_PlayAudio: 0
   m_AudioPlay: 0
   m_Position:
-    m_Target: {x: 2.241993, y: 0, z: 22.324755}
+    m_Target: {x: 12.126434, y: 9.661728, z: -10.618676}
     speed: 2
-    m_Value: {x: 2.2419922, y: -0.00000007250634, z: 22.324755}
+    m_Value: {x: 12.126434, y: 9.661728, z: -10.618676}
   m_RenderMode: 0
   m_CameraMode:
     drawMode: 0
@@ -708,13 +708,13 @@ MonoBehaviour:
     m_GridAxis: 1
     m_gridOpacity: 0.5
   m_Rotation:
-    m_Target: {x: -0.18175887, y: 0.64645165, z: -0.16252737, w: -0.7229444}
+    m_Target: {x: -0.26628998, y: 0.6439687, z: -0.25594777, w: -0.6699891}
     speed: 2
-    m_Value: {x: -0.18102567, y: 0.64969844, z: -0.16334365, w: -0.7200281}
+    m_Value: {x: -0.26628998, y: 0.6439687, z: -0.25594777, w: -0.6699891}
   m_Size:
-    m_Target: 9.9528265
+    m_Target: 16.867712
     speed: 2
-    m_Value: 9.9528265
+    m_Value: 16.867712
   m_Ortho:
     m_Target: 0
     speed: 2
@@ -790,8 +790,8 @@ MonoBehaviour:
     vZoomLockedByDefault: 0
     m_HBaseRangeMin: -344.5
     m_HBaseRangeMax: 344.5
-    m_VBaseRangeMin: -452.5
-    m_VBaseRangeMax: 452.5
+    m_VBaseRangeMin: -463
+    m_VBaseRangeMax: 463
     m_HAllowExceedBaseRangeMin: 1
     m_HAllowExceedBaseRangeMax: 1
     m_VAllowExceedBaseRangeMin: 1
@@ -808,11 +808,11 @@ MonoBehaviour:
     m_DrawArea:
       serializedVersion: 2
       x: 0
-      y: 21
+      y: 0
       width: 689
-      height: 905
+      height: 926
     m_Scale: {x: 1, y: 1}
-    m_Translation: {x: 344.5, y: 452.5}
+    m_Translation: {x: 344.5, y: 463}
     m_MarginLeft: 0
     m_MarginRight: 0
     m_MarginTop: 0
@@ -820,9 +820,9 @@ MonoBehaviour:
     m_LastShownAreaInsideMargins:
       serializedVersion: 2
       x: -344.5
-      y: -452.5
+      y: -463
       width: 689
-      height: 905
+      height: 926
     m_MinimalGUI: 1
   m_defaultScale: 1
   m_LastWindowPixelSize: {x: 689, y: 926}
