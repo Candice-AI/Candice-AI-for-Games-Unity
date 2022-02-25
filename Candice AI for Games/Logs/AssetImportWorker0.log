@@ -1,0 +1,329 @@
+Using pre-set license
+Built from '2020.3/staging' branch; Version is '2020.3.30f1 (1fb1bf06830e) revision 2077119'; Using compiler version '192528614'; Build Type 'Release'
+OS: 'Windows 10  (10.0.16299) 64bit Professional' Language: 'en' Physical Memory: 24540 MB
+BatchMode: 1, IsHumanControllingUs: 0, StartBugReporterOnCrash: 0, Is64bit: 1, IsPro: 0
+
+COMMAND LINE ARGUMENTS:
+C:\Program Files\Unity\Hub\Editor\2020.3.30f1\Editor\Unity.exe
+-adb2
+-batchMode
+-noUpm
+-name
+AssetImportWorker0
+-projectPath
+C:/Users/miken/Documents/GitHub/Candice AI for Games/Candice AI for Games
+-logFile
+Logs/AssetImportWorker0.log
+-srvPort
+51276
+Successfully changed project path to: C:/Users/miken/Documents/GitHub/Candice AI for Games/Candice AI for Games
+C:/Users/miken/Documents/GitHub/Candice AI for Games/Candice AI for Games
+Using Asset Import Pipeline V2.
+Refreshing native plugins compatible for Editor in 219.09 ms, found 2 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Initialize engine version: 2020.3.30f1 (1fb1bf06830e)
+[Subsystems] Discovering subsystems at path C:/Program Files/Unity/Hub/Editor/2020.3.30f1/Editor/Data/Resources/UnitySubsystems
+[Subsystems] Discovering subsystems at path C:/Users/miken/Documents/GitHub/Candice AI for Games/Candice AI for Games/Assets
+GfxDevice: creating device client; threaded=0
+Direct3D:
+    Version:  Direct3D 11.0 [level 11.1]
+    Renderer: NVIDIA GeForce GTX 1060 3GB (ID=0x1c02)
+    Vendor:   
+    VRAM:     2988 MB
+    Driver:   26.21.14.3200
+Initialize mono
+Mono path[0] = 'C:/Program Files/Unity/Hub/Editor/2020.3.30f1/Editor/Data/Managed'
+Mono path[1] = 'C:/Program Files/Unity/Hub/Editor/2020.3.30f1/Editor/Data/MonoBleedingEdge/lib/mono/unityjit'
+Mono config path = 'C:/Program Files/Unity/Hub/Editor/2020.3.30f1/Editor/Data/MonoBleedingEdge/etc'
+Using monoOptions --debugger-agent=transport=dt_socket,embedding=1,server=y,suspend=n,address=127.0.0.1:56408
+Begin MonoManager ReloadAssembly
+Registering precompiled unity dll's ...
+Register platform support module: C:/Program Files/Unity/Hub/Editor/2020.3.30f1/Editor/Data/PlaybackEngines/WindowsStandaloneSupport/UnityEditor.WindowsStandalone.Extensions.dll
+Registered in 0.001301 seconds.
+Native extension for WindowsStandalone target not found
+Refreshing native plugins compatible for Editor in 49.72 ms, found 2 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Mono: successfully reloaded assembly
+- Completed reload, in  0.583 seconds
+Domain Reload Profiling:
+	ReloadAssembly (583ms)
+		BeginReloadAssembly (63ms)
+			ExecutionOrderSort (0ms)
+			DisableScriptedObjects (0ms)
+			BackupInstance (0ms)
+			ReleaseScriptingObjects (0ms)
+			CreateAndSetChildDomain (2ms)
+		EndReloadAssembly (452ms)
+			LoadAssemblies (60ms)
+			RebuildTransferFunctionScriptingTraits (0ms)
+			SetupTypeCache (146ms)
+			ReleaseScriptCaches (0ms)
+			RebuildScriptCaches (30ms)
+			SetupLoadedEditorAssemblies (176ms)
+				LogAssemblyErrors (0ms)
+				InitializePlatformSupportModulesInManaged (4ms)
+				SetLoadedEditorAssemblies (0ms)
+				RefreshPlugins (50ms)
+				BeforeProcessingInitializeOnLoad (15ms)
+				ProcessInitializeOnLoadAttributes (79ms)
+				ProcessInitializeOnLoadMethodAttributes (27ms)
+				AfterProcessingInitializeOnLoad (0ms)
+				EditorAssembliesLoaded (0ms)
+			ExecutionOrderSort2 (0ms)
+			AwakeInstancesAfterBackupRestoration (0ms)
+Platform modules already initialized, skipping
+Registering precompiled user dll's ...
+Registered in 0.003750 seconds.
+Begin MonoManager ReloadAssembly
+Native extension for WindowsStandalone target not found
+Refreshing native plugins compatible for Editor in 0.73 ms, found 2 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Mono: successfully reloaded assembly
+- Completed reload, in  1.274 seconds
+Domain Reload Profiling:
+	ReloadAssembly (1274ms)
+		BeginReloadAssembly (150ms)
+			ExecutionOrderSort (0ms)
+			DisableScriptedObjects (4ms)
+			BackupInstance (0ms)
+			ReleaseScriptingObjects (0ms)
+			CreateAndSetChildDomain (17ms)
+		EndReloadAssembly (893ms)
+			LoadAssemblies (100ms)
+			RebuildTransferFunctionScriptingTraits (0ms)
+			SetupTypeCache (285ms)
+			ReleaseScriptCaches (0ms)
+			RebuildScriptCaches (47ms)
+			SetupLoadedEditorAssemblies (378ms)
+				LogAssemblyErrors (0ms)
+				InitializePlatformSupportModulesInManaged (5ms)
+				SetLoadedEditorAssemblies (0ms)
+				RefreshPlugins (1ms)
+				BeforeProcessingInitializeOnLoad (92ms)
+				ProcessInitializeOnLoadAttributes (231ms)
+				ProcessInitializeOnLoadMethodAttributes (44ms)
+				AfterProcessingInitializeOnLoad (4ms)
+				EditorAssembliesLoaded (0ms)
+			ExecutionOrderSort2 (0ms)
+			AwakeInstancesAfterBackupRestoration (6ms)
+Platform modules already initialized, skipping
+========================================================================
+Worker process is ready to serve import requests
+Launched and connected shader compiler UnityShaderCompiler.exe after 0.03 seconds
+Refreshing native plugins compatible for Editor in 0.67 ms, found 2 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Unloading 2160 Unused Serialized files (Serialized files now loaded: 0)
+System memory in use before: 85.8 MB.
+System memory in use after: 85.9 MB.
+
+Unloading 56 unused Assets to reduce memory usage. Loaded Objects now: 2573.
+Total: 6.567660 ms (FindLiveObjects: 0.174873 ms CreateObjectMapping: 0.083530 ms MarkObjects: 6.194477 ms  DeleteObjects: 0.113277 ms)
+
+AssetImportParameters requested are different than current active one (requested -> active):
+  custom:framework-win-MediaFoundation: 216162199b28c13a410421893ffa2e32 -> 
+  custom:video-decoder-ogg-theora: a1e56fd34408186e4bbccfd4996cb3dc -> 
+  custom:container-muxer-webm: aa71ff27fc2769a1b78a27578f13a17b -> 
+  custom:container-demuxer-webm: 4f35f7cbe854078d1ac9338744f61a02 -> 
+  custom:container-demuxer-ogg: 62fdf1f143b41e24485cea50d1cbac27 -> 
+  custom:video-encoder-webm-vp8: eb34c28f22e8b96e1ab97ce403110664 -> 
+  custom:video-decoder-webm-vp8: 9c59270c3fd7afecdb556c50c9e8de78 -> 
+  custom:audio-decoder-ogg-vorbis: bf7c407c2cedff20999df2af8eb42d56 -> 
+  custom:audio-encoder-webm-vorbis: bf7c407c2cedff20999df2af8eb42d56 -> 
+========================================================================
+Received Import Request.
+  path: Assets/Candice AI for Games/Scripts/Libs/Candice Behavior Tree/CandiceBehaviorTree.cs
+  artifactKey: Guid(5f205ca3ef624d94c8254fdeebad1d3e) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Candice AI for Games/Scripts/Libs/Candice Behavior Tree/CandiceBehaviorTree.cs using Guid(5f205ca3ef624d94c8254fdeebad1d3e) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '4f5926a163f33eb4573a8aed72ba8543') in 0.063611 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.012542 seconds.
+  path: Assets/Candice AI for Games/Scripts/CandiceAIManager.cs
+  artifactKey: Guid(9821bcf281bd7de4dbb502db6c646805) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Candice AI for Games/Scripts/CandiceAIManager.cs using Guid(9821bcf281bd7de4dbb502db6c646805) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '6b141324834903c8f6167c6b8e097dca') in 0.008897 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.018571 seconds.
+  path: Assets/Candice AI for Games/Scripts/Libs/Candice Behavior Tree/CandiceBehaviorTreeMono.cs
+  artifactKey: Guid(c67462d62f34df041a3c2d7e649de6bf) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Candice AI for Games/Scripts/Libs/Candice Behavior Tree/CandiceBehaviorTreeMono.cs using Guid(c67462d62f34df041a3c2d7e649de6bf) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '2f2b78d2deedf22dbe964153e8b81e50') in 0.008424 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.008041 seconds.
+  path: Assets/Candice AI for Games/Scripts/Modules/CandiceModuleDetection.cs
+  artifactKey: Guid(d216d96606527514a98132ff0f715f47) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Candice AI for Games/Scripts/Modules/CandiceModuleDetection.cs using Guid(d216d96606527514a98132ff0f715f47) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '9df0f294ab8e0bb6a6565ea47300a7d9') in 0.011691 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.200617 seconds.
+  path: Assets/Candice AI for Games/Scripts/CandiceDamageReceiver.cs
+  artifactKey: Guid(1cd732ff76e36904da5c498be19d1b37) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Candice AI for Games/Scripts/CandiceDamageReceiver.cs using Guid(1cd732ff76e36904da5c498be19d1b37) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '88b2ff65dd0c19655c3941db62494264') in 0.008907 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.008208 seconds.
+  path: Assets/Candice AI for Games/User Manual.pdf
+  artifactKey: Guid(dc352cb37aaa9e34780c9c018a507c0e) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Candice AI for Games/User Manual.pdf using Guid(dc352cb37aaa9e34780c9c018a507c0e) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'e035065e223fc84d650582d7eda853ce') in 0.021870 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.042495 seconds.
+  path: Assets/Candice AI for Games/Scripts/Libs/Candice Behavior Tree/Nodes/CandiceBehaviorInverter.cs
+  artifactKey: Guid(7b384bcf084802340a2cf3e49f671979) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Candice AI for Games/Scripts/Libs/Candice Behavior Tree/Nodes/CandiceBehaviorInverter.cs using Guid(7b384bcf084802340a2cf3e49f671979) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'f88c7d002e0b195063768ff48e7dd112') in 0.008499 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.044707 seconds.
+  path: Assets/Candice AI for Games/Scripts/Libs/Utilities
+  artifactKey: Guid(6892e10824ba2a84aa304e8b4ac583b9) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Candice AI for Games/Scripts/Libs/Utilities using Guid(6892e10824ba2a84aa304e8b4ac583b9) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'fd98d1cfe1637784b4c0ad194881be8b') in 0.008103 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.012360 seconds.
+  path: Assets/Candice AI for Games/Scripts/Libs/Candice Behavior Tree/CandiceBehaviorNodeS.cs
+  artifactKey: Guid(13d15720820888e42b1debcfce7a5015) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Candice AI for Games/Scripts/Libs/Candice Behavior Tree/CandiceBehaviorNodeS.cs using Guid(13d15720820888e42b1debcfce7a5015) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '3109c902f360c42a01a12ba056b1b241') in 0.008892 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.031678 seconds.
+  path: Assets/Candice AI for Games/Scripts/Libs/Candice Behavior Tree/Nodes/CandiceBehaviorSelector.cs
+  artifactKey: Guid(7ddb40da1b6379c4e9c0265e06f20d06) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Candice AI for Games/Scripts/Libs/Candice Behavior Tree/Nodes/CandiceBehaviorSelector.cs using Guid(7ddb40da1b6379c4e9c0265e06f20d06) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '60b2be8820211978b67605df9360ffd0') in 0.010593 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.012085 seconds.
+  path: Assets/Candice AI for Games/Scripts/Libs/Candice Pathfinding/Node.cs
+  artifactKey: Guid(ed3adf9c7e51b294982d4da8f8efd0c9) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Candice AI for Games/Scripts/Libs/Candice Pathfinding/Node.cs using Guid(ed3adf9c7e51b294982d4da8f8efd0c9) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '496e5e017e360a4c2cd19ed1447a1126') in 0.007811 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.012577 seconds.
+  path: Assets/Candice AI for Games/Scripts/Libs/Data/CandiceHeap.cs
+  artifactKey: Guid(2de73e9f7dd221b4f91780a9ca4842a9) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Candice AI for Games/Scripts/Libs/Data/CandiceHeap.cs using Guid(2de73e9f7dd221b4f91780a9ca4842a9) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '945090c77995fb434bba4518b6cf6a58') in 0.007502 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.038506 seconds.
+  path: Assets/Candice AI for Games/Scripts/Libs/Candice Pathfinding/CandiceTile.cs
+  artifactKey: Guid(9a5cd53f6b3a1f2448ef87979b013c32) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Candice AI for Games/Scripts/Libs/Candice Pathfinding/CandiceTile.cs using Guid(9a5cd53f6b3a1f2448ef87979b013c32) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'f873839dcf767a3d0c127b65da0798bf') in 0.006641 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.012565 seconds.
+  path: Assets/Candice AI for Games/Scripts/CandiceProjectile.cs
+  artifactKey: Guid(0d13b831eea8f9945814aa630299faf7) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Candice AI for Games/Scripts/CandiceProjectile.cs using Guid(0d13b831eea8f9945814aa630299faf7) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '3ab5ca279532f4012c467167831a0431') in 0.007627 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.011320 seconds.
+  path: Assets/Candice AI for Games/Scripts/Libs/Candice Behavior Tree/CandiceDefaultBehaviors.cs
+  artifactKey: Guid(5ba3e9b7c2cbfac409eae04d0e1d137a) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Candice AI for Games/Scripts/Libs/Candice Behavior Tree/CandiceDefaultBehaviors.cs using Guid(5ba3e9b7c2cbfac409eae04d0e1d137a) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '33dc6deb383c65ffb71002974dca8aa5') in 0.007619 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.011577 seconds.
+  path: Assets/Candice AI for Games/Scripts/Libs/Candice Pathfinding/Line.cs
+  artifactKey: Guid(6dee8125a66fe47468670f61557edc04) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Candice AI for Games/Scripts/Libs/Candice Pathfinding/Line.cs using Guid(6dee8125a66fe47468670f61557edc04) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '29b0c10ed5f22719da6e760e53862c3a') in 0.007725 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.073903 seconds.
+  path: Assets/Candice AI for Games/Scripts/Libs/Candice Behavior Tree/CandiceBehaviorStates.cs
+  artifactKey: Guid(b96ffb89e5a1c1340a4bc2d589deded8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Candice AI for Games/Scripts/Libs/Candice Behavior Tree/CandiceBehaviorStates.cs using Guid(b96ffb89e5a1c1340a4bc2d589deded8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '8e0a98944be34b26475d65d0486552fc') in 0.007101 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.021681 seconds.
+  path: Assets/Candice AI for Games/Scenes
+  artifactKey: Guid(8da9400ffe9be244483bf2eea648999b) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Candice AI for Games/Scenes using Guid(8da9400ffe9be244483bf2eea648999b) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '61b5b8ab53e26e94e88d7785e898668e') in 0.008035 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.076823 seconds.
+  path: Assets/Candice AI for Games/Scripts/New Animation.anim
+  artifactKey: Guid(a2317145ef4b1914caa7ec40f76ba3dc) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Candice AI for Games/Scripts/New Animation.anim using Guid(a2317145ef4b1914caa7ec40f76ba3dc) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '4521587b782f25ac3f337752b3180674') in 0.012476 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.012244 seconds.
+  path: Assets/Candice AI for Games/Scripts/New Animator Controller.controller
+  artifactKey: Guid(643ceefcfc4ca0e49b7845a95ab08ed7) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Candice AI for Games/Scripts/New Animator Controller.controller using Guid(643ceefcfc4ca0e49b7845a95ab08ed7) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '4d82940f3cb2e3c847f5ef331a1655bb') in 0.009786 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.011369 seconds.
+  path: Assets/Candice AI for Games/Scripts/Libs/Candice Behavior Tree/NewBehaviourScript.cs
+  artifactKey: Guid(c722e2868e707c349b5d02200f5983ae) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Candice AI for Games/Scripts/Libs/Candice Behavior Tree/NewBehaviourScript.cs using Guid(c722e2868e707c349b5d02200f5983ae) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'b078ea5e34af445837c00b89024d6174') in 0.006633 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.037130 seconds.
+  path: Assets/Candice AI for Games/Scripts/CandiceAIController.cs
+  artifactKey: Guid(03293482103d62c4ab9d9b4b7595e1a9) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Candice AI for Games/Scripts/CandiceAIController.cs using Guid(03293482103d62c4ab9d9b4b7595e1a9) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'a92ab67719b6f5a2de0046efcbbbde04') in 0.008901 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.011810 seconds.
+  path: Assets/Candice AI for Games/Scripts/Libs/Candice Behavior Tree/CandiceBehaviorNode.cs
+  artifactKey: Guid(753f8ceffeda84b4185659a34a110eac) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Candice AI for Games/Scripts/Libs/Candice Behavior Tree/CandiceBehaviorNode.cs using Guid(753f8ceffeda84b4185659a34a110eac) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '6f66f8806ec08542b3b1291ec49615eb') in 0.007135 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.032218 seconds.
+  path: Assets/Candice AI for Games/Scenes/SampleScene.unity
+  artifactKey: Guid(bf9a7885ee1d23149a3709d3e88c7426) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Candice AI for Games/Scenes/SampleScene.unity using Guid(bf9a7885ee1d23149a3709d3e88c7426) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '57b8ab5cf2ae4eeb26a813c7f4cc1dfa') in 0.009022 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.016488 seconds.
+  path: Assets/Candice AI for Games/Scripts/Libs/Data
+  artifactKey: Guid(41a96be168ef12348b7cbcb15c1e6bfb) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Candice AI for Games/Scripts/Libs/Data using Guid(41a96be168ef12348b7cbcb15c1e6bfb) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '8c4989da1d2b0c4bde93df6771bde74b') in 0.013094 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.024866 seconds.
+  path: Assets/Candice AI for Games/Scripts/Libs/Utilities/Utils.cs
+  artifactKey: Guid(a9b08df22635b784f969f4712a1ecd3e) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Candice AI for Games/Scripts/Libs/Utilities/Utils.cs using Guid(a9b08df22635b784f969f4712a1ecd3e) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'd18699a230e5bcebe821d7fd9e5b20e7') in 0.009272 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.026187 seconds.
+  path: Assets/Candice AI for Games/Scripts/Libs/Candice Behavior Tree/Nodes
+  artifactKey: Guid(7c1e6a2f675058b408fe2f5bb55842aa) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Candice AI for Games/Scripts/Libs/Candice Behavior Tree/Nodes using Guid(7c1e6a2f675058b408fe2f5bb55842aa) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '6fe493fe7909885293e3ba00194ab5f6') in 0.007907 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.020380 seconds.
+  path: Assets/Candice AI for Games/Scripts/Modules/CandiceBaseModule.cs
+  artifactKey: Guid(6e700c7fd63156244b7f24b663899cfa) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Candice AI for Games/Scripts/Modules/CandiceBaseModule.cs using Guid(6e700c7fd63156244b7f24b663899cfa) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '8f5cb53349c492b4df6acb68da882cb2') in 0.008455 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.020739 seconds.
+  path: Assets/Candice AI for Games/Scripts/Libs/Candice Behavior Tree/Nodes/CandiceBehaviorSequence.cs
+  artifactKey: Guid(eea77da0bc0877646878f31164b04b2c) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Candice AI for Games/Scripts/Libs/Candice Behavior Tree/Nodes/CandiceBehaviorSequence.cs using Guid(eea77da0bc0877646878f31164b04b2c) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '474166ca9a8d20a4cce81a752069be9e') in 0.007627 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.026772 seconds.
+  path: Assets/Candice AI for Games/Scripts/Libs/Candice Behavior Tree/CandiceBehaviorTreeS.cs
+  artifactKey: Guid(f360531d595ee404388f23c9c22b9355) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Candice AI for Games/Scripts/Libs/Candice Behavior Tree/CandiceBehaviorTreeS.cs using Guid(f360531d595ee404388f23c9c22b9355) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '72606a68f368c6b047d6f45ab658a04a') in 0.007716 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.037475 seconds.
+  path: Assets/Candice AI for Games/Scripts/Libs/Candice Behavior Tree/CandiceBehaviorAction.cs
+  artifactKey: Guid(3903a82b8fe50e3469bf2943c22735eb) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Candice AI for Games/Scripts/Libs/Candice Behavior Tree/CandiceBehaviorAction.cs using Guid(3903a82b8fe50e3469bf2943c22735eb) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'c721aea40229256735cb2c9861e2eade') in 0.007822 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.011041 seconds.
+  path: Assets/Candice AI for Games/Scripts/Libs/Candice Pathfinding/Path.cs
+  artifactKey: Guid(7975266ba5f70db4eafd6ec387fc5eea) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Candice AI for Games/Scripts/Libs/Candice Pathfinding/Path.cs using Guid(7975266ba5f70db4eafd6ec387fc5eea) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'ed02642276970e330074f97bce9b05f4') in 0.008555 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.011723 seconds.
+  path: Assets/Candice AI for Games/Scripts/Modules/CandiceModuleMovement.cs
+  artifactKey: Guid(e564551de100eec4dbf33391cf009d7d) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Candice AI for Games/Scripts/Modules/CandiceModuleMovement.cs using Guid(e564551de100eec4dbf33391cf009d7d) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '5e3ba111147f6166e0d14a6aef6515ae') in 0.007285 seconds 
+AssetImportWorkerClient::OnTransportError - code=2 error=End of file

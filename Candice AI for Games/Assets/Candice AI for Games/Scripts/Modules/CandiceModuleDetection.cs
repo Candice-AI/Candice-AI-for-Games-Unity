@@ -87,7 +87,7 @@ namespace CandiceAIforGames.AI
             }
             objectDetectedCallback(new CandiceDetectionResults(detectedObjects));
         }
-        public void AvoidObstacles(Transform Target, Transform transform, float size, float movementSpeed, bool is3D, float distance,int lines, LayerMask perceptionMask)
+        public void AvoidObstacles(Transform Target, Vector3 movePoint, Transform transform, float size, float movementSpeed, bool is3D, float distance,int lines, LayerMask perceptionMask)
         {
             //
             //Method Name : void Move(Transform Target, Transform transform, float size)
@@ -160,10 +160,10 @@ namespace CandiceAIforGames.AI
             }
             else
             {
-                dir = (Target.position - transform.position).normalized;
+                movePoint = new Vector3(movePoint.x, transform.position.y, movePoint.z);
+                dir = (movePoint - transform.position).normalized;
                 Quaternion rot = Quaternion.LookRotation(dir);
                 transform.rotation = Quaternion.Slerp(transform.rotation, rot, movementSpeed * Time.deltaTime);
-
             }
             
         }

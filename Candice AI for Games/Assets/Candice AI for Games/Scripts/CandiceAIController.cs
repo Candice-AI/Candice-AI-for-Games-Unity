@@ -327,7 +327,7 @@ namespace CandiceAIforGames.AI
             {
                 HalfHeight = gameObject.transform.localScale.x * 2;
             }
-            detectionModule.AvoidObstacles(MainTarget.transform,transform,HalfHeight + obstacleAvoidanceAOE,RotationSpeed,true,ObstacleAvoidaceDistance,DetectionLines,PerceptionMask);
+            detectionModule.AvoidObstacles(MainTarget.transform, MovePoint, transform,HalfHeight + obstacleAvoidanceAOE,RotationSpeed,true,ObstacleAvoidaceDistance,DetectionLines,PerceptionMask);
         }
         /// <summary>
         /// Send a path calculation request to Candice and then follow it.
@@ -367,8 +367,8 @@ namespace CandiceAIforGames.AI
         }
         private void FollowAStarPath()
         {
-            if (Is3D)
-                SetLookPointY(_path.lookPoints[pathIndex]);
+            SetLookPointY(_path.lookPoints[pathIndex]);
+            MovePoint = _path.lookPoints[pathIndex];
             //MovePoint = _path.lookPoints[pathIndex];
             //transform.LookAt(new Vector3(_path.lookPoints[pathIndex].x, transform.position.y, _path.lookPoints[pathIndex].z));
             float speedPercent = 1;
@@ -383,9 +383,8 @@ namespace CandiceAIforGames.AI
                 else
                 {
                     pathIndex++;
-                    if (Is3D)
-                        SetLookPointY(_path.lookPoints[pathIndex]);
-                    //MovePoint = _path.lookPoints[pathIndex];
+                    SetLookPointY(_path.lookPoints[pathIndex]);
+                    MovePoint = _path.lookPoints[pathIndex];
                     //transform.LookAt(new Vector3(_path.lookPoints[pathIndex].x,transform.position.y, _path.lookPoints[pathIndex].z));
                 }
             }
