@@ -6,12 +6,13 @@ using UnityEngine;
 
 namespace CandiceAIforGames.AI
 {
-    [CreateAssetMenu(fileName = "New Candice Behavior Tree", menuName = "Behavior Tree")]
-    public class CandiceBehaviorTree : ScriptableObject
+    [Serializable]
+    public class CandiceBehaviorTree
     {
         public CandiceBehaviorNode rootNode;
         public CandiceBehaviorTreeS behaviorTree;
         public List<CandiceBehaviorNodeS> nodes;
+        [SerializeField]
         List<MethodInfo> lstFunctions;
 
         public void Initialise()
@@ -19,7 +20,8 @@ namespace CandiceAIforGames.AI
             List<Type> behaviorTypes = new List<Type>();
             lstFunctions = new List<MethodInfo>();
             MethodInfo[] arrMethodInfos;
-            nodes = behaviorTree.GetNodes();
+            if(behaviorTree != null)
+                nodes = behaviorTree.GetNodes();
             behaviorTypes.Add(typeof(CandiceDefaultBehaviors));
             foreach (Type type in behaviorTypes)
             {
@@ -28,16 +30,25 @@ namespace CandiceAIforGames.AI
             }
         }
 
-
+        public void Evaluate()
+        {
+            if(rootNode != null)
+            {
+                rootNode.Evaluate();
+            }
+        }
         public CandiceBehaviorNode CreateBehaviorTree(CandiceAIController agent)
         {
-            Initialise();
+            //Initialise();
             rootNode = null;
             CandiceBehaviorNodeS _rootNode = null;
-            nodes = behaviorTree.GetNodes();
+            //nodes = behaviorTree.GetNodes();
+            if(nodes == null || nodes.Count == 0)
+            {
+                return null;
+            }
 
             _rootNode = nodes[0];
-            Debug.LogError("Agent: " + agent.AgentID);
 
             switch (_rootNode.type)
             {
@@ -69,7 +80,6 @@ namespace CandiceAIforGames.AI
             foreach (int id in node.childrenIDs)
             {
                 CandiceBehaviorNode newNode = null;
-                Debug.LogError("ID: " + id);
                 if (GetNodeWithID(id, bt.GetNodes()) != null)
                 {
                     _node = GetNodeWithID(id, nodes);

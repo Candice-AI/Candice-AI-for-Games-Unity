@@ -6,8 +6,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-
-
 namespace CandiceAIforGames.AI
 {
     #region ENUMS
@@ -85,6 +83,9 @@ namespace CandiceAIforGames.AI
         [SerializeField]
         private GameObject wanderTarget;
 
+        [SerializeField]
+        public CandiceBehaviorTree behaviorTree;
+
         /*
          * Detection Variables
          */
@@ -138,6 +139,8 @@ namespace CandiceAIforGames.AI
         private GameObject headLookTarget;
         [SerializeField]
         private float headLookIntensity = 1f;
+        [SerializeField]
+        private CandiceWaypoint waypoint;
 
         /*
          * Pathfinding Variables
@@ -257,6 +260,8 @@ namespace CandiceAIforGames.AI
         public float RotationSpeed { get => rotationSpeed; set => rotationSpeed = value; }
         public int DetectionLines { get => detectionLines; set => detectionLines = value; }
         public float HalfHeight { get => halfHeight; set => halfHeight = value; }
+        public CandiceBehaviorTree BehaviorTree { get => behaviorTree; set => behaviorTree = value; }
+        public CandiceWaypoint Waypoint { get => waypoint; set => waypoint = value; }
 
         CandiceAIManager candice;
 
@@ -276,16 +281,15 @@ namespace CandiceAIforGames.AI
             }
             col = GetComponent<Collider>();
             //UnityEditor.Undo.RecordObject(this, "Description");
-            combatModule = new CandiceModuleCombat(transform,onAttackComplete,"Agent" + AgentID + "-CandiceModuleCombat");
-            movementModule = new CandiceModuleMovement("Agent" + AgentID + "-CandiceModuleMovement");
-            detectionModule = new CandiceModuleDetection(gameObject.transform,onObjectFound, "Agent" + AgentID + "-CandiceModuleDetection");
-            HalfHeight = col.bounds.extents.y;
+            
+                
         }
 
         // Update is called once per frame
         void Update()
         {
-
+            if (BehaviorTree != null)
+                BehaviorTree.Evaluate();
         }
         #region Helper Methods 
         /// <summary>
@@ -299,7 +303,17 @@ namespace CandiceAIforGames.AI
             if (isRegistered)
             {
                 AgentID = agentId;
-                Debug.Log("Agent " + AgentID + " successfully registered with Candice.");
+                combatModule = new CandiceModuleCombat(transform, onAttackComplete, "Agent" + AgentID + "-CandiceModuleCombat");
+                movementModule = new CandiceModuleMovement("Agent" + AgentID + "-CandiceModuleMovement");
+                detectionModule = new CandiceModuleDetection(gameObject.transform, onObjectFound, "Agent" + AgentID + "-CandiceModuleDetection");
+                HalfHeight = col.bounds.extents.y;
+                //BehaviorTree = GetComponent<CandiceBehaviorTree>();
+                if (BehaviorTree != null && BehaviorTree.behaviorTree != null)
+                {
+                    BehaviorTree.Initialise();
+                    BehaviorTree.CreateBehaviorTree(this);
+                }
+                //Debug.Log("Agent " + AgentID + " successfully registered with Candice.");
             }
 
         }
@@ -311,6 +325,11 @@ namespace CandiceAIforGames.AI
         {
             CandiceDetectionRequest req = new CandiceDetectionRequest(sensorType, objectTags, DetectionRadius, DetectionHeight, LineOfSight, Is3D);
             detectionModule.ScanForObjects(req);
+        }
+        public void ScanForObjects2D()
+        {
+            CandiceDetectionRequest req = new CandiceDetectionRequest(sensorType, objectTags, DetectionRadius, DetectionHeight, LineOfSight, Is3D);
+            detectionModule.ScanForObjects2D(req);
         }
 
         /// <summary>
@@ -443,7 +462,7 @@ namespace CandiceAIforGames.AI
             else if (!IsAttacking)
             {
                 IsAttacking = true;
-                StartCoroutine(combatModule.FireProjectile(AttackTarget,Projectile,ProjectileSpawnPos.position,AttackSpeed,onAttackComplete));
+                StartCoroutine(combatModule.FireProjectile(AttackTarget,Projectile,ProjectileSpawnPos,AttackSpeed,onAttackComplete));
             }
         }
         public void Wander()
@@ -582,6 +601,60 @@ namespace CandiceAIforGames.AI
         {
             IsAttacking = false;
         }
+
+
+   /*     void NormalPatrol()
+        {
+            if (_pointReached)
+            {
+                if (_patrolInOrder)
+                {
+                    if (_patrolCount < _patrolPoints.Count - 1)
+                    {
+                        _patrolCount++;
+                    }
+                    else
+                    {
+                        _patrolCount = 0;
+                    }
+                }
+                else
+                {
+                    UnityEngine.Random rnd = new UnityEngine.Random();
+                    _patrolCount = UnityEngine.Random.Range(0, _patrolPoints.Count);
+                }
+                mainTarget = _patrolPoints[_patrolCount];
+                moveTarget = mainTarget;
+                movePoint = moveTarget.transform.position;
+                _pointReached = false;
+            }
+            else
+            {
+                mainTarget = _patrolPoints[_patrolCount];
+                moveTarget = mainTarget;
+            }
+        }*/
+        public void WaypointPatrol()
+        {
+            bool _pointReached = false;
+            if (Vector3.Distance(transform.position, movePoint) < .5f)
+            {
+                _pointReached = true;
+            }
+            if (waypoint == null)
+            {
+                Debug.LogError("No waypoint assigned.");
+                return;
+            }
+            if (_pointReached)
+            {
+                waypoint = waypoint.nextWaypoint;
+                _pointReached = false;
+            }
+            mainTarget = waypoint.gameObject;
+            movePoint = waypoint.GetPosition();
+        }
+
 
         public void OnDrawGizmos()
         {

@@ -77,7 +77,7 @@ namespace CandiceAIforGames.AI
             DealDamage2D(damage, attackRange, damageAngle, tags);
             _attackCompleteCallback();
         }
-        public IEnumerator FireProjectile(GameObject attackTarget, GameObject attackProjectile,Vector3 spawnPosition,float time, Action _attackCompleteCallback)
+        public IEnumerator FireProjectile(GameObject attackTarget, GameObject attackProjectile,Transform spawnPosition,float time, Action _attackCompleteCallback)
         {
             //
             //Method Name : void AttackRange()
@@ -89,7 +89,7 @@ namespace CandiceAIforGames.AI
             yield return new WaitForSecondsRealtime(time);
             if (attackTarget != null)
             {
-                GameObject projectile = UnityEngine.Object.Instantiate(attackProjectile, spawnPosition, Quaternion.identity);
+                GameObject projectile = UnityEngine.Object.Instantiate(attackProjectile, spawnPosition.position, Quaternion.identity);
                 CandiceProjectile ai = projectile.GetComponent<CandiceProjectile>();
                 ai.Fire(attackTarget);
             }
@@ -105,15 +105,12 @@ namespace CandiceAIforGames.AI
             //Input       : float damage
             //Output      : none
             //
+            currentHP -= damage;
             if (currentHP - damage <= 0)
             {
                 currentHP = 0;
                 //CharacterDead() method should be called after the death animation has finished playing using an Animation Event. 
                 //Alternatively, you can implement your own logic here to suit your needs.
-            }
-            else
-            {
-                currentHP -= damage;
             }
             if (EnableDebug)
                 Utils.Utils.LogDamageReceived(ModuleName, damage, currentHP);

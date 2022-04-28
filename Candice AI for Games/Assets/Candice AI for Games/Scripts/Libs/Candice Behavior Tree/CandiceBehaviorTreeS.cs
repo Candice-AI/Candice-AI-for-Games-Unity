@@ -9,6 +9,7 @@ namespace CandiceAIforGames.AI
     public class CandiceBehaviorTreeS
     {
         public string name;
+        [SerializeField]
         private List<CandiceBehaviorNodeS> nodes;
 
         public void SetNodes(List<CandiceBehaviorNodeS> _nodes)
