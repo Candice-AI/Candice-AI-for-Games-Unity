@@ -96,7 +96,6 @@ namespace CandiceAIforGames.AI
             //Input       : Transform Target, Transform transform, float size
             //Output      : void
             //
-
             if (!is3D)
             {
                 AvoidObstacles2D(Target, transform, size, movementSpeed, distance);

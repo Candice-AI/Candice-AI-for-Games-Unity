@@ -18,6 +18,8 @@ namespace CandiceAIforGames.AI
         public bool isFired = false;
         public bool stopOnCollision = true;
         private float timeElapsed = 0;
+        public bool followTarget = false;
+        public bool useForce = false;
         // Start is called before the first frame update
         void Start()
         {
@@ -35,19 +37,26 @@ namespace CandiceAIforGames.AI
 
             if (isFired)
             {
-                transform.LookAt(new Vector3(target.transform.position.x, gameObject.transform.position.y, target.transform.position.z));
+                if(followTarget)
+                {
+                    transform.LookAt(new Vector3(target.transform.position.x, gameObject.transform.position.y, target.transform.position.z));
+                }
                 Move();
             }
         }
         public void Fire(GameObject attackTarget)
         {
             target = attackTarget;
+            transform.LookAt(new Vector3(target.transform.position.x, gameObject.transform.position.y-1, target.transform.position.z));
             isFired = true;
         }
 
         private void Move()
         {
-            rb.velocity = transform.forward * moveSpeed * Time.deltaTime;
+            if(useForce)
+                rb.velocity = transform.forward * moveSpeed * Time.deltaTime;
+            else
+                transform.position += transform.forward * 10 * Time.deltaTime;
         }
 
 
@@ -98,7 +107,7 @@ namespace CandiceAIforGames.AI
             }
             catch (Exception e)
             {
-                Debug.LogError(e.Message);
+                //Debug.LogError(e.Message);
             }
 
         }
