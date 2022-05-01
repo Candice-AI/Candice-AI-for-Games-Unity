@@ -458,7 +458,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 219ca5cafe9b5144aa630f23857355a1, type: 2}
+  - {fileID: 2100000, guid: b314690fc3f056349ba173239a958fa3, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1412,11 +1412,6 @@ MonoBehaviour:
   mainTarget: {fileID: 0}
   fleeTarget: {fileID: 0}
   wanderTarget: {fileID: 0}
-  behaviorTree:
-    behaviorTree:
-      name: 
-      nodes: []
-    nodes: []
   detectionRadius: 5.8931427
   detectionLines: 10
   lineOfSight: 3
@@ -1442,7 +1437,6 @@ MonoBehaviour:
   enableHeadLook: 0
   headLookTarget: {fileID: 0}
   headLookIntensity: 1
-  waypoint: {fileID: 0}
   _minPathUpdateTime: 0.2
   _pathUpdateMoveThreshold: 0.5
   _turnSpeed: 0
@@ -2182,11 +2176,6 @@ MonoBehaviour:
   mainTarget: {fileID: 0}
   fleeTarget: {fileID: 0}
   wanderTarget: {fileID: 0}
-  behaviorTree:
-    behaviorTree:
-      name: 
-      nodes: []
-    nodes: []
   detectionRadius: 106.80291
   detectionLines: 5
   lineOfSight: 360
@@ -2214,7 +2203,6 @@ MonoBehaviour:
   enableHeadLook: 0
   headLookTarget: {fileID: 0}
   headLookIntensity: 1
-  waypoint: {fileID: 0}
   _minPathUpdateTime: 0.2
   _pathUpdateMoveThreshold: 0.5
   _turnSpeed: 0
@@ -2231,7 +2219,7 @@ MonoBehaviour:
   attackRange: 7.2830515
   damageAngle: 83.33053
   attackType: 1
-  projectile: {fileID: 5529631860578062924, guid: 05ba8d5c323e4164c9f599f11d5efab8,
+  projectile: {fileID: 5529631860578062924, guid: fff7ff3fd706deb45bee7cf9c2d8754e,
     type: 3}
   projectileSpawnPos: {fileID: 1320518949}
   hasAttackAnimation: 0
