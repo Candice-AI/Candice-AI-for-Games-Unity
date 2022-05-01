@@ -59,12 +59,12 @@ namespace CandiceAIforGames.AI
             Texture logoFB = Resources.Load<Texture2D>("facebook");
             if (GUILayout.Button(logoFB))
             {
-                Application.OpenURL("https://www.facebook.com/viridaxgamestudios");
+                Application.OpenURL("https://www.facebook.com/KandakeAI/");
             }
             Texture logoEmail = Resources.Load<Texture2D>("email");
             if (GUILayout.Button(logoEmail))
             {
-                Application.OpenURL("mailto:support@viridaxgamestudios.co.za?subject=Candice AI for Games");
+                Application.OpenURL("mailto:support@candiceai.co.za?subject=Candice AI for Games");
             }
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();

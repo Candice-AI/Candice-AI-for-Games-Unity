@@ -21,106 +21,7 @@ namespace CandiceAIforGames.AI
             }
 
         }
-        public static CandiceBehaviorStates AvoidObstacles(CandiceBehaviorNode rootNode)
-        {
-            try
-            {
-                CandiceAIController agent = rootNode.aiController;
-                agent.AvoidObstacles();
-                return CandiceBehaviorStates.SUCCESS;
-            }
-            catch (Exception ex)
-            {
-                Debug.LogError(ex.Message);
-                return CandiceBehaviorStates.FAILURE;
-            }
-
-        }
-        public static CandiceBehaviorStates CandicePathfind(CandiceBehaviorNode rootNode)
-        {
-            try
-            {
-                CandiceAIController agent = rootNode.aiController;
-                if(agent.CandicePathfind())
-                    return CandiceBehaviorStates.SUCCESS;
-                else
-                    return CandiceBehaviorStates.FAILURE;
-            }
-            catch (Exception ex)
-            {
-                Debug.LogError(ex.Message);
-                return CandiceBehaviorStates.FAILURE;
-            }
-
-        }
-        public static CandiceBehaviorStates MoveForward(CandiceBehaviorNode rootNode)
-        {
-            CandiceAIController agent = rootNode.aiController;
-            agent.IsMoving = true;
-            
-            /*if (rootNode.aiController.hasAnimations)
-            {
-                if (rootNode.aiController.animationType == AnimationType.CodeBased)
-                {
-                    if (!agent.currentAnimation.Equals(agent.moveAnimationName))
-                    {
-                        agent.currentAnimation = agent.moveAnimationName;
-                        agent.Animator.Play(agent.moveAnimationName);
-                    }
-                }
-                else
-                    agent.Animator.SetBool(agent.moveTransitionParameter, true);
-            }*/
-
-            //rootNode.aiController.Animator.SetFloat("characterSpeed", rootNode.aiController.movementSpeed);
-            CandiceBehaviorStates state = CandiceBehaviorStates.SUCCESS;
-            try
-            {
-                agent.movementModule.MoveForward(agent.transform, agent);
-                
-            }
-            catch (Exception e)
-            {
-                state = CandiceBehaviorStates.FAILURE;
-                Debug.LogError("DefaultBehaviors.MoveTo: " + e.Message);
-            }
-
-            return state;
-        }
-        public static CandiceBehaviorStates MoveForwardWithSlopeAlignment(CandiceBehaviorNode rootNode)
-        {
-            CandiceAIController agent = rootNode.aiController;
-            agent.IsMoving = true;
-
-            /*if (rootNode.aiController.hasAnimations)
-            {
-                if (rootNode.aiController.animationType == AnimationType.CodeBased)
-                {
-                    if (!agent.currentAnimation.Equals(agent.moveAnimationName))
-                    {
-                        agent.currentAnimation = agent.moveAnimationName;
-                        agent.Animator.Play(agent.moveAnimationName);
-                    }
-                }
-                else
-                    agent.Animator.SetBool(agent.moveTransitionParameter, true);
-            }*/
-
-            //rootNode.aiController.Animator.SetFloat("characterSpeed", rootNode.aiController.movementSpeed);
-            CandiceBehaviorStates state = CandiceBehaviorStates.SUCCESS;
-            try
-            {
-                agent.movementModule.MoveForwardWithSlopeAlignment(agent.transform, agent);
-
-            }
-            catch (Exception e)
-            {
-                state = CandiceBehaviorStates.FAILURE;
-                Debug.LogError("DefaultBehaviors.MoveTo: " + e.Message);
-            }
-
-            return state;
-        }
+        
         public static CandiceBehaviorStates ObjectDetected(CandiceBehaviorNode rootNode)
         {
 
@@ -172,98 +73,13 @@ namespace CandiceAIforGames.AI
                 agent.movementModule.LookAt(agent.transform, agent);
                 return CandiceBehaviorStates.SUCCESS;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Debug.LogError(ex.Message);
                 return CandiceBehaviorStates.FAILURE;
             }
-                
-        }
 
-        public static CandiceBehaviorStates WithinAttackRange(CandiceBehaviorNode rootNode)
-        {
-            CandiceAIController agent = rootNode.aiController;
-
-            if (agent.WithinAttackRange())
-                return CandiceBehaviorStates.SUCCESS;
-            else
-                return CandiceBehaviorStates.FAILURE;
         }
-        public static CandiceBehaviorStates AttackMelee(CandiceBehaviorNode rootNode)
-        {
-            CandiceAIController agent = rootNode.aiController;
-            agent.AttackMelee();
-            return CandiceBehaviorStates.SUCCESS;
-        }
-        public static CandiceBehaviorStates AttackRange(CandiceBehaviorNode rootNode)
-        {
-            CandiceAIController agent = rootNode.aiController;
-            agent.AttackRanged();
-            return CandiceBehaviorStates.SUCCESS;
-        }
-
-        public static CandiceBehaviorStates Flee(CandiceBehaviorNode rootNode)
-        {
-            CandiceAIController agent = rootNode.aiController;
-            agent.Flee();
-            return CandiceBehaviorStates.SUCCESS;
-        }
-
-        public static CandiceBehaviorStates Wander(CandiceBehaviorNode rootNode)
-        {
-            CandiceAIController agent = rootNode.aiController;
-            agent.Wander();
-            return CandiceBehaviorStates.SUCCESS;
-        }
-
-        public static CandiceBehaviorStates SetMovePoint(CandiceBehaviorNode rootNode)
-        {
-            CandiceBehaviorStates state = CandiceBehaviorStates.FAILURE;
-            CandiceAIController agent = rootNode.aiController;
-            try
-            {
-                if (agent.MainTarget != null)
-                {
-                    agent.MovePoint = agent.MainTarget.transform.position;
-                    state = CandiceBehaviorStates.SUCCESS;
-                }
-                else
-                {
-                    Debug.LogError("CandiceDefaultBehaviors.SetMoveTarget: Main Target is NULL");
-                }
-            }
-            catch (Exception e)
-            {
-                state = CandiceBehaviorStates.FAILURE;
-                Debug.LogError("CandiceDefaultBehaviors.SetMovePoint: " + e.Message);
-
-            }
-            return state;
-        }
-        public static CandiceBehaviorStates SetAttackTarget(CandiceBehaviorNode rootNode)
-        {
-            CandiceBehaviorStates state = CandiceBehaviorStates.FAILURE;
-            CandiceAIController agent = rootNode.aiController;
-            try
-            {
-                if (agent.MainTarget != null)
-                {
-                    agent.AttackTarget = agent.MainTarget;
-                    state = CandiceBehaviorStates.SUCCESS;
-                }
-                else
-                {
-                    Debug.LogError("CandiceDefaultBehaviors.SetAttackTarget: Main Target is NULL");
-                }
-            }
-            catch (Exception e)
-            {
-                state = CandiceBehaviorStates.FAILURE;
-                Debug.LogError("CandiceDefaultBehaviors.SetAttackTarget: " + e.Message);
-            }
-            return state;
-        }
-
         public static CandiceBehaviorStates RotateTo(CandiceBehaviorNode rootNode)
         {
             CandiceBehaviorStates state = CandiceBehaviorStates.SUCCESS;
@@ -289,6 +105,194 @@ namespace CandiceAIforGames.AI
 
             return state;
         }
+        public static CandiceBehaviorStates AvoidObstacles(CandiceBehaviorNode rootNode)
+        {
+            try
+            {
+                CandiceAIController agent = rootNode.aiController;
+                agent.AvoidObstacles();
+                return CandiceBehaviorStates.SUCCESS;
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError(ex.Message);
+                return CandiceBehaviorStates.FAILURE;
+            }
+
+        }
+        public static CandiceBehaviorStates CandicePathfind(CandiceBehaviorNode rootNode)
+        {
+            try
+            {
+                CandiceAIController agent = rootNode.aiController;
+                if(agent.CandicePathfind())
+                    return CandiceBehaviorStates.SUCCESS;
+                else
+                    return CandiceBehaviorStates.FAILURE;
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError(ex.Message);
+                return CandiceBehaviorStates.FAILURE;
+            }
+
+        }
+        
+
+        public static CandiceBehaviorStates SetMovePoint(CandiceBehaviorNode rootNode)
+        {
+            CandiceBehaviorStates state = CandiceBehaviorStates.FAILURE;
+            CandiceAIController agent = rootNode.aiController;
+            try
+            {
+                if (agent.MainTarget != null)
+                {
+                    agent.MovePoint = agent.MainTarget.transform.position;
+                    state = CandiceBehaviorStates.SUCCESS;
+                }
+                else
+                {
+                    Debug.LogError("CandiceDefaultBehaviors.SetMoveTarget: Main Target is NULL");
+                }
+            }
+            catch (Exception e)
+            {
+                state = CandiceBehaviorStates.FAILURE;
+                Debug.LogError("CandiceDefaultBehaviors.SetMovePoint: " + e.Message);
+
+            }
+            return state;
+        }
+        public static CandiceBehaviorStates MoveForward(CandiceBehaviorNode rootNode)
+        {
+            CandiceAIController agent = rootNode.aiController;
+            agent.IsMoving = true;
+            CandiceBehaviorStates state = CandiceBehaviorStates.SUCCESS;
+            try
+            {
+                agent.movementModule.MoveForward(agent.transform, agent);
+                
+            }
+            catch (Exception e)
+            {
+                state = CandiceBehaviorStates.FAILURE;
+                Debug.LogError("DefaultBehaviors.MoveForward: " + e.Message);
+            }
+
+            return state;
+        }
+        public static CandiceBehaviorStates MoveForwardWithSlopeAlignment(CandiceBehaviorNode rootNode)
+        {
+            CandiceAIController agent = rootNode.aiController;
+            agent.IsMoving = true;
+            CandiceBehaviorStates state = CandiceBehaviorStates.SUCCESS;
+            try
+            {
+                agent.movementModule.MoveForwardWithSlopeAlignment(agent.transform, agent);
+
+            }
+            catch (Exception e)
+            {
+                state = CandiceBehaviorStates.FAILURE;
+                Debug.LogError("DefaultBehaviors.MoveForwardWithSlopeAlignment: " + e.Message);
+            }
+
+            return state;
+        }
+        public static CandiceBehaviorStates Flee(CandiceBehaviorNode rootNode)
+        {
+            CandiceAIController agent = rootNode.aiController;
+            agent.Flee();
+            return CandiceBehaviorStates.SUCCESS;
+        }
+
+        public static CandiceBehaviorStates Wander(CandiceBehaviorNode rootNode)
+        {
+            CandiceAIController agent = rootNode.aiController;
+            agent.Wander();
+            return CandiceBehaviorStates.SUCCESS;
+        }
+        public static CandiceBehaviorStates WaypointPatrol(CandiceBehaviorNode rootNode)
+        {
+            CandiceAIController agent = rootNode.aiController;
+            agent.IsMoving = true;
+            CandiceBehaviorStates state = CandiceBehaviorStates.SUCCESS;
+            try
+            {
+                agent.WaypointPatrol();
+
+            }
+            catch (Exception e)
+            {
+                state = CandiceBehaviorStates.FAILURE;
+                Debug.LogError("DefaultBehaviors.WaypointPatrol: " + e.Message);
+            }
+
+            return state;
+        }
+        
+        public static CandiceBehaviorStates WithinAttackRange(CandiceBehaviorNode rootNode)
+        {
+            CandiceAIController agent = rootNode.aiController;
+
+            if (agent.WithinAttackRange())
+                return CandiceBehaviorStates.SUCCESS;
+            else
+                return CandiceBehaviorStates.FAILURE;
+        }
+        public static CandiceBehaviorStates SetAttackTarget(CandiceBehaviorNode rootNode)
+        {
+            CandiceBehaviorStates state = CandiceBehaviorStates.FAILURE;
+            CandiceAIController agent = rootNode.aiController;
+            try
+            {
+                if (agent.MainTarget != null)
+                {
+                    agent.AttackTarget = agent.MainTarget;
+                    state = CandiceBehaviorStates.SUCCESS;
+                }
+                else
+                {
+                    Debug.LogError("CandiceDefaultBehaviors.SetAttackTarget: Main Target is NULL");
+                }
+            }
+            catch (Exception e)
+            {
+                state = CandiceBehaviorStates.FAILURE;
+                Debug.LogError("CandiceDefaultBehaviors.SetAttackTarget: " + e.Message);
+            }
+            return state;
+        }
+        public static CandiceBehaviorStates AttackMelee(CandiceBehaviorNode rootNode)
+        {
+            CandiceAIController agent = rootNode.aiController;
+            agent.AttackMelee();
+            return CandiceBehaviorStates.SUCCESS;
+        }
+        public static CandiceBehaviorStates AttackRange(CandiceBehaviorNode rootNode)
+        {
+            CandiceAIController agent = rootNode.aiController;
+            agent.AttackRanged();
+            return CandiceBehaviorStates.SUCCESS;
+        }
+
+        public static CandiceBehaviorStates ScanForObjects2D(CandiceBehaviorNode rootNode)
+        {
+            try
+            {
+                CandiceAIController agent = rootNode.aiController;
+                agent.ScanForObjects2D();
+                return CandiceBehaviorStates.SUCCESS;
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError(ex.Message);
+                return CandiceBehaviorStates.FAILURE;
+            }
+
+        }
+
+
 
     }
 
