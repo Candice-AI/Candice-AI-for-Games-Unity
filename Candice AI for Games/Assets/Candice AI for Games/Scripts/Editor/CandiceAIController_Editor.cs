@@ -11,6 +11,8 @@ namespace CandiceAIforGames.AI.Editors
 
         private CandiceAIController character;
         private SerializedObject soTarget;
+        private SerializedProperty soBehaviorTree;
+
         GUIContent[] arrTabs = new GUIContent[4];
         GUIContent[] arrTabsSettings = new GUIContent[2];
         string[] arrSettingsTabs = { "General", "Relationships" };
@@ -28,6 +30,7 @@ namespace CandiceAIforGames.AI.Editors
             //Store a reference to the AI Controller script
             character = (CandiceAIController)target;
             soTarget = new SerializedObject(character);
+            soBehaviorTree = soTarget.FindProperty("behaviorTree");
             guiStyle.fontSize = 14;
             guiStyle.fontStyle = FontStyle.Bold;
 
@@ -151,7 +154,8 @@ namespace CandiceAIforGames.AI.Editors
             label = new GUIContent("Health Bar", "");
             //character.healthBar = (HealthBarScript)EditorGUILayout.ObjectField(label, character.healthBar, typeof(HealthBarScript), true);
             label = new GUIContent("Behavior Tree", "");
-            //character._behaviorTree = (BehaviorTree)EditorGUILayout.ObjectField(label, character._behaviorTree, typeof(BehaviorTree), true);
+            EditorGUILayout.PropertyField(soBehaviorTree,label);
+            //character.BehaviorTree = (CandiceBehaviorTree)EditorGUILayout.ObjectField(label, character.BehaviorTree, typeof(CandiceBehaviorTree), true);
             label = new GUIContent("Stop Behavior Tree", "Stops the current active behavior tree from executing.");
             //character._stopBehaviorTree = EditorGUILayout.Toggle(label, character._stopBehaviorTree);
             EditorGUILayout.Vector3Field("Move Point", character.MovePoint);
@@ -339,6 +343,8 @@ namespace CandiceAIforGames.AI.Editors
             character.MoveSpeed = EditorGUILayout.FloatField(label, character.MoveSpeed);
             label = new GUIContent("Base Rotation Speed", "The base speed at which the agent rotate to face its target.");
             character.RotationSpeed = EditorGUILayout.FloatField(label, character.RotationSpeed);
+            label = new GUIContent("Waypoint:", "The current Waypoint that the agent will follow.");
+            character.Waypoint = (CandiceWaypoint)EditorGUILayout.ObjectField(label, character.Waypoint, typeof(CandiceWaypoint), true);
             GUILayout.Space(16);
 
             GUILayout.BeginHorizontal();
@@ -363,57 +369,8 @@ namespace CandiceAIforGames.AI.Editors
             GUILayout.EndVertical();
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
-            //GUIContent label = new GUIContent("Patrol Settings");
-
-            //EditorGUILayout.LabelField();
-            /*EditorGUILayout.LabelField("Patrol/Waypoint Settings", guiStyle);
-            label = new GUIContent("Patrol Type", "");
-            character._patrolType = (PatrolType)EditorGUILayout.EnumPopup(label, character._patrolType);
-            character._isPatrolling = EditorGUILayout.Toggle("Is Patrolling", character._isPatrolling);
-            label = new GUIContent("Patrol In Order:", "Whether or not the character should patrol each point in order of the list. False will allow the character to patrol randomly.");
-            if (character._patrolType == PatrolType.PatrolPoints)
-            {
-                character._patrolInOrder = EditorGUILayout.Toggle(label, character._patrolInOrder);
-                label = new GUIContent("Patrol Points:", "The points in the gameworld where you want the character to patrol. They can be anything, even empty gameObjects. Note: Ensure each patrol point is tagged as 'PatrolPoint'");
-
-                patrolPointCount = character._patrolPoints.Count;
-                showPatrolPoints = EditorGUILayout.Foldout(showPatrolPoints, label);
-                if (showPatrolPoints)
-                {
-                    label = new GUIContent("Size:");
-                    patrolPointCount = EditorGUILayout.IntField(label, patrolPointCount);
-
-                    if (patrolPointCount != character._patrolPoints.Count)
-                    {
-                        while (patrolPointCount > character._patrolPoints.Count)
-                        {
-                            character._patrolPoints.Add(null);
-                        }
-                        while (patrolPointCount < character._patrolPoints.Count)
-                        {
-                            character._patrolPoints.RemoveAt(character._patrolPoints.Count - 1);
-                        }
-                    }
-                    //EditorGUILayout.Space();
-                    for (int i = 0; i < character._patrolPoints.Count; i++)
-                    {
-                        EditorGUILayout.BeginHorizontal();
-                        EditorGUILayout.LabelField("Element " + i);
-                        character._patrolPoints[i] = (GameObject)EditorGUILayout.ObjectField(character._patrolPoints[i], typeof(GameObject), true);
-                        EditorGUILayout.EndHorizontal();
-                        //EditorGUILayout.Space();
-                    }
-                }
-            }
-            else if (character._patrolType == PatrolType.Waypoints)
-            {
-                label = new GUIContent("Waypoint:", "The first Waypoint that the agent will follow.");
-
-                character._waypoint = (Waypoint)EditorGUILayout.ObjectField(label, character._waypoint, typeof(Waypoint), true);
-            }*/
-
-            /*
-            */
+            
+            
         }
 
         void DrawCombatGUI()
@@ -424,23 +381,15 @@ namespace CandiceAIforGames.AI.Editors
             character.AttackRange = EditorGUILayout.FloatField(label, character.AttackRange);
             label = new GUIContent("Attack Projectile", "The projectile that the agent will fire.");
             character.Projectile = (GameObject)EditorGUILayout.ObjectField(label, character.Projectile, typeof(GameObject), true);
-
             label = new GUIContent("Projectile Spawn Position", "The point where the projectile will spawn. e.g the hand for a spell, or the bow for an arrow.");
             character.ProjectileSpawnPos = (Transform)EditorGUILayout.ObjectField(label, character.ProjectileSpawnPos, typeof(Transform), true);
-
-            //character.m_DamageAngle = EditorGUILayout.Slider("Damage Angle:", character.m_DamageAngle, 0, 360f);
+            label = new GUIContent("Attack Damage", "The damage per attack that the agent will deal.");
+            character.AttackDamage = EditorGUILayout.FloatField(label, character.AttackDamage);
+            character.DamageAngle = EditorGUILayout.Slider("Damage Angle:", character.DamageAngle, 0, 360f);
             label = new GUIContent("Has Attack Animation", "Whether or not this agent has an attack animation.");
             character.HasAttackAnimation = EditorGUILayout.Toggle(label, character.HasAttackAnimation);
             label = new GUIContent("Attacks Per Second", "How many attacks per second the agent will deal");
             character.AttacksPerSecond = EditorGUILayout.FloatField(label, character.AttacksPerSecond);
-            //label = new GUIContent("Auto Attack", "");
-            //character.autoAttack = EditorGUILayout.Toggle(label, character.autoAttack);
-            //label = new GUIContent("Click To Attack", "If true, the agent will only attack when a valid object is clicked on. Only works if the agent is Player Controlled.");
-            //character.clickToAttack = EditorGUILayout.Toggle(label, character.clickToAttack);
-
-
-
-
         }
 
         

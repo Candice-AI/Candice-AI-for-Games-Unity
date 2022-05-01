@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CandiceAIforGames.AI.Pathfinding;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -86,7 +87,7 @@ namespace CandiceAIforGames.AI
             }
             objectDetectedCallback(new CandiceDetectionResults(detectedObjects));
         }
-        public void AvoidObstacles(Transform Target, Transform transform, float size, float movementSpeed, bool is3D, float distance,int lines)
+        public void AvoidObstacles(Transform Target, Vector3 movePoint, Transform transform, float size, float movementSpeed, bool is3D, float distance,int lines, LayerMask perceptionMask)
         {
             //
             //Method Name : void Move(Transform Target, Transform transform, float size)
@@ -95,7 +96,6 @@ namespace CandiceAIforGames.AI
             //Input       : Transform Target, Transform transform, float size
             //Output      : void
             //
-
             if (!is3D)
             {
                 AvoidObstacles2D(Target, transform, size, movementSpeed, distance);
@@ -129,10 +129,26 @@ namespace CandiceAIforGames.AI
                 {
                     if (hit.transform != transform && hit.transform != Target.transform)
                     {
-                        Debug.DrawLine(point, hit.point, Color.red);
-                        dir += hit.normal * 90;
+                        if (HasLayer(perceptionMask, hit.transform.gameObject.layer))
+                        {
+                            Debug.DrawLine(point, hit.point, Color.red);
+                            dir += hit.normal * 90;
 
-                        obstacleHit = true;
+                            obstacleHit = true;
+                        }
+                        /*foreach (LayerMask region in walkableRegions)
+                        {
+                            int id = Convert.ToInt32(Mathf.Log(region.value, 2));
+
+                            if(id == hit.transform.gameObject.layer)
+                            {
+                                Debug.DrawLine(point, hit.point, Color.red);
+                                dir += hit.normal * 90;
+
+                                obstacleHit = true;
+                            }
+                        }*/
+
                     }
                 }
             }
@@ -143,12 +159,22 @@ namespace CandiceAIforGames.AI
             }
             else
             {
-                dir = (Target.position - transform.position).normalized;
+                movePoint = new Vector3(movePoint.x, transform.position.y, movePoint.z);
+                dir = (movePoint - transform.position).normalized;
                 Quaternion rot = Quaternion.LookRotation(dir);
                 transform.rotation = Quaternion.Slerp(transform.rotation, rot, movementSpeed * Time.deltaTime);
-
             }
             
+        }
+
+        public static bool HasLayer(LayerMask layerMask, int layer)
+        {
+            if (layerMask == (layerMask | (1 << layer)))
+            {
+                return true;
+            }
+
+            return false;
         }
 
 
