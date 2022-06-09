@@ -103,7 +103,7 @@ namespace CandiceAIforGames.AI
         {
             try
             {
-                go.SendMessage("ReceiveDamage", attackDamage);
+                go.SendMessage("ReceiveDamage", attackDamage, SendMessageOptions.DontRequireReceiver);
             }
             catch (Exception e)
             {

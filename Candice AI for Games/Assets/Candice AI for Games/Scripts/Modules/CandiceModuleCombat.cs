@@ -106,7 +106,7 @@ namespace CandiceAIforGames.AI
             //Output      : none
             //
             currentHP -= damage;
-            if (currentHP - damage <= 0)
+            if (currentHP <= 0)
             {
                 currentHP = 0;
                 //CharacterDead() method should be called after the death animation has finished playing using an Animation Event. 
