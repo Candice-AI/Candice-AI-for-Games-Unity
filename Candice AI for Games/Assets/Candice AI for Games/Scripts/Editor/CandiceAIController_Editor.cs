@@ -255,20 +255,12 @@ namespace CandiceAIforGames.AI.Editors
 
         void DrawDetectionGUI()
         {
-            //do this last!  it will loop over the properties on your object and apply any it needs to, no if necessary!
-
-
-
-
             GUIContent label;
             GUILayout.Label("Detection Settings", guiStyle);
 
             label = new GUIContent("Sensor Type", "The sensor type this agent will use. Note: Sphere sensor also works with 2D.");
             character.SensorType = (SensorType)EditorGUILayout.EnumPopup(label, character.SensorType);
 
-            label = new GUIContent("Perception Mask", "Layers that the agent must ignore");
-            LayerMask tempMask = EditorGUILayout.MaskField(label, InternalEditorUtility.LayerMaskToConcatenatedLayersMask(character.PerceptionMask), InternalEditorUtility.layers);
-            character.PerceptionMask = InternalEditorUtility.ConcatenatedLayersMaskToLayerMask(tempMask);
             label = new GUIContent("Detection Radius", "The radius which the character can detect other objects.");
             character.DetectionRadius = EditorGUILayout.FloatField(label, character.DetectionRadius);
             label = new GUIContent("Detection Lines", "The amount of raycast lines the agent will emit in order to detect obstacles, evenly distrubuted from the center.");
@@ -279,7 +271,6 @@ namespace CandiceAIforGames.AI.Editors
             character.LineOfSight = EditorGUILayout.FloatField(label, character.LineOfSight);
 
             label = new GUIContent("Detection Tags:", "All the Tags that the agent will detect.");
-            EditorGUILayout.LabelField(label, guiStyle);
             showTags = EditorGUILayout.Foldout(showTags, label);
 
             if (showTags)
@@ -322,14 +313,17 @@ namespace CandiceAIforGames.AI.Editors
 
 
             }
-
+            EditorGUILayout.Space();
             GUILayout.Label("Obstacle Avoidance Settings", guiStyle);
+            label = new GUIContent("OA Perception Mask", "Layers that the agent must avoid while moving");
+            LayerMask tempMask = EditorGUILayout.MaskField(label, InternalEditorUtility.LayerMaskToConcatenatedLayersMask(character.PerceptionMask), InternalEditorUtility.layers);
+            character.PerceptionMask = InternalEditorUtility.ConcatenatedLayersMaskToLayerMask(tempMask);
             label = new GUIContent("OA Distance", "The maximum distance that the agent will start to avoid detected objects.");
             character.ObstacleAvoidaceDistance = EditorGUILayout.FloatField(label, character.ObstacleAvoidaceDistance);
             label = new GUIContent("OA AOE", "The Area Of Effect around the agent that must not touch obstacles");
             character.ObstacleAvoidanceAOE = EditorGUILayout.FloatField(label, character.ObstacleAvoidanceAOE);
 
-            
+
         }
 
         void DrawMovementGUI()
