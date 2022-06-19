@@ -3,6 +3,13 @@ using System.Runtime.CompilerServices;
 using UnityEngine;
 namespace CandiceAIforGames.AI
 {
+    /// <summary>
+    /// Class that houses all methods/functions the Candice Behavior Tree will use in the Action nodes.
+    /// </summary>
+    /// <remarks>
+    /// By default, all of these methods have a reference to the Candice AI Controller that houses the logic, and simply calls those methods in the controller.
+    /// </remarks>
+    /// 
     public class CandiceDefaultBehaviors
     {
 
