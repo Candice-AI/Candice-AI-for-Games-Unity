@@ -26,7 +26,9 @@ namespace CandiceAIforGames.AI.Pathfinding
             }
             catch (Exception e)
             {
-                UnityEngine.Debug.LogError(e.Message);
+                tiles = new GameObject[0];
+                //UnityEngine.Debug.LogWarning("Candice Warning: You have not created the CandiceTile tag. please create it for Tile-Based pathfinding to work.");
+                //UnityEngine.Debug.LogError(e.Message);
             }
 
             foreach (GameObject CandiceTile in tiles)

@@ -41,7 +41,7 @@ namespace CandiceAIforGames.AI
                     }
                 }
             }
-            attackCompleteCallback(true);
+            attackCompleteCallback(true);//Callback to the AI Controller when the attack is complete. Usually to reset isAttacking variable to false;
         }
 
         public void DealDamage2D(float damage, float attackRange, float damageAngle, List<string> tags)
@@ -65,19 +65,17 @@ namespace CandiceAIforGames.AI
             }
             attackCompleteCallback(true);
         }
-        public IEnumerator DealTimedDamage(float time, float damage, float attackRange, float damageAngle, List<string> tags, Action _attackCompleteCallback)
+        public IEnumerator DealTimedDamage(float time, float damage, float attackRange, float damageAngle, List<string> tags)
         {
             yield return new WaitForSecondsRealtime(time);
             DealDamage(damage, attackRange, damageAngle, tags);
-            _attackCompleteCallback();
         }
-        public IEnumerator DealTimedDamage2D(float time, float damage, float attackRange, float damageAngle, List<string> tags, Action _attackCompleteCallback)
+        public IEnumerator DealTimedDamage2D(float time, float damage, float attackRange, float damageAngle, List<string> tags)
         {
             yield return new WaitForSecondsRealtime(time);
             DealDamage2D(damage, attackRange, damageAngle, tags);
-            _attackCompleteCallback();
         }
-        public IEnumerator FireProjectile(GameObject attackTarget, GameObject attackProjectile,Transform spawnPosition,float time, Action _attackCompleteCallback)
+        public IEnumerator FireProjectile(GameObject attackTarget, GameObject attackProjectile,Transform spawnPosition,float time)
         {
             //
             //Method Name : void AttackRange()
@@ -93,7 +91,7 @@ namespace CandiceAIforGames.AI
                 CandiceProjectile ai = projectile.GetComponent<CandiceProjectile>();
                 ai.Fire(attackTarget);
             }
-            _attackCompleteCallback();
+            attackCompleteCallback(true);
         }
 
         public float ReceiveDamage(float damage,float currentHP)
