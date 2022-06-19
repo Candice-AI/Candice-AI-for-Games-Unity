@@ -285,6 +285,7 @@ namespace CandiceAIforGames.AI
                 
         }
 
+
         // Update is called once per frame
         void Update()
         {
@@ -295,8 +296,6 @@ namespace CandiceAIforGames.AI
         /// <summary>
         /// Callback function when the agent is successfully registered with Candice.
         /// </summary>
-        /// <param name="isRegistered">Whether or not the registration was successful.</param>
-        /// <param name="agentId">The unique agent ID returned from Candice.</param>
         private void onRegistrationComplete(bool isRegistered, int agentId)
         {
 
@@ -326,6 +325,9 @@ namespace CandiceAIforGames.AI
             CandiceDetectionRequest req = new CandiceDetectionRequest(sensorType, objectTags, DetectionRadius, DetectionHeight, LineOfSight, Is3D);
             detectionModule.ScanForObjects(req);
         }
+        /// <summary>
+        /// Use the detection module to scan for objects ina 2D space.
+        /// </summary>
         public void ScanForObjects2D()
         {
             CandiceDetectionRequest req = new CandiceDetectionRequest(sensorType, objectTags, DetectionRadius, DetectionHeight, LineOfSight, Is3D);
@@ -349,9 +351,9 @@ namespace CandiceAIforGames.AI
             detectionModule.AvoidObstacles(MainTarget.transform, MovePoint, transform,HalfHeight + obstacleAvoidanceAOE,RotationSpeed,true,ObstacleAvoidaceDistance,DetectionLines,PerceptionMask);
         }
         /// <summary>
-        /// Send a path calculation request to Candice and then follow it.
+        /// Do some checks on whether a new path must be requested or not.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Whetehr the agent is following the path.</returns>
         public bool CandicePathfind()
         {
             
@@ -372,6 +374,10 @@ namespace CandiceAIforGames.AI
             }
             return IsFollowingPath;
         }
+        /// <summary>
+        /// Function to make a request to the Candice AI Manager for a new path.
+        /// </summary>
+        /// <returns></returns>
         private void CalculateAStarPath()
         {
             Debug.Log("Calculate");
@@ -380,10 +386,20 @@ namespace CandiceAIforGames.AI
             targetPosOld = MovePoint;
             IsCalculatingPath = true;
         }
+
+        /// <summary>
+        /// Function to prevent the agent from looking at the target's 0 Y position, but straight.
+        /// </summary>
+        /// <returns></returns>
         private void SetLookPointY(Vector3 lookPoint)
         {
             LookPoint = new Vector3(lookPoint.x, transform.position.y, lookPoint.z);
         }
+        /// <summary>
+        /// Function to follow a given path.
+        /// </summary>
+        /// <remarks>The path is an array of Vector3 objects</remarks>
+        /// <returns></returns>
         private void FollowAStarPath()
         {
             SetLookPointY(_path.lookPoints[pathIndex]);
@@ -439,18 +455,14 @@ namespace CandiceAIforGames.AI
         {
             if (hasAttackAnimation && !IsAttacking)
             {
-                //Play attack animation which will call the Damage() function
+                //Play attack animation which will call the DealDamage() function in the combat module
                 IsAttacking = true;
             }
             else if (!IsAttacking)
             {
                 IsAttacking = true;
-                StartCoroutine(combatModule.DealTimedDamage(AttackSpeed, AttackDamage, AttackRange, DamageAngle, enemyTags,onAttackComplete));
+                StartCoroutine(combatModule.DealTimedDamage(AttackSpeed, AttackDamage, AttackRange, DamageAngle, enemyTags));
             }
-        }
-        public void onAttackComplete()
-        {
-            IsAttacking = false;
         }
         public void AttackRanged()
         {
@@ -462,7 +474,7 @@ namespace CandiceAIforGames.AI
             else if (!IsAttacking)
             {
                 IsAttacking = true;
-                StartCoroutine(combatModule.FireProjectile(AttackTarget,Projectile,ProjectileSpawnPos,AttackSpeed,onAttackComplete));
+                StartCoroutine(combatModule.FireProjectile(AttackTarget,Projectile,ProjectileSpawnPos,AttackSpeed));
             }
         }
         public void Wander()
@@ -600,6 +612,7 @@ namespace CandiceAIforGames.AI
         void onAttackComplete(bool success)
         {
             IsAttacking = false;
+            Debug.Log("Attack COmplete");
         }
 
 

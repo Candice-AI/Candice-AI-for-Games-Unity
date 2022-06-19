@@ -105,7 +105,7 @@ namespace CandiceAIforGames.AI
             {
                 go.SendMessage("ReceiveDamage", attackDamage, SendMessageOptions.DontRequireReceiver);
             }
-            catch (Exception e)
+            catch //(Exception e)
             {
                 //Debug.LogError(e.Message);
             }
