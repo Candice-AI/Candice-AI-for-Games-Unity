@@ -307,7 +307,7 @@ namespace CandiceAIforGames.AI
                 detectionModule = new CandiceModuleDetection(gameObject.transform, onObjectFound, "Agent" + AgentID + "-CandiceModuleDetection");
                 HalfHeight = col.bounds.extents.y;
                 //BehaviorTree = GetComponent<CandiceBehaviorTree>();
-                if (BehaviorTree != null && BehaviorTree.behaviorTree != null)
+                if (BehaviorTree != null && BehaviorTree.nodes != null)
                 {
                     BehaviorTree.Initialise();
                     BehaviorTree.CreateBehaviorTree(this);
@@ -552,10 +552,21 @@ namespace CandiceAIforGames.AI
 
             return isValid;
         }
-        public void ReceiveDamage(float damage)
+        public void CandiceReceiveDamage(float damage)
         {
             HitPoints = combatModule.ReceiveDamage(damage, HitPoints);
+
+            if(HitPoints <= 0)
+            {
+                Die();
+            }
         }
+
+        private void Die()
+        {
+            Destroy(this.gameObject);
+        }
+
         public bool WithinAttackRange()
         {
             float distance = float.MaxValue;
@@ -584,6 +595,9 @@ namespace CandiceAIforGames.AI
             AllyDetected = false;
             EnemyDetected = false;
             PlayerDetected = false;
+            Enemies.Clear();
+            Allies.Clear();
+            Players.Clear();
             foreach (string key in results.objects.Keys)
             {
                 if(EnemyTags.Contains(key))

@@ -31,6 +31,9 @@ namespace CandiceAIforGames.AI
         }
 
         /* Implementing classes use this method to evaluate the desired set of conditions */
+        /// <summary>
+        /// Inherited classes use this method to evaluate the desired set of conditions
+        /// </summary>
         public abstract CandiceBehaviorStates Evaluate();
 
     }

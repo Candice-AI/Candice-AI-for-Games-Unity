@@ -9,9 +9,12 @@ namespace CandiceAIforGames.AI
     [Serializable]
     public class CandiceBehaviorTree
     {
+        [SerializeField]
+        public string _name;
         public CandiceBehaviorNode rootNode;
-        public CandiceBehaviorTreeS behaviorTree;
+        [SerializeField]
         public List<CandiceBehaviorNodeS> nodes;
+        
         [SerializeField]
         List<MethodInfo> lstFunctions;
 
@@ -20,8 +23,6 @@ namespace CandiceAIforGames.AI
             List<Type> behaviorTypes = new List<Type>();
             lstFunctions = new List<MethodInfo>();
             MethodInfo[] arrMethodInfos;
-            if(behaviorTree != null)
-                nodes = behaviorTree.GetNodes();
             behaviorTypes.Add(typeof(CandiceDefaultBehaviors));
             foreach (Type type in behaviorTypes)
             {
@@ -56,20 +57,20 @@ namespace CandiceAIforGames.AI
                     rootNode = new CandiceBehaviorSelector();
                     rootNode.id = _rootNode.id;
                     rootNode.Initialise(agent.transform, agent);
-                    (rootNode as CandiceBehaviorSelector).SetNodes(GetChildren(behaviorTree, _rootNode));
+                    (rootNode as CandiceBehaviorSelector).SetNodes(GetChildren(nodes, _rootNode));
                     break;
                 case CandiceAIManager.NODE_TYPE_SEQUENCE:
                     rootNode = new CandiceBehaviorSequence();
                     rootNode.id = _rootNode.id;
                     rootNode.Initialise(agent.transform, agent);
-                    (rootNode as CandiceBehaviorSequence).SetNodes(GetChildren(behaviorTree, _rootNode));
+                    (rootNode as CandiceBehaviorSequence).SetNodes(GetChildren(nodes, _rootNode));
                     break;
             }
 
 
             return rootNode;
         }
-        List<CandiceBehaviorNode> GetChildren(CandiceBehaviorTreeS bt, CandiceBehaviorNodeS node)
+        List<CandiceBehaviorNode> GetChildren(List<CandiceBehaviorNodeS> nodes, CandiceBehaviorNodeS node)
         {
             List<CandiceBehaviorNode> children = new List<CandiceBehaviorNode>();
             CandiceBehaviorNodeS _node = null;
@@ -80,7 +81,7 @@ namespace CandiceAIforGames.AI
             foreach (int id in node.childrenIDs)
             {
                 CandiceBehaviorNode newNode = null;
-                if (GetNodeWithID(id, bt.GetNodes()) != null)
+                if (GetNodeWithID(id, nodes) != null)
                 {
                     _node = GetNodeWithID(id, nodes);
 
@@ -88,11 +89,11 @@ namespace CandiceAIforGames.AI
                     {
                         case CandiceAIManager.NODE_TYPE_SELECTOR:
                             newNode = new CandiceBehaviorSelector();
-                            (newNode as CandiceBehaviorSelector).SetNodes(GetChildren(bt, _node));
+                            (newNode as CandiceBehaviorSelector).SetNodes(GetChildren(nodes, _node));
                             break;
                         case CandiceAIManager.NODE_TYPE_SEQUENCE:
                             newNode = new CandiceBehaviorSequence();
-                            (newNode as CandiceBehaviorSequence).SetNodes(GetChildren(bt, _node));
+                            (newNode as CandiceBehaviorSequence).SetNodes(GetChildren(nodes, _node));
                             break;
                         case CandiceAIManager.NODE_TYPE_ACTION:
                             CandiceBehaviorAction action = new CandiceBehaviorAction((CandiceBehaviorAction.ActionNodeDelegate)lstFunctions[_node.function].CreateDelegate(typeof(CandiceBehaviorAction.ActionNodeDelegate)), rootNode);
